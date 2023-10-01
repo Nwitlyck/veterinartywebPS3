@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Editar Veterinarios</title>
+    </h:head>
+
+    <h:body>
+        <h:form id="menu">
+
+            <p:menubar>
+
+                <p:menuitem value="Bienvenida" outcome="landingPage" icon="pi pi-fw pi-home"/>
+
+                <p:submenu label="Admin" icon="pi pi-fw pi-users">
+                    <p:menuitem value="Editar administrador" outcome="editAdmin" icon="pi pi-fw pi-eye"/>
+                </p:submenu>
+
+                <p:submenu label="Cliente" icon="pi pi-fw pi-users">
+                    <p:menuitem value="Editar cliente" outcome="editClient" icon="pi pi-fw pi-eye"/>
+                </p:submenu>
+
+                <p:submenu label="Unidades" icon="pi pi-fw pi-users">
+                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
+                </p:submenu>
+
+                <p:submenu label="Veterinarios" icon="pi pi-fw pi-users">
+                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-eye"/>
+                </p:submenu>
+
+                <p:menuitem value="Cerrar Secion" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
+                
+            </p:menubar>
+
+        </h:form>
+        
+        <h:form id="form">
+            <p:growl id="message" showDetail="true"/>
+            
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" />
+            </p:confirmDialog>
+
+            <p:commandButton value="Crear Veterinario" icon="pi pi-plus"
+                             update=":form:manage-user-content" oncomplete="PF('manageUserDialog').show()"
+                             styleClass="ui-button-success" style="margin: .50rem">
+                <p:resetInput target=":form:manage-user-content"/>
+            </p:commandButton>
+            
+            <p:dialog header="Detalles de Veterinario" showEffect="fade" modal="true"
+                      widgetVar="manageUserDialog" responsive="true">
+                <p:outputPanel id="manage-user-content" class="ui-fluid">
+
+                    <p:outputPanel>
+                        <div class="p-field">
+                            <p:outputLabel>Nombre</p:outputLabel>
+                            <p:inputText id="Nombre"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel>Apellido</p:outputLabel>
+                            <p:inputText id="Apellido"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel >Correo</p:outputLabel>
+                            <p:inputText id="Correo"/>
+                        </div>
+                        
+                        <div class="p-field">
+                            <p:outputLabel>Contraseña</p:outputLabel>
+                            <p:inputText id="Contraseña"/>
+                        </div>
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Crear" icon="pi pi-check"  
+                                     update="form manage-user-content" style="margin: .25rem" process="manage-user-content @this">
+                        <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+
+
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('manageUserDialog').hide()" 
+                                     style="margin: .25rem" class="ui-button-secondary"/>
+                </f:facet>
+
+            </p:dialog>
+            
+            
+            
+            
+            <p:dataTable var="obj" value="#{logInController.crearDemo()}">
+
+               <p:column headerText="Nombre">
+                    <h:outputText value="#{obj.name}" />
+                </p:column>
+                <p:column headerText="Apellido">
+                    <h:outputText value="#{obj.lastName}" />
+                </p:column>
+                 <p:column headerText="Correo">
+                    <h:outputText value="#{obj.email}" />
+                </p:column>
+             
+                
+                <p:column headerText="Opciones">
+                    <p:menuButton>
+                        <p:menuitem value="Editar"  update=":form:edit-veterinary-content" icon="pi pi-pencil" oncomplete="PF('editVeterinaryContent').show()">
+                                <p:resetInput target=":form:edit-veterinary-content"/>
+                        </p:menuitem>
+                        <p:menuitem value="Borrar"  update="form" icon="pi pi-trash">
+                            <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
+                        </p:menuitem>
+                    </p:menuButton>
+                </p:column>
+            </p:dataTable>
+            
+            <p:dialog header="Info Veterinaria" showEffect="fade" modal="true"
+                      widgetVar="editVeterinaryContent" responsive="true">
+                <p:outputPanel id="edit-veterinary-content" class="ui-fluid">
+
+                    <p:outputPanel>
+                        <div class="p-field">
+                            <p:outputLabel>Nombre</p:outputLabel>
+                            <p:inputText id="nombreVete"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel>Apellido</p:outputLabel>
+                            <p:inputText id="apellidoVete"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel >Correo</p:outputLabel>
+                            <p:inputText id="correoVete"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel >Contraseña</p:outputLabel>
+                            <p:inputText id="contrasenaVete"/>
+                        </div>
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Guardar" icon="pi pi-save"  
+                                     update="form edit-veterinary-content" style="margin: .25rem" process="edit-veterinary-content @this">
+                        <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+
+
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('editVeterinaryContent').hide()" 
+                                     style="margin: .25rem" class="ui-button-secondary"/>
+                </f:facet>
+
+            </p:dialog>
+
+        </h:form>
+    </h:body>
+</html>

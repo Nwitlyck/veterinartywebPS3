@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Editar Admin</title>
+    </h:head>
+
+    <h:body>
+        <h:form id="menu">
+
+            <p:menubar>
+
+                <p:menuitem value="Bienvenida" outcome="landingPage" icon="pi pi-fw pi-home"/>
+
+                <p:submenu label="Admin" icon="pi pi-fw pi-users">
+                    <p:menuitem value="Editar administrador" outcome="editAdmin" icon="pi pi-fw pi-eye"/>
+                </p:submenu>
+
+                <p:submenu label="Cliente" icon="pi pi-fw pi-users">
+                    <p:menuitem value="Editar cliente" outcome="editClient" icon="pi pi-fw pi-eye"/>
+                </p:submenu>
+
+                <p:submenu label="Unidades" icon="pi pi-fw pi-users">
+                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
+                </p:submenu>
+
+                <p:submenu label="Veterinarios" icon="pi pi-fw pi-users">
+                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-eye"/>
+                </p:submenu>
+
+                <p:menuitem value="Cerrar Secion" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
+                
+            </p:menubar>
+
+        </h:form>
+        
+        <h:form id="form">
+            <p:growl id="message" showDetail="true"/>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
+            </p:confirmDialog>
+
+            <p:commandButton value="Crear Administrador" icon="pi pi-plus"
+                             update=":form:manage-user-content" oncomplete="PF('manageUserDialog').show()"
+                             styleClass="ui-button-success" style="margin: .50rem">
+                <p:resetInput target=":form:manage-user-content"/>
+            </p:commandButton>
+
+
+
+            <p:dialog header="Detalles de Veterinario" showEffect="fade" modal="true"
+                      widgetVar="manageUserDialog" responsive="true">
+                <p:outputPanel id="manage-user-content" class="ui-fluid">
+
+                    <p:outputPanel>
+                        <div class="p-field">
+                            <p:outputLabel>Nombre</p:outputLabel>
+                            <p:inputText id="name2"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel>Apellido</p:outputLabel>
+                            <p:inputText id="lastName2"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel >Correo</p:outputLabel>
+                            <p:inputText id="email2"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel >Contraseña</p:outputLabel>
+                            <p:inputText id="password2"/>
+                        </div>
+
+
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+
+
+                <f:facet name="footer">
+                    <p:commandButton value="Crear" icon="pi pi-check"  
+                                     update="form edit-admin-content" style="margin: .25rem" process="edit-admin-content @this">
+                        <p:confirm header="Confirmacion" message="Esta seguro de seguir?" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+
+
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('editAdminContent').hide()" 
+                                     style="margin: .25rem" class="ui-button-secondary"/>
+                </f:facet>
+
+            </p:dialog>
+
+
+
+            <p:dataTable var="obj" value="#{logInController.crearDemo()}">
+
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{obj.name}" />
+                </p:column>
+                <p:column headerText="Apellido">
+                    <h:outputText value="#{obj.lastName}" />
+                </p:column>
+                <p:column headerText="Correo">
+                    <h:outputText value="#{obj.email}" />
+                </p:column>
+
+
+                <p:column headerText="Opciones">
+                    <p:menuButton>
+                        <p:menuitem value="Editar"  update=":form:edit-admin-content" icon="pi pi-pencil" oncomplete="PF('editAdminContent').show()">
+                            <p:resetInput target=":form:edit-admin-content"/>
+                        </p:menuitem>
+                        <p:menuitem value="Borrar"  update="form" icon="pi pi-trash">
+                            <p:confirm header="Confirmacion" message="Esta seguro de seguir?" icon="pi pi-exclamation-triangle"/>
+                        </p:menuitem>
+                    </p:menuButton>
+                </p:column>
+            </p:dataTable>
+
+
+
+            <p:dialog header="Informacion del Administrador" showEffect="fade" modal="true"
+                      widgetVar="editAdminContent" responsive="true">
+                <p:outputPanel id="edit-admin-content" class="ui-fluid">
+
+                    <p:outputPanel>
+                        <div class="p-field">
+                            <p:outputLabel>Nombre</p:outputLabel>
+                            <p:inputText id="name"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel>Apellido</p:outputLabel>
+                            <p:inputText id="lastname"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel >Correo</p:outputLabel>
+                            <p:inputText id="emali"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel >Contraseña</p:outputLabel>
+                            <p:inputText id="password"/>
+                        </div>
+
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Guardar" icon="pi pi-save"  
+                                     update="form edit-admin-content" style="margin: .25rem" process="edit-admin-content @this">
+                        <p:confirm header="Confirmacion" message="Esta seguro de seguir?" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+
+
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('editAdminContent').hide()" 
+                                     style="margin: .25rem" class="ui-button-secondary"/>
+                </f:facet>
+
+            </p:dialog>  
+        </h:form>
+    </h:body>
+</html>
