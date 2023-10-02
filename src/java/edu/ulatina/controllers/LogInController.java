@@ -27,7 +27,7 @@ public class LogInController implements Serializable{
     public String getUser() {
         return user;
     }
-
+    //Comentario
     public void setUser(String user) {
         this.user = user;
     }
