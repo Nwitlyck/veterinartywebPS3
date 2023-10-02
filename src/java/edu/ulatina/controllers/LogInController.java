@@ -27,7 +27,7 @@ public class LogInController implements Serializable{
     public String getUser() {
         return user;
     }
-    //Comentario
+    
     public void setUser(String user) {
         this.user = user;
     }
@@ -69,7 +69,7 @@ public class LogInController implements Serializable{
          List<demo> listaDemo = new ArrayList<>();
          
          for(int i = 0; i < 6; i++){
-             demo newDemo = new demo("test " + i, "test " + i, "test " + i, "test " + i, "test " + i, "test " + i, "test " + i, "test " + i, i, i);
+             demo newDemo = new demo("test " + i, "test " + i, "test " + i, "test " + i, "test " + i, "test " + i, "test " + i, "test " + i, i, i, i);
              listaDemo.add(newDemo);
          }
          return listaDemo;
