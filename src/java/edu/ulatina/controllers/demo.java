@@ -1,5 +1,5 @@
 
-package edu.latina.controllers;
+package edu.ulatina.controllers;
 
 public class demo {
     private String cedula;
