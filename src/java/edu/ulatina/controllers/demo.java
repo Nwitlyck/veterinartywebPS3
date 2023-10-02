@@ -12,11 +12,12 @@ public class demo {
     private String password;
     private int unitNumber;
     private int plate;
+    private int role;
 
     public demo() {
     }
 
-    public demo(String cedula, String email, String adress, String province, String state, String lastName, String name, String password, int unitNumber, int plate) {
+    public demo(String cedula, String email, String adress, String province, String state, String lastName, String name, String password, int unitNumber, int plate, int role) {
         this.cedula = cedula;
         this.email = email;
         this.adress = adress;
@@ -27,6 +28,7 @@ public class demo {
         this.password = password;
         this.unitNumber = unitNumber;
         this.plate = plate;
+        this.role = role;
     }
 
     public String getCedula() {
@@ -108,6 +110,13 @@ public class demo {
     public void setPlate(int plate) {
         this.plate = plate;
     }
-    
+
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+    }
     
 }
