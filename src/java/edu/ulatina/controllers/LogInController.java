@@ -1,5 +1,5 @@
 
-package edu.latina.controllers;
+package edu.ulatina.controllers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
