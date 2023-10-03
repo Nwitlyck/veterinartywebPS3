@@ -9,10 +9,10 @@
     </h:head>
 
     <h:body>
-        
+
         <h:form id="menu">
 
-           <p:menubar>
+            <p:menubar>
 
                 <p:menuitem value="Bienvenida" outcome="landingPage" icon="pi pi-fw pi-home"/>
 
@@ -23,7 +23,7 @@
                 <p:submenu label="Unidades" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
-                
+
                 <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
@@ -33,14 +33,14 @@
                 </p:submenu>
 
                 <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
-                
+
             </p:menubar>
 
         </h:form>
-        
+
         <h:form id="form">
             <p:growl id="message" showDetail="true"/>
-            
+
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
                 <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
@@ -52,12 +52,16 @@
                 <p:resetInput target=":form:manage-user-content"/>
             </p:commandButton>
             
+            <p:toggleSwitch value="#{logInController.viewDisabledUnit}"> Ver deshabilitado
+                <p:ajax listener="#{logInController.viewDisabledMessage}" update="form message"/>
+            </p:toggleSwitch>
+
             <p:dialog header="Información de Unidad" showEffect="fade" modal="true"
                       widgetVar="manageUserDialog" responsive="true">
                 <p:outputPanel id="manage-user-content" class="ui-fluid">
 
                     <p:outputPanel>
-                        
+
                         <div class="p-field">
                             <p:outputLabel>Placa</p:outputLabel>
                             <p:inputText id="plate"/>
@@ -78,18 +82,21 @@
                 </f:facet>
 
             </p:dialog>
-            
-            
-            
-            <p:dataTable var="obj" value="#{logInController.crearDemo()}">
+
+
+
+            <p:dataTable var="obj" value="#{logInController.crearDemo()}"  rendered="#{!logInController.viewDisabledUnit}">
 
                 <p:column headerText="Placa">
                     <h:outputText value="#{obj.plate}" />
                 </p:column>
+                <p:column headerText="Número de Unidad">
+                    <h:outputText value="#{obj.unitNumber}" />
+                </p:column>
                 <p:column headerText="Opciones">
                     <p:menuButton>
                         <p:menuitem value="Editar"  update=":form:edit-unit-content" icon="pi pi-pencil" oncomplete="PF('editUnitContent').show()">
-                                <p:resetInput target=":form:edit-unit-content"/>
+                            <p:resetInput target=":form:edit-unit-content"/>
                         </p:menuitem>
                         <p:menuitem value="Borrar"  update="form" icon="pi pi-trash">
                             <p:confirm header="Confirmation" message="Are you sure you want to proceed?" icon="pi pi-exclamation-triangle"/>
@@ -98,12 +105,29 @@
                 </p:column>
             </p:dataTable>
             
+            <p:dataTable var="obj" value="#{logInController.crearDemo2()}"  rendered="#{logInController.viewDisabledUnit}">
+
+                <p:column headerText="Placa">
+                    <h:outputText value="#{obj.plate}" />
+                </p:column>
+                <p:column headerText="Número de Unidad">
+                    <h:outputText value="#{obj.unitNumber}" />
+                </p:column>
+                <p:column headerText="Recuperar">
+                    <p:commandButton icon="pi pi-refresh"  
+                                     update="form" style="margin: .25rem" process="@this">
+                        <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+
+                </p:column>
+            </p:dataTable>
+
             <p:dialog header="Informacion de la Unidad" showEffect="fade" modal="true"
                       widgetVar="editUnitContent" responsive="true">
                 <p:outputPanel id="edit-unit-content" class="ui-fluid">
 
                     <p:outputPanel>
-                        
+
                         <div class="p-field">
                             <p:outputLabel>Placa</p:outputLabel>
                             <p:inputText id="plate2"/>
@@ -125,7 +149,8 @@
 
             </p:dialog>
             
-
+            
+            
         </h:form>
     </h:body>
 </html>
