@@ -16,10 +16,6 @@
 
                 <p:menuitem value="Bienvenida" outcome="landingPage" icon="pi pi-fw pi-home"/>
 
-                <p:submenu label="Admin" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar administrador" outcome="editAdmin" icon="pi pi-fw pi-eye"/>
-                </p:submenu>
-
                 <p:submenu label="Cliente" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar cliente" outcome="editClient" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
@@ -27,12 +23,16 @@
                 <p:submenu label="Unidades" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
+                
+                <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
+                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-eye"/>
+                </p:submenu>
 
                 <p:submenu label="Veterinarios" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
 
-                <p:menuitem value="Cerrar Secion" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
+                <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
                 
             </p:menubar>
 
