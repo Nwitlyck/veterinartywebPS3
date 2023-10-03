@@ -15,9 +15,9 @@ public abstract class Service {
 
     protected Connection getConnection() throws Exception {
 
-        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");//jdbc:sqlserver://localhost:3306;databasename=VetShop;user=MyUserName;password=*****;
+        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
-        conn = DriverManager.getConnection("jdbc:sqlserver://localhost:3306;databasename=VetShop;integratedsecurity=true");
+        conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databasename=VetShop;integratedsecurity=true");
 
         return conn;
     }
