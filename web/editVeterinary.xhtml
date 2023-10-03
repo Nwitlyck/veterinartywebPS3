@@ -50,6 +50,10 @@
                              styleClass="ui-button-success" style="margin: .50rem">
                 <p:resetInput target=":form:manage-user-content"/>
             </p:commandButton>
+            
+             <p:toggleSwitch value="#{logInController.viewDisabledVeterinary}"> Ver deshabilitado
+                <p:ajax listener="#{logInController.viewDisabledMessage}" update="form message"/>
+            </p:toggleSwitch>
 
             <p:dialog header="Detalles de Veterinario" showEffect="fade" modal="true"
                       widgetVar="manageUserDialog" responsive="true">
@@ -94,7 +98,7 @@
 
 
 
-            <p:dataTable var="obj" value="#{logInController.crearDemo()}">
+            <p:dataTable var="obj" value="#{logInController.crearDemo()}" rendered="#{!logInController.viewDisabledVeterinary}">
 
                 <p:column headerText="Nombre">
                     <h:outputText value="#{obj.name}" />
@@ -116,6 +120,28 @@
                             <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
                         </p:menuitem>
                     </p:menuButton>
+                </p:column>
+            </p:dataTable>
+            
+            <p:dataTable var="obj" value="#{logInController.crearDemo2()}" rendered="#{logInController.viewDisabledVeterinary}">
+
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{obj.name}" />
+                </p:column>
+                <p:column headerText="Apellido">
+                    <h:outputText value="#{obj.lastName}" />
+                </p:column>
+                <p:column headerText="Correo">
+                    <h:outputText value="#{obj.email}" />
+                </p:column>
+
+
+               <p:column headerText="Recuperar">
+                    <p:commandButton icon="pi pi-refresh"  
+                                     update="form" style="margin: .25rem" process="@this">
+                        <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+
                 </p:column>
             </p:dataTable>
 

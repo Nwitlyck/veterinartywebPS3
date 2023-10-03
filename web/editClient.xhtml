@@ -22,7 +22,7 @@
                 <p:submenu label="Unidades" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
-                
+
                 <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
@@ -32,14 +32,14 @@
                 </p:submenu>
 
                 <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
-                
+
             </p:menubar>
 
         </h:form>
-        
+
         <h:form id="form">
             <p:growl id="message" showDetail="true"/>
-            
+
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
                 <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
@@ -50,6 +50,12 @@
                              styleClass="ui-button-success" style="margin: .50rem">
                 <p:resetInput target=":form:manage-user-content"/>
             </p:commandButton>
+
+
+
+            <p:toggleSwitch value="#{logInController.viewDisabledClient}">Ver deshabilitado
+                <p:ajax listener="#{logInController.viewDisabledMessage}" update="form message"/>
+            </p:toggleSwitch>
 
 
             <p:dialog header="Información del Cliente" showEffect="fade" modal="true"
@@ -91,13 +97,10 @@
 
             </p:dialog>
 
-            <p:dataTable var="obj" value="#{logInController.crearDemo()}">
+            <p:dataTable var="obj" value="#{logInController.crearDemo()}" rendered="#{!logInController.viewDisabledClient}">
 
                 <p:column headerText="Cedula">
                     <h:outputText value="#{obj.cedula}" />
-                </p:column>
-                <p:column headerText="Correo">
-                    <h:outputText value="#{obj.email}" />
                 </p:column>
                 <p:column headerText="Nombre">
                     <h:outputText value="#{obj.name}" />
@@ -117,6 +120,25 @@
                 </p:column>
             </p:dataTable>
 
+            <p:dataTable var="obj" value="#{logInController.crearDemo2()}" rendered="#{logInController.viewDisabledClient}">
+
+                <p:column headerText="Cedula">
+                    <h:outputText value="#{obj.cedula}" />
+                </p:column>
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{obj.name}" />
+                </p:column>
+                <p:column headerText="Apellido">
+                    <h:outputText value="#{obj.lastName}" />
+                </p:column>
+                <p:column headerText="Recuperar">
+                    <p:commandButton icon="pi pi-refresh"  
+                                     update="form" style="margin: .25rem" process="@this">
+                        <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+
+                </p:column>
+            </p:dataTable>
 
 
             <p:dialog header="Informacion del Cliente" showEffect="fade" modal="true"
@@ -155,7 +177,6 @@
                     <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('editClientContent').hide()" 
                                      style="margin: .25rem" class="ui-button-secondary"/>
                 </f:facet>
-
             </p:dialog>
         </h:form>
     </h:body>
