@@ -22,9 +22,9 @@
                 <p:submenu label="Unidades" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
-                
+
                 <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar usuarios" outcome="editAdmin" icon="pi pi-fw pi-eye"/>
+                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
 
                 <p:submenu label="Veterinarios" icon="pi pi-fw pi-users">
@@ -32,14 +32,14 @@
                 </p:submenu>
 
                 <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
-                
+
             </p:menubar>
 
         </h:form>
-        
+
         <h:form id="form">
             <p:growl id="message" showDetail="true"/>
-            
+
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" />
@@ -50,12 +50,13 @@
                              styleClass="ui-button-success" style="margin: .50rem">
                 <p:resetInput target=":form:manage-user-content"/>
             </p:commandButton>
-            
+
             <p:dialog header="Detalles de Veterinario" showEffect="fade" modal="true"
                       widgetVar="manageUserDialog" responsive="true">
                 <p:outputPanel id="manage-user-content" class="ui-fluid">
 
                     <p:outputPanel>
+
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
                             <p:inputText id="Nombre"/>
@@ -68,7 +69,7 @@
                             <p:outputLabel >Correo</p:outputLabel>
                             <p:inputText id="Correo"/>
                         </div>
-                        
+
                         <div class="p-field">
                             <p:outputLabel>Contraseña</p:outputLabel>
                             <p:inputText id="Contraseña"/>
@@ -89,27 +90,31 @@
                 </f:facet>
 
             </p:dialog>
-            
-            
-            
-            
+
+
+
+
             <p:dataTable var="obj" value="#{logInController.crearDemo()}">
 
-               <p:column headerText="Nombre">
+                <p:column headerText="cedula">
+                    <h:outputText value="#{obj.cedula}" />
+                </p:column>
+                
+                <p:column headerText="Nombre">
                     <h:outputText value="#{obj.name}" />
                 </p:column>
                 <p:column headerText="Apellido">
                     <h:outputText value="#{obj.lastName}" />
                 </p:column>
-                 <p:column headerText="Correo">
+                <p:column headerText="Correo">
                     <h:outputText value="#{obj.email}" />
                 </p:column>
-             
-                
+
+
                 <p:column headerText="Opciones">
                     <p:menuButton>
                         <p:menuitem value="Editar"  update=":form:edit-veterinary-content" icon="pi pi-pencil" oncomplete="PF('editVeterinaryContent').show()">
-                                <p:resetInput target=":form:edit-veterinary-content"/>
+                            <p:resetInput target=":form:edit-veterinary-content"/>
                         </p:menuitem>
                         <p:menuitem value="Borrar"  update="form" icon="pi pi-trash">
                             <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
@@ -117,8 +122,8 @@
                     </p:menuButton>
                 </p:column>
             </p:dataTable>
-            
-            <p:dialog header="Info Veterinaria" showEffect="fade" modal="true"
+
+            <p:dialog header="Info Veterinario" showEffect="fade" modal="true"
                       widgetVar="editVeterinaryContent" responsive="true">
                 <p:outputPanel id="edit-veterinary-content" class="ui-fluid">
 
