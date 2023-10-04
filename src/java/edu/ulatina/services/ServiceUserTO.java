@@ -69,14 +69,14 @@ public class ServiceUserTO extends Service implements ICrud<UserTO>{
 
         while (rs.next()) {
             int id = rs.getInt("Id");
-            int email = rs.getInt("Email");
+            String email = rs.getString("Email");
             String password = rs.getString("Password");
             String name = rs.getString("Name");
             String lastname = rs.getString("Lastname");
             int role = rs.getInt("Role");
             int state = rs.getInt("State");
 
-            objectTOList.add(new UserTO(id, name, password, name, lastname, role, state));
+            objectTOList.add(new UserTO(id, email, password, name, lastname, role, state));
         }
 
         close(rs);
