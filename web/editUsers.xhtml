@@ -5,7 +5,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Editar Admin</title>
+        <title>Editar Usuario</title>
     </h:head>
 
     <h:body>
@@ -15,10 +15,6 @@
 
                 <p:menuitem value="Bienvenida" outcome="landingPage" icon="pi pi-fw pi-home"/>
 
-                <p:submenu label="Admin" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar administrador" outcome="editAdmin" icon="pi pi-fw pi-eye"/>
-                </p:submenu>
-
                 <p:submenu label="Cliente" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar cliente" outcome="editClient" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
@@ -27,16 +23,20 @@
                     <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
 
+                <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
+                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-eye"/>
+                </p:submenu>
+
                 <p:submenu label="Veterinarios" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
 
-                <p:menuitem value="Cerrar Secion" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
-                
+                <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
+
             </p:menubar>
 
         </h:form>
-        
+
         <h:form id="form">
             <p:growl id="message" showDetail="true"/>
 
@@ -45,19 +45,30 @@
                 <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
             </p:confirmDialog>
 
-            <p:commandButton value="Crear Administrador" icon="pi pi-plus"
+            <p:commandButton value="Crear Usuario" icon="pi pi-plus"
                              update=":form:manage-user-content" oncomplete="PF('manageUserDialog').show()"
                              styleClass="ui-button-success" style="margin: .50rem">
                 <p:resetInput target=":form:manage-user-content"/>
             </p:commandButton>
 
+            <p:toggleSwitch value="#{logInController.viewDisabledUser}"> Ver deshabilitado
+                <p:ajax listener="#{logInController.viewDisabledMessage}" update="form message"/>
+            </p:toggleSwitch>
 
-
-            <p:dialog header="Detalles de Veterinario" showEffect="fade" modal="true"
+            <p:dialog header="Detalles de Usuario" showEffect="fade" modal="true"
                       widgetVar="manageUserDialog" responsive="true">
                 <p:outputPanel id="manage-user-content" class="ui-fluid">
 
                     <p:outputPanel>
+
+                        <div class="p-field">                                               
+                            <p:outputLabel for="rolec">Role</p:outputLabel>
+                            <p:selectOneMenu id="rolec">
+                                <f:selectItem itemLabel="Seleccione el rol" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems/>
+                            </p:selectOneMenu>
+                        </div>
+
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
                             <p:inputText id="name2"/>
@@ -84,7 +95,7 @@
 
                 <f:facet name="footer">
                     <p:commandButton value="Crear" icon="pi pi-check"  
-                                     update="form edit-admin-content" style="margin: .25rem" process="edit-admin-content @this">
+                                     update="form edit-user-content" style="margin: .25rem" process="edit-user-content @this">
                         <p:confirm header="Confirmacion" message="Esta seguro de seguir?" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>
 
@@ -97,8 +108,12 @@
 
 
 
-            <p:dataTable var="obj" value="#{logInController.crearDemo()}">
+            <p:dataTable var="obj" value="#{logInController.crearDemo()}" rendered="#{!logInController.viewDisabledUser}">
 
+
+                <p:column headerText="Rol">
+                    <h:outputText value="#{obj.role}" />
+                </p:column>
                 <p:column headerText="Nombre">
                     <h:outputText value="#{obj.name}" />
                 </p:column>
@@ -112,8 +127,8 @@
 
                 <p:column headerText="Opciones">
                     <p:menuButton>
-                        <p:menuitem value="Editar"  update=":form:edit-admin-content" icon="pi pi-pencil" oncomplete="PF('editAdminContent').show()">
-                            <p:resetInput target=":form:edit-admin-content"/>
+                        <p:menuitem value="Editar"  update=":form:edit-user-content" icon="pi pi-pencil" oncomplete="PF('editUserContent').show()">
+                            <p:resetInput target=":form:edit-user-content"/>
                         </p:menuitem>
                         <p:menuitem value="Borrar"  update="form" icon="pi pi-trash">
                             <p:confirm header="Confirmacion" message="Esta seguro de seguir?" icon="pi pi-exclamation-triangle"/>
@@ -122,13 +137,48 @@
                 </p:column>
             </p:dataTable>
 
+            <p:dataTable var="obj" value="#{logInController.crearDemo2()}" rendered="#{logInController.viewDisabledUser}">
 
 
-            <p:dialog header="Informacion del Administrador" showEffect="fade" modal="true"
-                      widgetVar="editAdminContent" responsive="true">
-                <p:outputPanel id="edit-admin-content" class="ui-fluid">
+                <p:column headerText="Rol">
+                    <h:outputText value="#{obj.role}" />
+                </p:column>
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{obj.name}" />
+                </p:column>
+                <p:column headerText="Apellido">
+                    <h:outputText value="#{obj.lastName}" />
+                </p:column>
+                <p:column headerText="Correo">
+                    <h:outputText value="#{obj.email}" />
+                </p:column>
+
+
+                <p:column headerText="Recuperar">
+                    <p:commandButton icon="pi pi-refresh"  
+                                     update="form" style="margin: .25rem" process="@this">
+                        <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+
+                </p:column>
+            </p:dataTable>
+
+
+
+            <p:dialog header="Informacion del Usuario" showEffect="fade" modal="true"
+                      widgetVar="editUserContent" responsive="true">
+                <p:outputPanel id="edit-user-content" class="ui-fluid">
 
                     <p:outputPanel>
+
+                        <div class="p-field">                                               
+                            <p:outputLabel for="rolee">Role</p:outputLabel>
+                            <p:selectOneMenu id="rolee">
+                                <f:selectItem itemLabel="Seleccione el rol" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems/>
+                            </p:selectOneMenu>
+                        </div>
+
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
                             <p:inputText id="name"/>
@@ -152,16 +202,18 @@
                 </p:outputPanel>
                 <f:facet name="footer">
                     <p:commandButton value="Guardar" icon="pi pi-save"  
-                                     update="form edit-admin-content" style="margin: .25rem" process="edit-admin-content @this">
+                                     update="form edit-user-content" style="margin: .25rem" process="edit-user-content @this">
                         <p:confirm header="Confirmacion" message="Esta seguro de seguir?" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>
 
 
-                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('editAdminContent').hide()" 
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('editUserContent').hide()" 
                                      style="margin: .25rem" class="ui-button-secondary"/>
                 </f:facet>
 
             </p:dialog>  
+
+
         </h:form>
     </h:body>
 </html>
