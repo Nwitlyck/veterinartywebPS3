@@ -33,7 +33,7 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
     public void update(CustomersTO objectTO) throws Exception {
         PreparedStatement ps = null;
 
-        ps = getConnection().prepareStatement("UPDATE Users SET Email = ?, Name = ?, Lastname = ? WHERE Cedula = ?");
+        ps = getConnection().prepareStatement("UPDATE Customers SET Email = ?, Name = ?, Lastname = ? WHERE Cedula = ?");
         
         ps.setString(1, objectTO.getEmail());
         ps.setString(2, objectTO.getName());
@@ -50,7 +50,7 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
     public void delete(CustomersTO objectTO) throws Exception {
         PreparedStatement ps = null;
 
-        ps = getConnection().prepareStatement("UPDATE Users SET State = 0 WHERE Cedula = ?");
+        ps = getConnection().prepareStatement("UPDATE Customers SET State = 0 WHERE Cedula = ?");
         ps.setInt(1, objectTO.getCedula());
         ps.executeUpdate();
 
