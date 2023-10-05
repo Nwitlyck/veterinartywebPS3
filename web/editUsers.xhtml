@@ -11,7 +11,7 @@
     <h:body>
         <h:form id="menu">
 
-             <p:menubar>
+            <p:menubar>
 
                 <p:menuitem value="Bienvenida" outcome="landingPage" icon="pi pi-fw pi-home"/>
 
@@ -22,7 +22,7 @@
                 <p:submenu label="Unidades" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
-                
+
                 <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
@@ -32,11 +32,11 @@
                 </p:submenu>
 
                 <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
-                
+
             </p:menubar>
 
         </h:form>
-        
+
         <h:form id="form">
             <p:growl id="message" showDetail="true"/>
 
@@ -51,14 +51,16 @@
                 <p:resetInput target=":form:manage-user-content"/>
             </p:commandButton>
 
-
+            <p:toggleSwitch value="#{logInController.viewDisabledUser}"> Ver deshabilitado
+                <p:ajax listener="#{logInController.viewDisabledMessage}" update="form message"/>
+            </p:toggleSwitch>
 
             <p:dialog header="Detalles de Usuario" showEffect="fade" modal="true"
                       widgetVar="manageUserDialog" responsive="true">
                 <p:outputPanel id="manage-user-content" class="ui-fluid">
 
                     <p:outputPanel>
-                        
+
                         <div class="p-field">                                               
                             <p:outputLabel for="rolec">Role</p:outputLabel>
                             <p:selectOneMenu id="rolec">
@@ -66,7 +68,7 @@
                                 <f:selectItems/>
                             </p:selectOneMenu>
                         </div>
-                        
+
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
                             <p:inputText id="name2"/>
@@ -106,9 +108,9 @@
 
 
 
-            <p:dataTable var="obj" value="#{logInController.crearDemo()}">
+            <p:dataTable var="obj" value="#{logInController.crearDemo()}" rendered="#{!logInController.viewDisabledUser}">
 
-                
+
                 <p:column headerText="Rol">
                     <h:outputText value="#{obj.role}" />
                 </p:column>
@@ -135,6 +137,32 @@
                 </p:column>
             </p:dataTable>
 
+            <p:dataTable var="obj" value="#{logInController.crearDemo2()}" rendered="#{logInController.viewDisabledUser}">
+
+
+                <p:column headerText="Rol">
+                    <h:outputText value="#{obj.role}" />
+                </p:column>
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{obj.name}" />
+                </p:column>
+                <p:column headerText="Apellido">
+                    <h:outputText value="#{obj.lastName}" />
+                </p:column>
+                <p:column headerText="Correo">
+                    <h:outputText value="#{obj.email}" />
+                </p:column>
+
+
+                <p:column headerText="Recuperar">
+                    <p:commandButton icon="pi pi-refresh"  
+                                     update="form" style="margin: .25rem" process="@this">
+                        <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+
+                </p:column>
+            </p:dataTable>
+
 
 
             <p:dialog header="Informacion del Usuario" showEffect="fade" modal="true"
@@ -142,7 +170,7 @@
                 <p:outputPanel id="edit-user-content" class="ui-fluid">
 
                     <p:outputPanel>
-                        
+
                         <div class="p-field">                                               
                             <p:outputLabel for="rolee">Role</p:outputLabel>
                             <p:selectOneMenu id="rolee">
@@ -150,7 +178,7 @@
                                 <f:selectItems/>
                             </p:selectOneMenu>
                         </div>
-                        
+
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
                             <p:inputText id="name"/>
@@ -184,6 +212,8 @@
                 </f:facet>
 
             </p:dialog>  
+
+
         </h:form>
     </h:body>
 </html>
