@@ -19,11 +19,15 @@
                 <p:submenu label="Cliente" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar cliente" outcome="editClient" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
+                
+                <p:submenu label="Sede" icon="pi pi-fw pi-users">
+                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-eye"/>
+                </p:submenu>
 
                 <p:submenu label="Unidades" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
-
+                
                 <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
@@ -33,7 +37,7 @@
                 </p:submenu>
 
                 <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
-
+                
             </p:menubar>
 
         </h:form>
@@ -65,6 +69,11 @@
                         <div class="p-field">
                             <p:outputLabel>Placa</p:outputLabel>
                             <p:inputText id="plate"/>
+                        </div>
+                        
+                        <div class="p-field">
+                            <p:outputLabel>Número de unidad</p:outputLabel>
+                            <p:inputText id="unitName"/>
                         </div>
 
                     </p:outputPanel>
@@ -131,6 +140,11 @@
                         <div class="p-field">
                             <p:outputLabel>Placa</p:outputLabel>
                             <p:inputText id="plate2"/>
+                        </div>
+                        
+                        <div class="p-field">
+                            <p:outputLabel>Número de unidad</p:outputLabel>
+                            <p:inputText id="unitName2"/>
                         </div>
 
                     </p:outputPanel>
