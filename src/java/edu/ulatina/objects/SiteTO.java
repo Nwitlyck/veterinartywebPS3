@@ -1,5 +1,9 @@
 package edu.ulatina.objects;
 
+/**
+ *
+ * @author Dylan
+ */
 public class SiteTO {
     
     private int id;
