@@ -59,12 +59,13 @@ public class ServiceUserTO extends Service implements ICrud<UserTO>{
     }
 
     @Override
-    public List<UserTO> select() throws Exception {
+    public List<UserTO> select(int enable) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<UserTO> objectTOList = new ArrayList<UserTO>();
 
-        ps = getConnection().prepareStatement("SELECT Id, Email, Password, Name, Lastname, Role, State FROM Users");
+        ps = getConnection().prepareStatement("SELECT Id, Email, Password, Name, Lastname, Role, State FROM Users Where State = ?");
+        ps.setInt(1, enable);
         rs = ps.executeQuery();
 
         while (rs.next()) {
