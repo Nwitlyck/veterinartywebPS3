@@ -1,6 +1,5 @@
 package edu.ulatina.services;
 
-import edu.ulatina.objects.CustomersTO;
 import edu.ulatina.objects.SiteTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -63,12 +62,13 @@ public class ServiceSite extends Service implements ICrud<SiteTO>  {
     }
 
     @Override
-    public List<SiteTO> select() throws Exception {
+    public List<SiteTO> select(int enable) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<SiteTO> objectTOList = new ArrayList<SiteTO>();
 
-        ps = getConnection().prepareStatement("SELECT Id, Name, Province, Canton, Adress, Phone, State FROM Site");
+        ps = getConnection().prepareStatement("SELECT Id, Name, Province, Canton, Adress, Phone, State FROM Site Where State = ?");
+        ps.setInt(1, enable);
         rs = ps.executeQuery();
 
         while (rs.next()) {

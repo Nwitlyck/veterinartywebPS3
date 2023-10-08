@@ -14,5 +14,5 @@ public interface ICrud<T> {
 
     public void delete(T objectTO) throws Exception;
 
-    public List<T> select() throws Exception;
+    public List<T> select(int enable) throws Exception;
 }
