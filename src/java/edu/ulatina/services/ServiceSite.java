@@ -7,6 +7,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author Dylan
+ */
 public class ServiceSite extends Service implements ICrud<SiteTO>  {
 
     @Override
@@ -87,3 +91,4 @@ public class ServiceSite extends Service implements ICrud<SiteTO>  {
     }
    
 }
+
