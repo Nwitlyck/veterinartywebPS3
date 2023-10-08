@@ -24,6 +24,7 @@ public class LogInController implements Serializable{
     private boolean viewDisabledVeterinary = false;
     private boolean viewDisabledUnit = false;
     private boolean viewDisabledUser = false;
+    private boolean viewDisabledSite = false;
 
     public LogInController() {
     }
@@ -125,6 +126,16 @@ public class LogInController implements Serializable{
     public void setViewDisabledUser(boolean viewDisabledUser) {
         this.viewDisabledUser = viewDisabledUser;
     }
+
+    public boolean isViewDisabledSite() {
+        return viewDisabledSite;
+    }
+
+    public void setViewDisabledSite(boolean viewDisabledSite) {
+        this.viewDisabledSite = viewDisabledSite;
+    }
+    
+    
      
      public void viewDisabledMessage(AjaxBehaviorEvent event) {
         UIComponent component = event.getComponent();

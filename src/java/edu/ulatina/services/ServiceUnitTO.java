@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+//hola
 
 public class ServiceUnitTO extends Service implements ICrud<UnitTO>{
 
@@ -51,12 +52,13 @@ public class ServiceUnitTO extends Service implements ICrud<UnitTO>{
     }
 
     @Override
-    public List<UnitTO> select() throws Exception {
+    public List<UnitTO> select(int enable) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<UnitTO> objectTOList = new ArrayList<UnitTO>();
 
-        ps = getConnection().prepareStatement("SELECT Plate, Name, State FROM Units");
+        ps = getConnection().prepareStatement("SELECT Plate, Name, State FROM Units Where State = ?");
+        ps.setInt(1, enable);
         rs = ps.executeQuery();
 
         while (rs.next()) {

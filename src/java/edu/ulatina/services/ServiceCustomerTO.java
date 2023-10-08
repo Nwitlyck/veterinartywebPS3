@@ -1,7 +1,6 @@
 package edu.ulatina.services;
 
 import edu.ulatina.objects.CustomersTO;
-import edu.ulatina.objects.UserTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -59,12 +58,13 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
     }
 
     @Override
-    public List<CustomersTO> select() throws Exception {
+    public List<CustomersTO> select(int enable) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<CustomersTO> objectTOList = new ArrayList<CustomersTO>();
 
-        ps = getConnection().prepareStatement("SELECT Cedula, Email, Name, Lastname, State FROM Customers");
+        ps = getConnection().prepareStatement("SELECT Cedula, Email, Name, Lastname, State FROM Customers Where State = ?");
+        ps.setInt(1, enable);
         rs = ps.executeQuery();
 
         while (rs.next()) {
