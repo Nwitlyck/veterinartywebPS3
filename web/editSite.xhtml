@@ -58,8 +58,8 @@
                 <p:resetInput target=":form:manage-site-content"/>
             </p:commandButton>
 
-            <p:toggleSwitch value="#{logInController.viewDisabledSite}"> Ver deshabilitado
-                <p:ajax listener="#{logInController.viewDisabledMessage}" update="form message"/>
+            <p:toggleSwitch value="#{siteController.viewDisabledSite}"> Ver deshabilitado
+                <p:ajax listener="#{siteController.viewDisabledMessage}" update="form message"/>
             </p:toggleSwitch>
 
             <p:dialog header="Detalles de Sede" showEffect="fade" modal="true"
@@ -70,26 +70,29 @@
 
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
-                            <p:inputText id="Nombre"/>
+                            <p:inputText id="name" value="#{siteController.selectedSite.name}"/>
                         </div>
                         <div class="p-field">
-                            <p:outputLabel>Dirección</p:outputLabel>
-                            <p:inputText id="Dirección"/>
+                            <p:outputLabel>Direccion</p:outputLabel>
+                            <p:inputText id="adress" value="#{siteController.selectedSite.adress}"/>
                         </div>
                         <div class="p-field">
-                        <p:outputLabel >Provincia</p:outputLabel>
-                        <p:selectOneMenu id="province"/>
-                    </div>
-                    <div class="p-field">
-                        <p:outputLabel>Cantón</p:outputLabel>
-                        <p:selectOneMenu id="canton"/>
-                    </div>
+                            <p:outputLabel>Provincia</p:outputLabel>
+                            <p:selectOneMenu id="province" value="#{siteController.selectedSite.province}" style="width:150px">
+                                <f:selectItem itemLabel="Seleccione una provincia" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value="#{siteController.mapProvince}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel>Canton</p:outputLabel>
+                            <p:inputText id="canton" value="#{siteController.selectedSite.canton}"/>
+                        </div>
 
                     </p:outputPanel>
 
                 </p:outputPanel>
                 <f:facet name="footer">
-                    <p:commandButton value="Crear" icon="pi pi-check"  
+                    <p:commandButton value="Crear" icon="pi pi-check"  actionListener="#{siteController.createNewSite()}" 
                                      update="form manage-site-content" style="margin: .25rem" process="manage-site-content @this">
                         <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>
@@ -104,25 +107,17 @@
 
 
 
-            <p:dataTable var="obj" value="#{logInController.crearDemo()}" rendered="#{!logInController.viewDisabledSite}">
+            <p:dataTable var="site" value="#{siteController.siteList}" rendered="#{!siteController.viewDisabledSite}">
 
                 <p:column headerText="Nombre">
-                    <h:outputText value="#{obj.name}" />
-                </p:column>
-                <p:column headerText="Dirección">
-                    <h:outputText value="#{obj.adress}" />
-                </p:column>
-                <p:column headerText="Provincia">
-                    <h:outputText value="#{obj.province}" />
-                </p:column>
-                <p:column headerText="Canton">
-                    <h:outputText value="#{obj.province}" />
+                    <h:outputText value="#{site.name}" />
                 </p:column>
 
 
                 <p:column headerText="Opciones">
                     <p:menuButton>
                         <p:menuitem value="Editar"  update=":form:edit-site-content" icon="pi pi-pencil" oncomplete="PF('editSiteContent').show()">
+                            <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
                             <p:resetInput target=":form:edit-site-content"/>
                         </p:menuitem>
                         <p:menuitem value="Borrar"  update="form" icon="pi pi-trash">
@@ -132,19 +127,10 @@
                 </p:column>
             </p:dataTable>
 
-            <p:dataTable var="obj" value="#{logInController.crearDemo2()}" rendered="#{logInController.viewDisabledSite}">
+            <p:dataTable var="site" value="#{siteController.disableSiteList}" rendered="#{siteController.viewDisabledSite}">
 
                 <p:column headerText="Nombre">
-                    <h:outputText value="#{obj.name}" />
-                </p:column>
-                <p:column headerText="Dirección">
-                    <h:outputText value="#{obj.adress}" />
-                </p:column>
-                <p:column headerText="Provincia">
-                    <h:outputText value="#{obj.province}" />
-                </p:column>
-                <p:column headerText="Canton">
-                    <h:outputText value="#{obj.province}" />
+                    <h:outputText value="#{site.name}" />
                 </p:column>
 
 
@@ -161,21 +147,22 @@
                       widgetVar="editSiteContent" responsive="true">
                 <p:outputPanel id="edit-site-content" class="ui-fluid">
 
+
                     <div class="p-field">
                         <p:outputLabel>Nombre</p:outputLabel>
-                        <p:inputText id="Nombre2"/>
+                        <p:inputText id="name2" value="#{siteController.selectedSite.name}"/>
                     </div>
                     <div class="p-field">
-                        <p:outputLabel>Dirección</p:outputLabel>
-                        <p:inputText id="Dirección2"/>
+                        <p:outputLabel>Direccion</p:outputLabel>
+                        <p:inputText id="adress2" value="#{siteController.selectedSite.adress}"/>
                     </div>
                     <div class="p-field">
-                        <p:outputLabel >Provincia</p:outputLabel>
-                        <p:selectOneMenu id="province2"/>
+                        <p:outputLabel>Provincia</p:outputLabel>
+                        <p:inputText id="province2" value="#{siteController.selectedSite.province}"/>
                     </div>
                     <div class="p-field">
-                        <p:outputLabel>Cantón</p:outputLabel>
-                        <p:selectOneMenu id="canton2"/>
+                        <p:outputLabel>Canton</p:outputLabel>
+                        <p:inputText id="canton2" value="#{siteController.selectedSite.canton}"/>
                     </div>
 
                 </p:outputPanel>
