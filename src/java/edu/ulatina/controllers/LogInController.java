@@ -134,8 +134,6 @@ public class LogInController implements Serializable{
     public void setViewDisabledSite(boolean viewDisabledSite) {
         this.viewDisabledSite = viewDisabledSite;
     }
-    
-    
      
      public void viewDisabledMessage(AjaxBehaviorEvent event) {
         UIComponent component = event.getComponent();
