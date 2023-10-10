@@ -3,11 +3,16 @@ package edu.ulatina.controllers;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import edu.ulatina.objects.SiteTO;
 import edu.ulatina.services.ServiceSite;
+import edu.ulatina.services.ServiceDetails;
 import java.io.Serializable;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -22,8 +27,9 @@ import org.primefaces.PrimeFaces;
 public class SiteController implements Serializable {
 
     private boolean viewDisabledSite = false;
-    private ServiceSite serv;
+    private ServiceSite serv = new ServiceSite();
     private SiteTO selectedSite = new SiteTO();
+    private Map<String, Integer> mapProvince;
 
     public SiteController() {
     }
@@ -42,6 +48,14 @@ public class SiteController implements Serializable {
 
     public void setSelectedSite(SiteTO selectedSite) {
         this.selectedSite = selectedSite;
+    }
+
+    public Map<String, Integer> getMapProvince() {
+        return mapProvince;
+    }
+
+    public void setMapProvince(Map<String, Integer> mapProvince) {
+        this.mapProvince = mapProvince;
     }
 
     //isViewDisabledSite setViewDisabledSite y viewDisabledMessage es para los toggleSwitch
@@ -68,7 +82,7 @@ public class SiteController implements Serializable {
         try {
             returnList = serv.select(1);
         } catch (Exception ex) {
-            Logger.getLogger(SiteController.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         SiteTO prueba = new SiteTO(1000, "prueba", "province", "canton", "adress", 0, "Habilitado");
         returnList.add(prueba);
@@ -80,7 +94,7 @@ public class SiteController implements Serializable {
         try {
             returnList = serv.select(0);
         } catch (Exception ex) {
-            Logger.getLogger(SiteController.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         SiteTO prueba = new SiteTO(1000, "Deshabilitado", "province", "canton", "adress", 0, "Desabilitado");
         returnList.add(prueba);
@@ -112,12 +126,25 @@ public class SiteController implements Serializable {
             try {
                 this.serv.insert(selectedSite);
             } catch (Exception ex) {
-                Logger.getLogger(SiteController.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
                 FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al insertar en base de datos"));
             }
             this.selectedSite = new SiteTO();
             PrimeFaces.current().executeScript("PF('manageSiteContent').hide()");
         }
 
+    }
+    
+    @PostConstruct
+    public void initialize(){
+        filMapProvince();
+    }
+    
+    private void filMapProvince(){
+        try{
+            mapProvince = new ServiceDetails().select(2);
+        }catch(Exception e){
+            mapProvince = new HashMap<>();
+        }
     }
 }

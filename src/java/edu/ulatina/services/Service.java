@@ -2,10 +2,6 @@ package edu.ulatina.services;
 
 import java.sql.*;
 
-/**
- *
- * @author Nwitlyck
- */
 public abstract class Service {
 
     protected Connection conn = null;
