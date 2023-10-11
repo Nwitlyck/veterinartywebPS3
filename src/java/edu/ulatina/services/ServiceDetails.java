@@ -14,7 +14,7 @@ public class ServiceDetails extends Service{
         ps.setInt(1, masterId);
         rs = ps.executeQuery();
 
-        while (rs.next()) {
+        while (rs.next()) { 
             
             map.put(rs.getString("Name"), rs.getInt("Id"));
         }
