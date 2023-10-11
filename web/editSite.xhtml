@@ -116,11 +116,13 @@
 
                 <p:column headerText="Opciones">
                     <p:menuButton>
-                        <p:menuitem value="Editar"  update=":form:edit-site-content" icon="pi pi-pencil" oncomplete="PF('editSiteContent').show()">
+                        <p:menuitem value="Editar"  update=":form:edit-site-content" icon="pi pi-pencil" oncomplete="PF('editSiteContent').show()" >
                             <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
                             <p:resetInput target=":form:edit-site-content"/>
                         </p:menuitem>
-                        <p:menuitem value="Borrar"  update="form" icon="pi pi-trash">
+                        
+                        <p:menuitem value="Borrar"  update="form" icon="pi pi-trash" actionListener="#{siteController.disableSite()}">
+                             <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
                             <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
                         </p:menuitem>
                     </p:menuButton>
@@ -168,7 +170,7 @@
                 </p:outputPanel>
 
                 <f:facet name="footer">
-                    <p:commandButton value="Guardar" icon="pi pi-save"  
+                    <p:commandButton value="Guardar" icon="pi pi-save"  actionListener="#{siteController.updateSite}"
                                      update="form edit-site-content" style="margin: .25rem" process="edit-site-content @this">
                         <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>

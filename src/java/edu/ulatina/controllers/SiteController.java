@@ -121,7 +121,7 @@ public class SiteController implements Serializable {
         }
 
         if (flag) {
-            System.out.println("Estoy salvando al usuario");
+            System.out.println("Estoy salvando al sitio nuevo");
 
             try {
                 this.serv.insert(selectedSite);
@@ -133,6 +133,54 @@ public class SiteController implements Serializable {
             PrimeFaces.current().executeScript("PF('manageSiteContent').hide()");
         }
 
+    }
+    
+    public void disableSite(){
+        System.out.println("Estoy salvando al sitio");
+        //Actualizar
+        this.selectedSite.setState("Desabilitado");
+        try {
+           this.serv.update(selectedSite);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar el sitio en base de datos"));
+         }
+         this.selectedSite = new SiteTO();
+         PrimeFaces.current().executeScript("PF('manageSiteContent').hide()");
+        
+    }
+    
+    public void updateSite(){
+        boolean flag = true;
+        if (selectedSite.getName() == null || selectedSite.getName().equals("")) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de nombre esta vacio"));
+            flag = false;
+        }
+        if (selectedSite.getProvince() == null || selectedSite.getProvince().equals("")) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de provincia esta vacio"));
+            flag = false;
+        }
+        if (selectedSite.getCanton() == null || selectedSite.getCanton().equals("")) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de canton esta vacio"));
+            flag = false;
+        }
+        if (selectedSite.getAdress() == null || selectedSite.getAdress().equals("")) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de adress esta vacio"));
+            flag = false;
+        }
+
+        if (flag) {
+            System.out.println("Estoy salvando al sitio");
+
+            try {
+                this.serv.update(selectedSite);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al hacer update en base de datos"));
+            }
+            this.selectedSite = new SiteTO();
+            PrimeFaces.current().executeScript("PF('manageSiteContent').hide()");
+        }
     }
     
     @PostConstruct
