@@ -52,14 +52,14 @@
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" />
             </p:confirmDialog>
 
-            <p:commandButton value="Crear Sede" icon="pi pi-plus"
+            <p:commandButton value="Crear Sede" icon="pi pi-plus" actionListener="#{siteController.resetSelectedSite()}"
                              update=":form:manage-site-content" oncomplete="PF('manageSiteDialog').show()"
                              styleClass="ui-button-success" style="margin: .50rem">
                 <p:resetInput target=":form:manage-site-content"/>
             </p:commandButton>
 
-            <p:toggleSwitch value="#{logInController.viewDisabledSite}"> Ver deshabilitado
-                <p:ajax listener="#{logInController.viewDisabledMessage}" update="form message"/>
+            <p:toggleSwitch value="#{siteController.viewDisabledSite}"> Ver deshabilitado
+                <p:ajax listener="#{siteController.viewDisabledMessage}" update="form message"/>
             </p:toggleSwitch>
 
             <p:dialog header="Detalles de Sede" showEffect="fade" modal="true"
@@ -70,26 +70,37 @@
 
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
-                            <p:inputText id="Nombre"/>
+                            <p:inputText id="name" value="#{siteController.selectedSite.name}"/>
                         </div>
                         <div class="p-field">
-                            <p:outputLabel>Dirección</p:outputLabel>
-                            <p:inputText id="Dirección"/>
+                            <p:outputLabel>Direccion</p:outputLabel>
+                            <p:inputText id="adress" value="#{siteController.selectedSite.adress}"/>
                         </div>
                         <div class="p-field">
-                        <p:outputLabel >Provincia</p:outputLabel>
-                        <p:selectOneMenu id="province"/>
-                    </div>
-                    <div class="p-field">
-                        <p:outputLabel>Cantón</p:outputLabel>
-                        <p:selectOneMenu id="canton"/>
-                    </div>
+                            <p:outputLabel>Telefono</p:outputLabel>
+                            <p:inputText id="phone" value="#{siteController.selectedSite.phone}"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for='selectProvince'>Provincia</p:outputLabel>
+                            <p:selectOneMenu id="selectProvince" value="#{siteController.selectedSite.province}">
+                                <p:ajax listener="#{siteController.fillMapCanton()}" update="selectCanton"/>
+                                <f:selectItem itemLabel="Seleccione una provincia" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value="#{siteController.mapProvince}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for='selectCanton'>Canton</p:outputLabel>
+                            <p:selectOneMenu id="selectCanton" value="#{siteController.selectedSite.canton}">
+                                <f:selectItem itemLabel="Seleccione una provincia" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value="#{siteController.mapCanton}"/>
+                            </p:selectOneMenu>
+                        </div>
 
                     </p:outputPanel>
 
                 </p:outputPanel>
                 <f:facet name="footer">
-                    <p:commandButton value="Crear" icon="pi pi-check"  
+                    <p:commandButton value="Crear" icon="pi pi-check"  actionListener="#{siteController.createNewSite()}" 
                                      update="form manage-site-content" style="margin: .25rem" process="manage-site-content @this">
                         <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>
@@ -100,58 +111,91 @@
                 </f:facet>
 
             </p:dialog>
+            
 
-
-
-
-            <p:dataTable var="obj" value="#{logInController.crearDemo()}" rendered="#{!logInController.viewDisabledSite}">
+            <p:dataTable id="enableSites" var="site" value="#{siteController.siteList}" rendered="#{!siteController.viewDisabledSite}">
 
                 <p:column headerText="Nombre">
-                    <h:outputText value="#{obj.name}" />
-                </p:column>
-                <p:column headerText="Dirección">
-                    <h:outputText value="#{obj.adress}" />
-                </p:column>
-                <p:column headerText="Provincia">
-                    <h:outputText value="#{obj.province}" />
-                </p:column>
-                <p:column headerText="Canton">
-                    <h:outputText value="#{obj.province}" />
+                    <h:outputText value="#{site.name}" />
                 </p:column>
 
 
                 <p:column headerText="Opciones">
                     <p:menuButton>
-                        <p:menuitem value="Editar"  update=":form:edit-site-content" icon="pi pi-pencil" oncomplete="PF('editSiteContent').show()">
+                        <p:menuitem value="Editar"  update=":form:edit-site-content" icon="pi pi-pencil" oncomplete="PF('editSiteContent').show()" process="@this">
+                            <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
                             <p:resetInput target=":form:edit-site-content"/>
                         </p:menuitem>
-                        <p:menuitem value="Borrar"  update="form" icon="pi pi-trash">
-                            <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
+
+                        <p:menuitem value="Borrar"  update=":form enableSites" icon="pi pi-trash" oncomplete="PF('disableSiteDialog').show()" process="@this">
+                            <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
+                            <p:resetInput target=":form"/>
                         </p:menuitem>
                     </p:menuButton>
                 </p:column>
             </p:dataTable>
 
-            <p:dataTable var="obj" value="#{logInController.crearDemo2()}" rendered="#{logInController.viewDisabledSite}">
+            <p:confirmDialog
+                widgetVar="disableSiteDialog" 
+                showEffect="fade" 
+                width="300"
+                message="Deshabilitar este sitio?" 
+                header="Confirm" 
+                severity="warn">
+
+                <p:commandButton 
+                    value="Cancelar" 
+                    icon="pi pi-times" 
+                    onclick="PF('disableSiteDialog').hide()"
+                    style="float: left"
+                    class="ui-button-secondary"/>
+
+                <p:commandButton 
+                    value="Desabilitar" 
+                    icon="pi pi-check" 
+                    actionListener="#{siteController.disableSite()}"
+                    update="form" 
+                    process="@this" />
+
+            </p:confirmDialog>
+
+            <p:confirmDialog
+                widgetVar="enableSiteDialog" 
+                showEffect="fade" 
+                width="300"
+                message="Habilitar este sitio?" 
+                header="Confirm" 
+                severity="warn">
+
+                <p:commandButton 
+                    value="Cancelar" 
+                    icon="pi pi-times" 
+                    onclick="PF('enableSiterDialog').hide()"
+                    style="float: left"
+                    class="ui-button-secondary"/>
+
+                <p:commandButton 
+                    value="Habilitar" 
+                    icon="pi pi-check" 
+                    actionListener="#{siteController.enableSite()}"
+                    update="form" 
+                    process="@this" />
+
+            </p:confirmDialog>
+
+
+
+            <p:dataTable id="disableSites" var="site" value="#{siteController.disableSiteList}" rendered="#{siteController.viewDisabledSite}">
 
                 <p:column headerText="Nombre">
-                    <h:outputText value="#{obj.name}" />
-                </p:column>
-                <p:column headerText="Dirección">
-                    <h:outputText value="#{obj.adress}" />
-                </p:column>
-                <p:column headerText="Provincia">
-                    <h:outputText value="#{obj.province}" />
-                </p:column>
-                <p:column headerText="Canton">
-                    <h:outputText value="#{obj.province}" />
+                    <h:outputText value="#{site.name}" />
                 </p:column>
 
 
                 <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh"  
-                                     update="form" style="margin: .25rem" process="@this">
-                        <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir" icon="pi pi-exclamation-triangle"/>
+                    <p:commandButton icon="pi pi-refresh"  oncomplete="PF('enableSiteDialog').show()"
+                                     update="form disableSites" style="margin: .25rem" process="@this">
+                        <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
                     </p:commandButton>
 
                 </p:column>
@@ -161,27 +205,39 @@
                       widgetVar="editSiteContent" responsive="true">
                 <p:outputPanel id="edit-site-content" class="ui-fluid">
 
+
                     <div class="p-field">
                         <p:outputLabel>Nombre</p:outputLabel>
-                        <p:inputText id="Nombre2"/>
+                        <p:inputText id="name2" value="#{siteController.selectedSite.name}"/>
                     </div>
                     <div class="p-field">
-                        <p:outputLabel>Dirección</p:outputLabel>
-                        <p:inputText id="Dirección2"/>
+                        <p:outputLabel>Direccion</p:outputLabel>
+                        <p:inputText id="adress2" value="#{siteController.selectedSite.adress}"/>
                     </div>
                     <div class="p-field">
-                        <p:outputLabel >Provincia</p:outputLabel>
-                        <p:selectOneMenu id="province2"/>
+                        <p:outputLabel>Telefono</p:outputLabel>
+                        <p:inputText id="phone2" value="#{siteController.selectedSite.phone}"/>
                     </div>
                     <div class="p-field">
-                        <p:outputLabel>Cantón</p:outputLabel>
-                        <p:selectOneMenu id="canton2"/>
+                        <p:outputLabel for='province2'>Provincia</p:outputLabel>
+                        <p:selectOneMenu id="province2" value="#{siteController.selectedSite.province}" style="width:150px">
+                            <p:ajax listener="#{siteController.fillMapCanton()}" update="canton2"/>
+                            <f:selectItem itemLabel="Seleccione una provincia" itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{siteController.mapProvince}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for='canton2'>Canton</p:outputLabel>
+                        <p:selectOneMenu id="canton2" value="#{siteController.selectedSite.canton}" style="width:150px">
+                            <f:selectItem itemLabel="Seleccione una provincia" itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{siteController.mapCanton}"/>
+                        </p:selectOneMenu>
                     </div>
 
                 </p:outputPanel>
 
                 <f:facet name="footer">
-                    <p:commandButton value="Guardar" icon="pi pi-save"  
+                    <p:commandButton value="Guardar" icon="pi pi-save"  actionListener="#{siteController.updateSite}"
                                      update="form edit-site-content" style="margin: .25rem" process="edit-site-content @this">
                         <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>

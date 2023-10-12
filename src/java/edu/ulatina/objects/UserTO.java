@@ -1,10 +1,8 @@
 package edu.ulatina.objects;
 
-/**
- *
- * @author Nwitlyck
- */
-public class UserTO {
+import java.io.Serializable;
+
+public class UserTO implements Serializable{
     private int id;
     private String email;
     private String password;
