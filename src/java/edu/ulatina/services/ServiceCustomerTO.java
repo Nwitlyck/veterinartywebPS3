@@ -83,5 +83,17 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
 
         return objectTOList;
     }
+
+    @Override
+    public void enable(CustomersTO objectTO) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Customers SET State = 1 WHERE Cedula = ?");
+        ps.setInt(1, objectTO.getCedula());
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
+    }
     
 }

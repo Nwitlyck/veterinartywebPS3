@@ -30,6 +30,7 @@ public class SiteController implements Serializable {
     private ServiceSite serv = new ServiceSite();
     private SiteTO selectedSite = new SiteTO();
     private Map<String, Integer> mapProvince;
+    private Map<String, Integer> mapCanton;
 
     public SiteController() {
     }
@@ -51,11 +52,19 @@ public class SiteController implements Serializable {
     }
 
     public Map<String, Integer> getMapProvince() {
-        return mapProvince;
+        return this.mapProvince;
     }
 
     public void setMapProvince(Map<String, Integer> mapProvince) {
         this.mapProvince = mapProvince;
+    }
+
+    public Map<String, Integer> getMapCanton() {
+        return this.mapCanton;
+    }
+
+    public void setMapCanton(Map<String, Integer> mapCanton) {
+        this.mapCanton = mapCanton;
     }
 
     //isViewDisabledSite setViewDisabledSite y viewDisabledMessage es para los toggleSwitch
@@ -84,8 +93,6 @@ public class SiteController implements Serializable {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        SiteTO prueba = new SiteTO(1000, "prueba", "province", "canton", "adress", 0, "Habilitado");
-        returnList.add(prueba);
         return returnList;
     }
 
@@ -96,8 +103,6 @@ public class SiteController implements Serializable {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        SiteTO prueba = new SiteTO(1000, "Deshabilitado", "province", "canton", "adress", 0, "Desabilitado");
-        returnList.add(prueba);
         return returnList;
     }
 
@@ -105,14 +110,6 @@ public class SiteController implements Serializable {
         boolean flag = true;
         if (selectedSite.getName() == null || selectedSite.getName().equals("")) {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de nombre esta vacio"));
-            flag = false;
-        }
-        if (selectedSite.getProvince() == null || selectedSite.getProvince().equals("")) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de provincia esta vacio"));
-            flag = false;
-        }
-        if (selectedSite.getCanton() == null || selectedSite.getCanton().equals("")) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de canton esta vacio"));
             flag = false;
         }
         if (selectedSite.getAdress() == null || selectedSite.getAdress().equals("")) {
@@ -136,32 +133,33 @@ public class SiteController implements Serializable {
     }
     
     public void disableSite(){
-        System.out.println("Estoy salvando al sitio");
-        //Actualizar
-        this.selectedSite.setState("Desabilitado");
+        System.out.println("Estoy deshabilitando al sitio");
         try {
-           this.serv.update(selectedSite);
+           this.serv.delete(selectedSite);
         } catch (Exception ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar el sitio en base de datos"));
          }
          this.selectedSite = new SiteTO();
-         PrimeFaces.current().executeScript("PF('manageSiteContent').hide()");
         
     }
     
+    public void enableSite(){
+        System.out.println("Estoy habilitando al sitio");
+        try {
+            this.serv.enable(selectedSite);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar el sitio en base de datos"));
+         }
+         this.selectedSite = new SiteTO();
+    }
+            
+            
     public void updateSite(){
         boolean flag = true;
         if (selectedSite.getName() == null || selectedSite.getName().equals("")) {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de nombre esta vacio"));
-            flag = false;
-        }
-        if (selectedSite.getProvince() == null || selectedSite.getProvince().equals("")) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de provincia esta vacio"));
-            flag = false;
-        }
-        if (selectedSite.getCanton() == null || selectedSite.getCanton().equals("")) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de canton esta vacio"));
             flag = false;
         }
         if (selectedSite.getAdress() == null || selectedSite.getAdress().equals("")) {
@@ -183,16 +181,31 @@ public class SiteController implements Serializable {
         }
     }
     
-    @PostConstruct
-    public void initialize(){
-        filMapProvince();
+    public void resetSelectedSite(){
+        this.selectedSite = new SiteTO();
     }
     
-    private void filMapProvince(){
+    @PostConstruct
+    public void initialize(){
+        fillMapProvince();
+       this.mapCanton = new HashMap<>();
+    }
+    
+    private void fillMapProvince(){
         try{
             mapProvince = new ServiceDetails().select(2);
         }catch(Exception e){
             mapProvince = new HashMap<>();
+            e.printStackTrace();
+        }
+    }
+    
+    public void fillMapCanton(){
+        try{
+            mapCanton = new ServiceDetails().select(selectedSite.getProvince());
+        }catch(Exception e){
+            mapCanton = new HashMap<>();
+            e.printStackTrace();
         }
     }
 }
