@@ -6,10 +6,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Nwitlyck
- */
 public class ServiceUserTO extends Service implements ICrud<UserTO>{
 
     @Override
@@ -85,6 +81,18 @@ public class ServiceUserTO extends Service implements ICrud<UserTO>{
         close(conn);
 
         return objectTOList;
+    }
+
+    @Override
+    public void enable(UserTO objectTO) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Users SET State = 1 WHERE Id = ?");
+        ps.setInt(1, objectTO.getId());
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
     }
     
 }
