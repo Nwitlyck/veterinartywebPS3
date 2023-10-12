@@ -57,7 +57,7 @@
 
 
 
-            <p:toggleSwitch value="#{logInController.viewDisabledClient}">Ver deshabilitado
+            <p:toggleSwitch value="#{customerController.viewDisabledClient}">Ver deshabilitado
                 <p:ajax listener="#{logInController.viewDisabledMessage}" update="form message"/>
             </p:toggleSwitch>
 
@@ -101,16 +101,16 @@
 
             </p:dialog>
 
-            <p:dataTable var="obj" value="#{logInController.crearDemo()}" rendered="#{!logInController.viewDisabledClient}">
+            <p:dataTable var="customer" value="#{customerController.customerList()}" rendered="#{!customerController.viewDisabledClient}">
 
                 <p:column headerText="Cedula">
-                    <h:outputText value="#{obj.cedula}" />
+                    <h:outputText value="#{customer.cedula}" />
                 </p:column>
                 <p:column headerText="Nombre">
-                    <h:outputText value="#{obj.name}" />
+                    <h:outputText value="#{customer.name}" />
                 </p:column>
                 <p:column headerText="Apellido">
-                    <h:outputText value="#{obj.lastName}" />
+                    <h:outputText value="#{customer.lastname}" />
                 </p:column>
                 <p:column headerText="Opciones">
                     <p:menuButton>
@@ -124,16 +124,16 @@
                 </p:column>
             </p:dataTable>
 
-            <p:dataTable var="obj" value="#{logInController.crearDemo2()}" rendered="#{logInController.viewDisabledClient}">
+            <p:dataTable var="customer" value="#{customerController.disableCustomerList()}" rendered="#{customerController.viewDisabledClient}">
 
                 <p:column headerText="Cedula">
-                    <h:outputText value="#{obj.cedula}" />
+                    <h:outputText value="#{customer.cedula}" />
                 </p:column>
                 <p:column headerText="Nombre">
-                    <h:outputText value="#{obj.name}" />
+                    <h:outputText value="#{customer.name}" />
                 </p:column>
                 <p:column headerText="Apellido">
-                    <h:outputText value="#{obj.lastName}" />
+                    <h:outputText value="#{customer.lastname}" />
                 </p:column>
                 <p:column headerText="Recuperar">
                     <p:commandButton icon="pi pi-refresh"  
