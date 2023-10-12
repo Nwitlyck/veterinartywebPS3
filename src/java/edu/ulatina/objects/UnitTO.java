@@ -1,8 +1,10 @@
 
 package edu.ulatina.objects;
 
+import java.io.Serializable;
 
-public class UnitTO {
+
+public class UnitTO  implements Serializable{
     
     private int plate;
     private String name;

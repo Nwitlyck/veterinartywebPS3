@@ -75,5 +75,17 @@ public class ServiceUnitTO extends Service implements ICrud<UnitTO>{
 
         return objectTOList;
     }
+
+    @Override
+    public void enable(UnitTO objectTO) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Units SET State = 1 WHERE Plate = ?");
+        ps.setInt(1, objectTO.getPlate());
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
+    }
     
 }
