@@ -101,7 +101,7 @@
 
             </p:dialog>
 
-            <p:dataTable var="customer" value="#{customerController.customerList()}" rendered="#{!customerController.viewDisabledClient}">
+            <p:dataTable var="customer" value="#{customerController.customerList}" rendered="#{!customerController.viewDisabledClient}">
 
                 <p:column headerText="Cedula">
                     <h:outputText value="#{customer.cedula}" />
@@ -124,7 +124,7 @@
                 </p:column>
             </p:dataTable>
 
-            <p:dataTable var="customer" value="#{customerController.disableCustomerList()}" rendered="#{customerController.viewDisabledClient}">
+            <p:dataTable var="customer" value="#{customerController.disableCustomerList}" rendered="#{customerController.viewDisabledClient}">
 
                 <p:column headerText="Cedula">
                     <h:outputText value="#{customer.cedula}" />
