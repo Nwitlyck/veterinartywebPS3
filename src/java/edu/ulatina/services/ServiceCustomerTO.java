@@ -63,7 +63,7 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
         ResultSet rs = null;
         List<CustomersTO> objectTOList = new ArrayList<CustomersTO>();
 
-        ps = getConnection().prepareStatement("SELECT Cedula, Email, Name, Lastname, State FROM Customers Where State = ?");
+        ps = getConnection().prepareStatement("SELECT Cedula, Email, Name, Lastname, State FROM Customers WHERE State = ?");
         ps.setInt(1, enable);
         rs = ps.executeQuery();
 
