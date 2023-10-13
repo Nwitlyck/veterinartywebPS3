@@ -9,13 +9,13 @@ public class SiteTO implements Serializable{
     private int province;
     private int canton;
     private String adress;
-    private int phone;
+    private String phone;
     private int state;
 
     public SiteTO() {
     }
 
-    public SiteTO(int id, String name, int province, int canton, String adress, int phone, int state) {
+    public SiteTO(int id, String name, int province, int canton, String adress, String phone, int state) {
         this.id = id;
         this.name = name;
         this.province = province;
@@ -61,15 +61,15 @@ public class SiteTO implements Serializable{
         return adress;
     }
 
-    public void setAdress(String Adress) {
-        this.adress = Adress;
+    public void setAdress(String adress) {
+        this.adress = adress;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -80,4 +80,6 @@ public class SiteTO implements Serializable{
     public void setState(int state) {
         this.state = state;
     }
+    
+    
 }

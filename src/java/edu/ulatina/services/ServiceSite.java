@@ -17,7 +17,7 @@ public class ServiceSite extends Service implements ICrud<SiteTO>  {
         ps.setInt(2, objectTO.getProvince());
         ps.setInt(3, objectTO.getCanton());
         ps.setString(4, objectTO.getAdress());
-        ps.setInt(5, objectTO.getPhone());
+        ps.setString(5, objectTO.getPhone());
         ps.executeUpdate();
 
         close(ps);
@@ -34,7 +34,7 @@ public class ServiceSite extends Service implements ICrud<SiteTO>  {
         ps.setInt(2, objectTO.getProvince());
         ps.setInt(3, objectTO.getCanton());
         ps.setString(4, objectTO.getAdress());
-        ps.setInt(5, objectTO.getPhone());
+        ps.setString(5, objectTO.getPhone());
         ps.setInt(6, objectTO.getId());
         
         ps.executeUpdate();
@@ -71,7 +71,7 @@ public class ServiceSite extends Service implements ICrud<SiteTO>  {
             int province = rs.getInt("Province");
             int canton = rs.getInt("Canton");
             String adress = rs.getString("Adress");
-            int phone = rs.getInt("Phone");
+            String phone = rs.getString("Phone");
             int state = rs.getInt("State");
 
             objectTOList.add(new SiteTO(id,name ,province, canton,adress,phone, state));
