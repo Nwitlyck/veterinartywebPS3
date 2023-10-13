@@ -7,7 +7,9 @@ package edu.ulatina.controllers;
 
 import edu.ulatina.objects.CustomersTO;
 import edu.ulatina.services.ServiceCustomerTO;
+import java.io.Serializable;
 import java.util.*;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -22,7 +24,7 @@ import javax.faces.event.AjaxBehaviorEvent;
  */
 @ManagedBean(name = "customerController")
 @ViewScoped
-public class CustomerController {
+public class CustomerController implements Serializable{
     
     private ServiceCustomerTO serviceCustomerTO;
     private CustomersTO selectedCustomerTO;
@@ -54,21 +56,28 @@ public class CustomerController {
         }
     }
     
+     @PostConstruct
+     public void inicializate(){
+         serviceCustomerTO = new ServiceCustomerTO();
+     }
+     
     public List<CustomersTO> getCustomerList() {
-        List<CustomersTO> returnList = new ArrayList<>();
+        List<CustomersTO> returnList;
         try {
-            returnList = serviceCustomerTO.select(1);
+            return serviceCustomerTO.select(1);
         } catch (Exception ex) {
+            returnList = new ArrayList<>();
             ex.printStackTrace();
         }
         return returnList;
     }
 
     public List<CustomersTO> getDisableCustomerList() {
-        List<CustomersTO> returnList = new ArrayList<>();
+        List<CustomersTO> returnList;
         try {
             returnList = serviceCustomerTO.select(0);
         } catch (Exception ex) {
+            returnList = new ArrayList<>();
             ex.printStackTrace();
         }
         return returnList;
