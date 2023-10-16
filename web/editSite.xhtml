@@ -218,6 +218,7 @@
                         <p:outputLabel>Telefono</p:outputLabel>
                         <p:inputText id="phone2" value="#{siteController.selectedSite.phone}"/>
                     </div>
+                    
                     <div class="p-field">
                         <p:outputLabel for='province2'>Provincia</p:outputLabel>
                         <p:selectOneMenu id="province2" value="#{siteController.selectedSite.province}" style="width:150px">
@@ -233,7 +234,6 @@
                             <f:selectItems value="#{siteController.mapCanton}"/>
                         </p:selectOneMenu>
                     </div>
-
                 </p:outputPanel>
 
                 <f:facet name="footer">
