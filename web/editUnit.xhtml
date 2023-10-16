@@ -56,8 +56,8 @@
                 <p:resetInput target=":form:manage-user-content"/>
             </p:commandButton>
             
-            <p:toggleSwitch value="#{logInController.viewDisabledUnit}"> Ver deshabilitado
-                <p:ajax listener="#{logInController.viewDisabledMessage}" update="form message"/>
+            <p:toggleSwitch value="#{unitController.viewDisableUnit}"> Ver deshabilitado
+                <p:ajax listener="#{unitController.viewDisabledMessageUnit}" update="form message"/>
             </p:toggleSwitch>
 
             <p:dialog header="Información de Unidad" showEffect="fade" modal="true"
@@ -94,33 +94,36 @@
 
 
 
-            <p:dataTable var="obj" value="#{logInController.crearDemo()}"  rendered="#{!logInController.viewDisabledUnit}">
+            <p:dataTable var="obj" value="#{unitController.unitList}"  rendered="#{!unitController.viewDisableUnit}">
 
                 <p:column headerText="Placa">
                     <h:outputText value="#{obj.plate}" />
                 </p:column>
                 <p:column headerText="Número de Unidad">
-                    <h:outputText value="#{obj.unitNumber}" />
+                    <h:outputText value="#{obj.name}" />
                 </p:column>
+                
                 <p:column headerText="Opciones">
                     <p:menuButton>
                         <p:menuitem value="Editar"  update=":form:edit-unit-content" icon="pi pi-pencil" oncomplete="PF('editUnitContent').show()">
+                            <f:setPropertyActionListener value="#{obj}" target="#{unitController.selectedUnit}"/>
                             <p:resetInput target=":form:edit-unit-content"/>
                         </p:menuitem>
                         <p:menuitem value="Borrar"  update="form" icon="pi pi-trash">
+                            <f:setPropertyActionListener value="#{obj}" target="#{unitController.selectedUnit}"/>
                             <p:confirm header="Confirmation" message="Are you sure you want to proceed?" icon="pi pi-exclamation-triangle"/>
                         </p:menuitem>
                     </p:menuButton>
                 </p:column>
             </p:dataTable>
             
-            <p:dataTable var="obj" value="#{logInController.crearDemo2()}"  rendered="#{logInController.viewDisabledUnit}">
+            <p:dataTable var="obj" value="#{unitController.disableUnitList}"  rendered="#{unitController.viewDisableUnit}">
 
                 <p:column headerText="Placa">
                     <h:outputText value="#{obj.plate}" />
                 </p:column>
                 <p:column headerText="Número de Unidad">
-                    <h:outputText value="#{obj.unitNumber}" />
+                    <h:outputText value="#{obj.name}" />
                 </p:column>
                 <p:column headerText="Recuperar">
                     <p:commandButton icon="pi pi-refresh"  
@@ -139,12 +142,12 @@
 
                         <div class="p-field">
                             <p:outputLabel>Placa</p:outputLabel>
-                            <p:inputText id="plate2"/>
+                            <p:inputText id="plate2" value="#{unitController.selectedUnit.plate}" />
                         </div>
                         
                         <div class="p-field">
                             <p:outputLabel>Número de unidad</p:outputLabel>
-                            <p:inputText id="unitName2"/>
+                            <p:inputText id="unitName2" value="#{unitController.selectedUnit.name}"/>
                         </div>
 
                     </p:outputPanel>

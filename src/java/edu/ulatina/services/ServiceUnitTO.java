@@ -17,7 +17,7 @@ public class ServiceUnitTO extends Service implements ICrud<UnitTO>{
                 PreparedStatement ps = null;
 
         ps = getConnection().prepareStatement("INSERT INTO Units (Plate, Name, State) VALUES (?, ?, 1)");
-        ps.setInt(1, objectTO.getPlate());
+        ps.setString(1, objectTO.getPlate());
         ps.setString(2, objectTO.getName());
         ps.executeUpdate();
 
@@ -32,7 +32,7 @@ public class ServiceUnitTO extends Service implements ICrud<UnitTO>{
         ps = getConnection().prepareStatement("UPDATE Units SET Name = ? WHERE Plate = ?");
         
         ps.setString(1, objectTO.getName());
-        ps.setInt(2, objectTO.getPlate());
+        ps.setString(2, objectTO.getPlate());
         ps.executeUpdate();
 
         close(ps);
@@ -44,7 +44,7 @@ public class ServiceUnitTO extends Service implements ICrud<UnitTO>{
         PreparedStatement ps = null;
 
         ps = getConnection().prepareStatement("UPDATE Units SET State = 0 WHERE Plate = ?");
-        ps.setInt(1, objectTO.getPlate());
+        ps.setString(1, objectTO.getPlate());
         ps.executeUpdate();
 
         close(ps);
@@ -62,7 +62,7 @@ public class ServiceUnitTO extends Service implements ICrud<UnitTO>{
         rs = ps.executeQuery();
 
         while (rs.next()) {
-            int plate = rs.getInt("Plate");
+            String plate = rs.getString("Plate");
             String name = rs.getString("Name");
             int state = rs.getInt("State");
 
@@ -81,7 +81,7 @@ public class ServiceUnitTO extends Service implements ICrud<UnitTO>{
         PreparedStatement ps = null;
 
         ps = getConnection().prepareStatement("UPDATE Units SET State = 1 WHERE Plate = ?");
-        ps.setInt(1, objectTO.getPlate());
+        ps.setString(1, objectTO.getPlate());
         ps.executeUpdate();
 
         close(ps);
