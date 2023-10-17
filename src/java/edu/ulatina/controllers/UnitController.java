@@ -15,6 +15,7 @@ import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.view.ViewScoped;
+import org.primefaces.PrimeFaces;
 
 /**
  *
@@ -54,6 +55,8 @@ public class UnitController implements Serializable {
         this.selectedUnit = selectedUnit;
     }
     
+    
+    
     public List<UnitTO> getUnitList() {
         List<UnitTO> returnList = new ArrayList<>();
         try {
@@ -84,6 +87,83 @@ public class UnitController implements Serializable {
         }
     }
     
+    public void createNewUnit() {
+        boolean flag = true;
+        if (selectedUnit.getPlate()== null || selectedUnit.getPlate().equals("")) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de placa esta vacio"));
+            flag = false;
+        }
+        if (selectedUnit.getName()== null || selectedUnit.getName().equals("")) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de numero de unidad esta vacio"));
+            flag = false;
+        }
+        if (flag) {
+            System.out.println("Estoy salvando al sitio nuevo");
+
+            try {
+                this.serv.insert(selectedUnit);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error en alguno de los campos de datos"));
+            }
+            this.selectedUnit = new UnitTO();
+            PrimeFaces.current().executeScript("PF('manageSiteContent').hide()");
+        }
+
+    }
+    
+    public void disableUnit(){
+        
+        try {
+           this.serv.delete(selectedUnit);
+           System.out.println("Estoy deshabilitando la unidad" +selectedUnit.getPlate());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar la unidad en base de datos"));
+         }
+         this.selectedUnit = new UnitTO();
+        
+    }
+    
+    public void enableUnit(){
+        System.out.println("Estoy habilitando la unidad");
+        try {
+            this.serv.enable(selectedUnit);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar la unidad en base de datos"));
+         }
+         this.selectedUnit = new UnitTO();
+    }
+    
+    public void updateUnit(){
+        boolean flag = true;
+        if (selectedUnit.getPlate()== null || selectedUnit.getPlate().equals("")) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de placa esta vacio"));
+            flag = false;
+        }
+        if (selectedUnit.getName()== null || selectedUnit.getName().equals("")) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de numero esta vacio"));
+            flag = false;
+        }
+
+        if (flag) {
+            System.out.println("Estoy salvando la unidad");
+
+            try {
+                this.serv.update(selectedUnit);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al actualizar la base de datos"));
+            }
+            this.selectedUnit = new UnitTO();
+            PrimeFaces.current().executeScript("PF('manageSiteContent').hide()");
+        }
+    }
+    
+     public void resetSelectedUnit(){
+        this.selectedUnit = new UnitTO();
+    }
     
     
 }
