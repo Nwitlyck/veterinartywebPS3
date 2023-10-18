@@ -2,19 +2,19 @@
 package edu.ulatina.controllers;
 
 
-import edu.ulatina.objects.SiteTO;
 import edu.ulatina.objects.UnitTO;
 import edu.ulatina.services.ServiceUnitTO;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.view.ViewScoped;
 import org.primefaces.PrimeFaces;
 
 /**
@@ -24,20 +24,11 @@ import org.primefaces.PrimeFaces;
 
 @ManagedBean (name = "unitController")
 @ViewScoped
-
 public class UnitController implements Serializable {
     
-    private ServiceUnitTO serv = new ServiceUnitTO();
+    private ServiceUnitTO serv;
     private boolean viewDisableUnit = false;
-    private UnitTO selectedUnit = new UnitTO();
-
-    public ServiceUnitTO getServ() {
-        return serv;
-    }
-
-    public void setServ(ServiceUnitTO serv) {
-        this.serv = serv;
-    }
+    private UnitTO selectedUnit;
 
     public boolean isViewDisableUnit() {
         return viewDisableUnit;
@@ -55,7 +46,11 @@ public class UnitController implements Serializable {
         this.selectedUnit = selectedUnit;
     }
     
-    
+   @PostConstruct
+    public void initialize() {
+        serv = new ServiceUnitTO();
+        selectedUnit = new UnitTO();
+    } 
     
     public List<UnitTO> getUnitList() {
         List<UnitTO> returnList = new ArrayList<>();
@@ -113,10 +108,9 @@ public class UnitController implements Serializable {
     }
     
     public void disableUnit(){
-        
+           System.out.println("Estoy deshabilitando la unidad");
         try {
-           this.serv.delete(selectedUnit);
-           System.out.println("Estoy deshabilitando la unidad" +selectedUnit.getPlate());
+           serv.delete(selectedUnit);
         } catch (Exception ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar la unidad en base de datos"));
@@ -128,7 +122,7 @@ public class UnitController implements Serializable {
     public void enableUnit(){
         System.out.println("Estoy habilitando la unidad");
         try {
-            this.serv.enable(selectedUnit);
+            serv.enable(selectedUnit);
         } catch (Exception ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar la unidad en base de datos"));

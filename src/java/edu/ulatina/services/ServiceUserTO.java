@@ -53,6 +53,18 @@ public class ServiceUserTO extends Service implements ICrud<UserTO>{
         close(ps);
         close(conn);
     }
+    
+    @Override
+    public void enable(UserTO objectTO) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Users SET State = 1 WHERE Id = ?");
+        ps.setInt(1, objectTO.getId());
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
+    }
 
     @Override
     public List<UserTO> select(int enable) throws Exception {
@@ -83,16 +95,32 @@ public class ServiceUserTO extends Service implements ICrud<UserTO>{
         return objectTOList;
     }
 
-    @Override
-    public void enable(UserTO objectTO) throws Exception {
+    public List<UserTO> selectByRole(int enableI, int roleI) throws Exception {
         PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<UserTO> objectTOList = new ArrayList<UserTO>();
 
-        ps = getConnection().prepareStatement("UPDATE Users SET State = 1 WHERE Id = ?");
-        ps.setInt(1, objectTO.getId());
-        ps.executeUpdate();
+        ps = getConnection().prepareStatement("SELECT Id, Email, Password, Name, Lastname, Role, State FROM Users Where State = ? AND Role = ?");
+        ps.setInt(1, enableI);
+        ps.setInt(2, roleI);
+        rs = ps.executeQuery();
 
+        while (rs.next()) {
+            int id = rs.getInt("Id");
+            String email = rs.getString("Email");
+            String password = rs.getString("Password");
+            String name = rs.getString("Name");
+            String lastname = rs.getString("Lastname");
+            int role = rs.getInt("Role");
+            int state = rs.getInt("State");
+
+            objectTOList.add(new UserTO(id, email, password, name, lastname, role, state));
+        }
+
+        close(rs);
         close(ps);
         close(conn);
+
+        return objectTOList;
     }
-    
 }
