@@ -68,7 +68,7 @@
 
                         <div class="p-field">
                             <p:outputLabel>Placa</p:outputLabel>
-                            <p:inputText id="plate" value="#{unitController.selectedUnit.plate}"/>
+                             <p:inputMask id="plate" value="#{unitController.selectedUnit.plate}" mask="aaa-999" validateMask="true" />
                         </div>
                         
                         <div class="p-field">
@@ -191,7 +191,7 @@
 
                         <div class="p-field">
                             <p:outputLabel>Placa</p:outputLabel>
-                            <p:inputText id="plate2" value="#{unitController.selectedUnit.plate}" />
+                             <p:inputMask id="plate2" value="#{unitController.selectedUnit.plate}" mask="aaa-999" validateMask="true" />
                         </div>
                         
                         <div class="p-field">
