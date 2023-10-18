@@ -218,6 +218,10 @@ public class UserController {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El nombre esta vacio"));
             return false;
         }
+        if (selectedUser.getLastname().isEmpty() || selectedUser.getLastname() == null) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El apellido esta vacio"));
+            return false;
+        }
         if (selectedUser.getEmail().isEmpty() || selectedUser.getEmail() == null) {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El correo esta vacio"));
             return false;
