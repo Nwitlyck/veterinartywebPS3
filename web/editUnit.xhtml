@@ -44,13 +44,8 @@
 
         <h:form id="form">
             <p:growl id="message" showDetail="true"/>
-
-            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
-                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
-                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
-            </p:confirmDialog>
-
-            <p:commandButton value="Crear Unidad" icon="pi pi-plus"
+            
+            <p:commandButton value="Crear Unidad" icon="pi pi-plus" actionListener="#{unitController.resetSelectedUnit()}"
                              update=":form:manage-user-content" oncomplete="PF('manageUserDialog').show()"
                              styleClass="ui-button-success" style="margin: .50rem">
                 <p:resetInput target=":form:manage-user-content"/>
@@ -68,19 +63,19 @@
 
                         <div class="p-field">
                             <p:outputLabel>Placa</p:outputLabel>
-                            <p:inputText id="plate"/>
+                             <p:inputMask id="plate" value="#{unitController.selectedUnit.plate}" mask="aaa-999" validateMask="true" />
                         </div>
                         
                         <div class="p-field">
                             <p:outputLabel>Número de unidad</p:outputLabel>
-                            <p:inputText id="unitName"/>
+                            <p:inputText id="unitName" value="#{unitController.selectedUnit.name}"/>
                         </div>
 
                     </p:outputPanel>
 
                 </p:outputPanel>
                 <f:facet name="footer">
-                    <p:commandButton value="Crear" icon="pi pi-check"  
+                    <p:commandButton value="Crear" icon="pi pi-check" actionListener="#{unitController.createNewUnit()}"
                                      update="form manage-user-content" style="margin: .25rem" process="manage-user-content @this">
                         <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>
@@ -94,7 +89,7 @@
 
 
 
-            <p:dataTable var="obj" value="#{unitController.unitList}"  rendered="#{!unitController.viewDisableUnit}">
+            <p:dataTable id="enableUnit" var="obj" value="#{unitController.unitList}"  rendered="#{!unitController.viewDisableUnit}">
 
                 <p:column headerText="Placa">
                     <h:outputText value="#{obj.plate}" />
@@ -105,19 +100,67 @@
                 
                 <p:column headerText="Opciones">
                     <p:menuButton>
-                        <p:menuitem value="Editar"  update=":form:edit-unit-content" icon="pi pi-pencil" oncomplete="PF('editUnitContent').show()">
+                        <p:menuitem value="Editar"  update=":form:edit-unit-content" icon="pi pi-pencil" oncomplete="PF('editUnitContent').show()" process="@this" >
                             <f:setPropertyActionListener value="#{obj}" target="#{unitController.selectedUnit}"/>
                             <p:resetInput target=":form:edit-unit-content"/>
                         </p:menuitem>
-                        <p:menuitem value="Borrar"  update="form" icon="pi pi-trash">
+                        <p:menuitem value="Borrar"  update="form enableUnit" icon="pi pi-trash" oncomplete="PF('disableUnitDialog').show()" process="@this">
                             <f:setPropertyActionListener value="#{obj}" target="#{unitController.selectedUnit}"/>
-                            <p:confirm header="Confirmation" message="Are you sure you want to proceed?" icon="pi pi-exclamation-triangle"/>
+                            <p:resetInput target=":form"/>
                         </p:menuitem>
                     </p:menuButton>
                 </p:column>
             </p:dataTable>
             
-            <p:dataTable var="obj" value="#{unitController.disableUnitList}"  rendered="#{unitController.viewDisableUnit}">
+            <p:confirmDialog
+                widgetVar="disableUnitDialog" 
+                showEffect="fade" 
+                width="300"
+                message="Deshabilitar esta unidad?" 
+                header="Confirmar" 
+                severity="warn">
+
+                <p:commandButton 
+                    value="Cancelar" 
+                    icon="pi pi-times" 
+                    onclick="PF('disableUnitDialog').hide()"
+                    style="float: left"
+                    class="ui-button-secondary"/>
+
+                <p:commandButton 
+                    value="Desabilitar" 
+                    icon="pi pi-check" 
+                    actionListener="#{unitController.disableUnit}"
+                    update="form" 
+                    process="@this" />
+
+            </p:confirmDialog>
+
+            <p:confirmDialog
+                widgetVar="enableUnitDialog" 
+                showEffect="fade" 
+                width="300"
+                message="Habilitar esta Unidad?" 
+                header="Confirm" 
+                severity="warn">
+
+                <p:commandButton 
+                    value="Cancelar" 
+                    icon="pi pi-times" 
+                    onclick="PF('enableUnitDialog').hide()"
+                    style="float: left"
+                    class="ui-button-secondary"/>
+
+                <p:commandButton 
+                    value="Habilitar" 
+                    icon="pi pi-check" 
+                    actionListener="#{unitController.enableUnit()}"
+                    update="form" 
+                    process="@this" />
+
+            </p:confirmDialog>
+            
+            <p:dataTable id="disableUnit" var="obj" value="#{unitController.disableUnitList}"  rendered="#{unitController.viewDisableUnit}">
 
                 <p:column headerText="Placa">
                     <h:outputText value="#{obj.plate}" />
@@ -125,10 +168,11 @@
                 <p:column headerText="Número de Unidad">
                     <h:outputText value="#{obj.name}" />
                 </p:column>
+                
                 <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh"  
-                                     update="form" style="margin: .25rem" process="@this">
-                        <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir" icon="pi pi-exclamation-triangle"/>
+                    <p:commandButton icon="pi pi-refresh" oncomplete="PF('enableUnitDialog').show()"
+                                     update="form disableUnit" style="margin: .25rem" process="@this">
+                        <f:setPropertyActionListener value="#{obj}" target="#{unitController.selectedUnit}"/>
                     </p:commandButton>
 
                 </p:column>
@@ -142,7 +186,7 @@
 
                         <div class="p-field">
                             <p:outputLabel>Placa</p:outputLabel>
-                            <p:inputText id="plate2" value="#{unitController.selectedUnit.plate}" />
+                             <p:inputMask id="plate2" value="#{unitController.selectedUnit.plate}" mask="aaa-999" validateMask="true" />
                         </div>
                         
                         <div class="p-field">
@@ -154,7 +198,7 @@
 
                 </p:outputPanel>
                 <f:facet name="footer">
-                    <p:commandButton value="Salvar" icon="pi pi-save"  
+                    <p:commandButton value="Guardar" icon="pi pi-save"  actionListener="#{unitController.updateUnit}" 
                                      update="form edit-unit-content" style="margin: .25rem" process="edit-unit-content @this">
                         <p:confirm header="Confirmation" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>

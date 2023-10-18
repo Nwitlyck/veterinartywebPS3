@@ -116,7 +116,10 @@ public class SiteController implements Serializable {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de adress esta vacio"));
             flag = false;
         }
-
+        if (selectedSite.getAdress().length() >= 9 && selectedSite.getAdress().length() <= 0) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de telefono no es valido"));
+            flag = false;
+        }
         if (flag) {
             System.out.println("Estoy salvando al sitio nuevo");
 
@@ -124,7 +127,7 @@ public class SiteController implements Serializable {
                 this.serv.insert(selectedSite);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al insertar en base de datos"));
+                FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error en alguno de los campos de datos"));
             }
             this.selectedSite = new SiteTO();
             PrimeFaces.current().executeScript("PF('manageSiteContent').hide()");

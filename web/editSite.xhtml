@@ -16,7 +16,7 @@
 
                 <p:menuitem value="Bienvenida" outcome="landingPage" icon="pi pi-fw pi-home"/>
 
-                 <p:submenu label="Cliente" icon="pi pi-fw pi-users">
+                <p:submenu label="Cliente" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
 
@@ -78,7 +78,7 @@
                         </div>
                         <div class="p-field">
                             <p:outputLabel>Telefono</p:outputLabel>
-                            <p:inputText id="phone" value="#{siteController.selectedSite.phone}"/>
+                            <p:inputMask id="phone" value="#{siteController.selectedSite.phone}" mask="99999999" validateMask="true" />
                         </div>
                         <div class="p-field">
                             <p:outputLabel for='selectProvince'>Provincia</p:outputLabel>
@@ -111,7 +111,7 @@
                 </f:facet>
 
             </p:dialog>
-            
+
 
             <p:dataTable id="enableSites" var="site" value="#{siteController.siteList}" rendered="#{!siteController.viewDisabledSite}">
 
@@ -216,12 +216,12 @@
                     </div>
                     <div class="p-field">
                         <p:outputLabel>Telefono</p:outputLabel>
-                        <p:inputText id="phone2" value="#{siteController.selectedSite.phone}"/>
+                        <p:inputMask id="phone2" value="#{siteController.selectedSite.phone}" mask="99999999" validateMask="true" />
                     </div>
-                    
+
                     <div class="p-field">
                         <p:outputLabel for='province2'>Provincia</p:outputLabel>
-                        <p:selectOneMenu id="province2" value="#{siteController.selectedSite.province}" style="width:150px">
+                        <p:selectOneMenu id="province2" value="#{siteController.selectedSite.province}">
                             <p:ajax listener="#{siteController.fillMapCanton()}" update="canton2"/>
                             <f:selectItem itemLabel="Seleccione una provincia" itemValue="" noSelectionOption="true"/>
                             <f:selectItems value="#{siteController.mapProvince}"/>
@@ -229,7 +229,7 @@
                     </div>
                     <div class="p-field">
                         <p:outputLabel for='canton2'>Canton</p:outputLabel>
-                        <p:selectOneMenu id="canton2" value="#{siteController.selectedSite.canton}" style="width:150px">
+                        <p:selectOneMenu id="canton2" value="#{siteController.selectedSite.canton}">
                             <f:selectItem itemLabel="Seleccione una provincia" itemValue="" noSelectionOption="true"/>
                             <f:selectItems value="#{siteController.mapCanton}"/>
                         </p:selectOneMenu>

@@ -21,8 +21,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.*;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.servlet.http.*;
-import org.primefaces.PrimeFaces;
 
 @ManagedBean(name = "userController")
 @ViewScoped
@@ -108,6 +106,20 @@ public class UserController {
         }
         return roleName;
     }
+    
+    public String getPassword(){
+        return "Password";
+    }
+    
+    public void setPassword(String password){
+        if(password != "Password" || !password.isEmpty()){
+           selectedUser.setPassword(password);
+        }
+        else{
+            String p = new AESEncryptionDecryption().decrypt(selectedUser.getPassword());
+            selectedUser.setPassword(p);
+        }
+    }
 
     //metods
     @PostConstruct
@@ -150,7 +162,15 @@ public class UserController {
     }
 
     public void updateUser() {
-
+        
+        if(selectedUser.getPassword().isEmpty()){
+            for(UserTO u : getUserList()){
+                if(u.getId() == selectedUser.getId()){
+                    selectedUser.setPassword(new AESEncryptionDecryption().decrypt(u.getPassword()));
+                }
+            }
+        }
+        
         if (!notNull()) {
             return;
         }
@@ -195,7 +215,6 @@ public class UserController {
     private boolean notNull() {
 
         if (selectedUser.getName().isEmpty() || selectedUser.getName() == null) {
-            System.out.println("edu.ulatina.controllers.UserController.notNull() " + selectedUser.getName());
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El nombre esta vacio"));
             return false;
         }
@@ -238,9 +257,9 @@ public class UserController {
                 return false;
             }
         }
-
-        if (selectedUser.getPassword().length() >= 16 && selectedUser.getPassword().length() <= 8) {
-
+        
+        if (!(selectedUser.getPassword().length() >= 8 && selectedUser.getPassword().length() <= 16 )) {
+            
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La contraseña ocupa ser de entre 8 y 16 caracteres"));
             return false;
         }
