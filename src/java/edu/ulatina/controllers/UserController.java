@@ -21,8 +21,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.*;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.servlet.http.*;
-import org.primefaces.PrimeFaces;
 
 @ManagedBean(name = "userController")
 @ViewScoped
@@ -218,10 +216,6 @@ public class UserController {
 
         if (selectedUser.getName().isEmpty() || selectedUser.getName() == null) {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El nombre esta vacio"));
-            return false;
-        }
-        if (selectedUser.getLastname().isEmpty() || selectedUser.getLastname() == null) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El apellido esta vacio"));
             return false;
         }
         if (selectedUser.getEmail().isEmpty() || selectedUser.getEmail() == null) {
