@@ -49,7 +49,7 @@
                 <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
             </p:confirmDialog>
 
-            <p:commandButton value="Crear Cliente" icon="pi pi-plus"
+            <p:commandButton value="Crear Cliente" icon="pi pi-plus" actionListener="#{customerController.inicializate}"
                              update=":form:manage-user-content" oncomplete="PF('manageUserDialog').show()"
                              styleClass="ui-button-success" style="margin: .50rem">
                 <p:resetInput target=":form:manage-user-content"/>
@@ -69,27 +69,27 @@
                     <p:outputPanel>
                         <div class="p-field">
                             <p:outputLabel>Cedula</p:outputLabel>
-                            <p:inputText id="cedula2"/>
+                            <p:inputText id="cedula2" value="#{customerController.selectedCustomerTO.cedula}"/>
                         </div>
 
                         <div class="p-field">
                             <p:outputLabel >Correo</p:outputLabel>
-                            <p:inputText id="emali2"/>
+                            <p:inputText id="emali2" value="#{customerController.selectedCustomerTO.email}" />
                         </div>
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
-                            <p:inputText id="name2"/>
+                            <p:inputText id="name2" value="#{customerController.selectedCustomerTO.name}" />
                         </div>
                         <div class="p-field">
                             <p:outputLabel>Apellido</p:outputLabel>
-                            <p:inputText id="lastname2"/>
+                            <p:inputText id="lastname2" value="#{customerController.selectedCustomerTO.lastname}" />
                         </div>
 
                     </p:outputPanel>
 
                 </p:outputPanel>
                 <f:facet name="footer">
-                    <p:commandButton value="Crear" icon="pi pi-check"  
+                    <p:commandButton value="Crear" icon="pi pi-check"  actionListener="#{customerController.insertCustomer}"
                                      update="form manage-user-content" style="margin: .25rem" process="manage-user-content @this">
                         <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>
@@ -101,46 +101,42 @@
 
             </p:dialog>
 
-            <p:dataTable var="customer" value="#{customerController.customerList}" rendered="#{!customerController.viewDisabledClient}">
+            <p:dataTable id="enablecustomers" var="customer" value="#{customerController.customerList}" rendered="#{!customerController.viewDisabledClient}">
 
                 <p:column headerText="Cedula">
-                    <h:outputText value="#{customer.cedula}" />
+                    <h:outputText value="#{customer.cedula}"/>
                 </p:column>
                 <p:column headerText="Nombre">
-                    <h:outputText value="#{customer.name}" />
-                </p:column>
-                <p:column headerText="Apellido">
-                    <h:outputText value="#{customer.lastname}" />
+                    <h:outputText value="#{customer.name} #{customer.lastname}" />
                 </p:column>
                 <p:column headerText="Opciones">
                     <p:menuButton>
                         <p:menuitem value="Editar"  update=":form:edit-client-content" icon="pi pi-pencil" oncomplete="PF('editClientContent').show()">
+                            <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
                             <p:resetInput target=":form:edit-client-content"/>
                         </p:menuitem>
-                        <p:menuitem value="Borrar"  update="form" icon="pi pi-trash">
-                            <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir?" icon="pi pi-exclamation-triangle"/>
+                        <p:menuitem value="Borrar"  update=":form enablecustomers" icon="pi pi-trash" oncomplete="PF('disableCustomerDialog').show()">
+                            <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
+                            <p:resetInput target=":form"/>
                         </p:menuitem>
                     </p:menuButton>
                 </p:column>
             </p:dataTable>
 
-            <p:dataTable var="customer" value="#{customerController.disableCustomerList}" rendered="#{customerController.viewDisabledClient}">
+            <p:dataTable id="disablecustomers" var="customer" value="#{customerController.disableCustomerList}" rendered="#{customerController.viewDisabledClient}">
 
                 <p:column headerText="Cedula">
                     <h:outputText value="#{customer.cedula}" />
                 </p:column>
                 <p:column headerText="Nombre">
-                    <h:outputText value="#{customer.name}" />
+                    <h:outputText value="#{customer.name} #{customer.lastname}" />
                 </p:column>
-                <p:column headerText="Apellido">
-                    <h:outputText value="#{customer.lastname}" />
-                </p:column>
-                <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh"  
-                                     update="form" style="margin: .25rem" process="@this">
-                        <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir" icon="pi pi-exclamation-triangle"/>
+                <p:column headerText="Recuperar">                    
+                    <p:commandButton icon="pi pi-refresh"  oncomplete="PF('enableCustomerDialog').show()"
+                                     update="form disablecustomers" process="@this">
+                        <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
                     </p:commandButton>
-
+                    
                 </p:column>
             </p:dataTable>
 
@@ -148,40 +144,84 @@
             <p:dialog header="Informacion del Cliente" showEffect="fade" modal="true"
                       widgetVar="editClientContent" responsive="true">
                 <p:outputPanel id="edit-client-content" class="ui-fluid">
-
-                    <p:outputPanel>
                         <div class="p-field">
                             <p:outputLabel>Cedula</p:outputLabel>
-                            <p:inputText id="cedula3"/>
+                            <p:inputMask id="cedula1" value="#{customerController.selectedCustomerTO.cedula}" mask="9-9999-9999" validateMask="true" disabled="true" />
                         </div>
 
                         <div class="p-field">
                             <p:outputLabel >Correo</p:outputLabel>
-                            <p:inputText id="emali3"/>
+                            <p:inputText id="emali1" value="#{customerController.selectedCustomerTO.email}" />
                         </div>
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
-                            <p:inputText id="name3"/>
+                            <p:inputText id="name1" value="#{customerController.selectedCustomerTO.name}" />
                         </div>
                         <div class="p-field">
                             <p:outputLabel>Apellido</p:outputLabel>
-                            <p:inputText id="lastname3"/>
+                            <p:inputText id="lastname1" value="#{customerController.selectedCustomerTO.lastname}" />
                         </div>
-
-                    </p:outputPanel>
 
                 </p:outputPanel>
                 <f:facet name="footer">
-                    <p:commandButton value="Salvar" icon="pi pi-save"  
+                    <p:commandButton value="Guardar" icon="pi pi-save"  actionListener="#{customerController.updateCustomer}"
                                      update="form edit-client-content" style="margin: .25rem" process="edit-client-content @this">
                         <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir?" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>
-
 
                     <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('editClientContent').hide()" 
                                      style="margin: .25rem" class="ui-button-secondary"/>
                 </f:facet>
             </p:dialog>
+            
+            <p:confirmDialog
+                widgetVar="disableCustomerDialog" 
+                showEffect="fade" 
+                width="300"
+                message="Deshabilitar este sitio?" 
+                header="Confirm" 
+                severity="warn">
+
+                <p:commandButton 
+                    value="Cancelar" 
+                    icon="pi pi-times" 
+                    onclick="PF('disableCustomerDialog').hide()"
+                    style="float: left"
+                    class="ui-button-secondary"/>
+
+                <p:commandButton 
+                    value="Desabilitar" 
+                    icon="pi pi-check" 
+                    actionListener="#{customerController.disableCustomer}"
+                    update="form" 
+                    process="@this" />
+
+            </p:confirmDialog>
+
+            <p:confirmDialog
+                widgetVar="enableCustomerDialog" 
+                showEffect="fade" 
+                width="300"
+                message="Habilitar este sitio?" 
+                header="Confirm" 
+                severity="warn">
+
+                <p:commandButton 
+                    value="Cancelar" 
+                    icon="pi pi-times" 
+                    onclick="PF('enableCustomerDialog').hide()"
+                    style="float: left"
+                    class="ui-button-secondary"/>
+
+                <p:commandButton 
+                    value="Habilitar" 
+                    icon="pi pi-check" 
+                    actionListener="#{customerController.enableCustomer}"
+                    update="form" 
+                    process="@this" />
+
+            </p:confirmDialog>
+            
         </h:form>
     </h:body>
 </html>
