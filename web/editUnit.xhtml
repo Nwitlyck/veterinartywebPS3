@@ -45,6 +45,11 @@
         <h:form id="form">
             <p:growl id="message" showDetail="true"/>
             
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" />
+            </p:confirmDialog>
+            
             <p:commandButton value="Crear Unidad" icon="pi pi-plus" actionListener="#{unitController.resetSelectedUnit()}"
                              update=":form:manage-user-content" oncomplete="PF('manageUserDialog').show()"
                              styleClass="ui-button-success" style="margin: .50rem">

@@ -84,6 +84,7 @@ public class UnitController implements Serializable {
     
     public void createNewUnit() {
         boolean flag = true;
+        System.out.println("Estoy creando la unidad");
         if (selectedUnit.getPlate()== null || selectedUnit.getPlate().equals("")) {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de placa esta vacio"));
             flag = false;
