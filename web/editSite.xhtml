@@ -78,7 +78,7 @@
                         </div>
                         <div class="p-field">
                             <p:outputLabel>Telefono</p:outputLabel>
-                            <p:inputMask id="phone" value="#{siteController.selectedSite.phone}" mask="99999999" validateMask="true" />
+                            <p:inputMask id="phone" value="#{siteController.selectedSite.phone}" mask="9999-9999" validateMask="true" />
                         </div>
                         <div class="p-field">
                             <p:outputLabel for='selectProvince'>Provincia</p:outputLabel>
@@ -122,9 +122,9 @@
 
                 <p:column headerText="Opciones">
                     <p:menuButton>
-                        <p:menuitem value="Editar"  update=":form:edit-site-content" icon="pi pi-pencil" oncomplete="PF('editSiteContent').show()" process="@this">
+                        <p:menuitem value="Editar"  update=":form:edit-site-content" icon="pi pi-pencil" oncomplete="#{siteController.fillMapCanton()}" process="@this" actionListener="PF('editSiteContent').show()">
                             <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
-                            <p:resetInput target=":form:edit-site-content"/>
+                            <p:resetInput target=":form:edit-site-content" />
                         </p:menuitem>
 
                         <p:menuitem value="Borrar"  update=":form enableSites" icon="pi pi-trash" oncomplete="PF('disableSiteDialog').show()" process="@this">
