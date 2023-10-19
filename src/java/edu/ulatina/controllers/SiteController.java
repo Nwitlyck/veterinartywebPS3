@@ -1,13 +1,14 @@
 package edu.ulatina.controllers;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import edu.ulatina.objects.SiteTO;
 import edu.ulatina.services.ServiceSite;
+import edu.ulatina.services.ServiceDetails;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -22,8 +23,10 @@ import org.primefaces.PrimeFaces;
 public class SiteController implements Serializable {
 
     private boolean viewDisabledSite = false;
-    private ServiceSite serv;
+    private ServiceSite serv = new ServiceSite();
     private SiteTO selectedSite = new SiteTO();
+    private Map<String, Integer> mapProvince;
+    private Map<String, Integer> mapCanton;
 
     public SiteController() {
     }
@@ -42,6 +45,22 @@ public class SiteController implements Serializable {
 
     public void setSelectedSite(SiteTO selectedSite) {
         this.selectedSite = selectedSite;
+    }
+
+    public Map<String, Integer> getMapProvince() {
+        return this.mapProvince;
+    }
+
+    public void setMapProvince(Map<String, Integer> mapProvince) {
+        this.mapProvince = mapProvince;
+    }
+
+    public Map<String, Integer> getMapCanton() {
+        return this.mapCanton;
+    }
+
+    public void setMapCanton(Map<String, Integer> mapCanton) {
+        this.mapCanton = mapCanton;
     }
 
     //isViewDisabledSite setViewDisabledSite y viewDisabledMessage es para los toggleSwitch
@@ -68,10 +87,8 @@ public class SiteController implements Serializable {
         try {
             returnList = serv.select(1);
         } catch (Exception ex) {
-            Logger.getLogger(SiteController.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
-        SiteTO prueba = new SiteTO(1000, "prueba", "province", "canton", "adress", 0, "Habilitado");
-        returnList.add(prueba);
         return returnList;
     }
 
@@ -80,10 +97,8 @@ public class SiteController implements Serializable {
         try {
             returnList = serv.select(0);
         } catch (Exception ex) {
-            Logger.getLogger(SiteController.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
-        SiteTO prueba = new SiteTO(1000, "Deshabilitado", "province", "canton", "adress", 0, "Desabilitado");
-        returnList.add(prueba);
         return returnList;
     }
 
@@ -93,12 +108,57 @@ public class SiteController implements Serializable {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de nombre esta vacio"));
             flag = false;
         }
-        if (selectedSite.getProvince() == null || selectedSite.getProvince().equals("")) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de provincia esta vacio"));
+        if (selectedSite.getAdress() == null || selectedSite.getAdress().equals("")) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de adress esta vacio"));
             flag = false;
         }
-        if (selectedSite.getCanton() == null || selectedSite.getCanton().equals("")) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de canton esta vacio"));
+        if (selectedSite.getAdress().length() >= 9 && selectedSite.getAdress().length() <= 0) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de telefono no es valido"));
+            flag = false;
+        }
+        if (flag) {
+            System.out.println("Estoy salvando al sitio nuevo");
+
+            try {
+                this.serv.insert(selectedSite);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error en alguno de los campos de datos"));
+            }
+            this.selectedSite = new SiteTO();
+            PrimeFaces.current().executeScript("PF('manageSiteContent').hide()");
+        }
+
+    }
+    
+    public void disableSite(){
+        System.out.println("Estoy deshabilitando al sitio");
+        try {
+           this.serv.delete(selectedSite);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar el sitio en base de datos"));
+         }
+         this.selectedSite = new SiteTO();
+        
+    }
+    
+    public void enableSite(){
+        System.out.println("Estoy habilitando al sitio");
+        try {
+            this.serv.enable(selectedSite);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar el sitio en base de datos"));
+         }
+         this.selectedSite = new SiteTO();
+    }
+            
+            
+    public void updateSite(){
+        boolean flag = true;
+        if (selectedSite.getName() == null || selectedSite.getName().equals("")) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de nombre esta vacio"));
             flag = false;
         }
         if (selectedSite.getAdress() == null || selectedSite.getAdress().equals("")) {
@@ -107,17 +167,44 @@ public class SiteController implements Serializable {
         }
 
         if (flag) {
-            System.out.println("Estoy salvando al usuario");
+            System.out.println("Estoy salvando al sitio");
 
             try {
-                this.serv.insert(selectedSite);
+                this.serv.update(selectedSite);
             } catch (Exception ex) {
-                Logger.getLogger(SiteController.class.getName()).log(Level.SEVERE, null, ex);
-                FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al insertar en base de datos"));
+                ex.printStackTrace();
+                FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al hacer update en base de datos"));
             }
             this.selectedSite = new SiteTO();
             PrimeFaces.current().executeScript("PF('manageSiteContent').hide()");
         }
-
+    }
+    
+    public void resetSelectedSite(){
+        this.selectedSite = new SiteTO();
+    }
+    
+    @PostConstruct
+    public void initialize(){
+        fillMapProvince();
+        fillMapCanton();
+    }
+    
+    private void fillMapProvince(){
+        try{
+            mapProvince = new ServiceDetails().select(2);
+        }catch(Exception e){
+            mapProvince = new HashMap<>();
+            e.printStackTrace();
+        }
+    }
+    
+    public void fillMapCanton(){
+        try{
+            mapCanton = new ServiceDetails().select(selectedSite.getProvince());
+        }catch(Exception e){
+            mapCanton = new HashMap<>();
+            e.printStackTrace();
+        }
     }
 }

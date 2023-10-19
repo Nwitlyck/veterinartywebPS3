@@ -1,17 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.ulatina.services;
 
 import java.sql.*;
 import java.util.*;
 
-/**
- *
- * @author Nwitlyck
- */
 public class ServiceDetails extends Service{
     
     public Map<String, Integer> select(int masterId) throws Exception {
@@ -23,7 +14,7 @@ public class ServiceDetails extends Service{
         ps.setInt(1, masterId);
         rs = ps.executeQuery();
 
-        while (rs.next()) {
+        while (rs.next()) { 
             
             map.put(rs.getString("Name"), rs.getInt("Id"));
         }

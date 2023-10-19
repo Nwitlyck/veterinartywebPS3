@@ -11,14 +11,14 @@
     <h:body>
         <h:form id="menu">
 
-           <p:menubar>
+            <p:menubar>
 
                 <p:menuitem value="Bienvenida" outcome="landingPage" icon="pi pi-fw pi-home"/>
 
                 <p:submenu label="Cliente" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar cliente" outcome="editClient" icon="pi pi-fw pi-eye"/>
+                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
-                
+
                 <p:submenu label="Sede" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
@@ -26,7 +26,7 @@
                 <p:submenu label="Unidades" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
-                
+
                 <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
                     <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-eye"/>
                 </p:submenu>
@@ -36,7 +36,7 @@
                 </p:submenu>
 
                 <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
-                
+
             </p:menubar>
 
         </h:form>
@@ -49,14 +49,14 @@
                 <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
             </p:confirmDialog>
 
-            <p:commandButton value="Crear Usuario" icon="pi pi-plus"
+            <p:commandButton value="Crear Usuario" icon="pi pi-plus" actionListener="#{userController.resetSelectUser}"
                              update=":form:manage-user-content" oncomplete="PF('manageUserDialog').show()"
                              styleClass="ui-button-success" style="margin: .50rem">
                 <p:resetInput target=":form:manage-user-content"/>
             </p:commandButton>
 
-            <p:toggleSwitch value="#{logInController.viewDisabledUser}"> Ver deshabilitado
-                <p:ajax listener="#{logInController.viewDisabledMessage}" update="form message"/>
+            <p:toggleSwitch value="#{userController.viewDisabledUser}"> Ver deshabilitado
+                <p:ajax listener="#{userController.viewDisabledMessage}" update="form message"/>
             </p:toggleSwitch>
 
             <p:dialog header="Detalles de Usuario" showEffect="fade" modal="true"
@@ -66,27 +66,27 @@
                     <p:outputPanel>
 
                         <div class="p-field">
-                            <p:outputLabel>Nombre</p:outputLabel>
-                            <p:inputText id="name2"/>
+                            <p:outputLabel for="name2">Nombre</p:outputLabel>
+                            <p:inputText id="name2" value="#{userController.selectedUser.name}"/>
                         </div>
                         <div class="p-field">
-                            <p:outputLabel>Apellido</p:outputLabel>
-                            <p:inputText id="lastName2"/>
+                            <p:outputLabel for="lastName2">Apellido</p:outputLabel>
+                            <p:inputText id="lastName2" value="#{userController.selectedUser.lastname}"/>
                         </div>
                         <div class="p-field">
-                            <p:outputLabel >Correo</p:outputLabel>
-                            <p:inputText id="email2"/>
+                            <p:outputLabel for="email2">Correo</p:outputLabel>
+                            <p:inputText id="email2" value="#{userController.selectedUser.email}"/>
                         </div>
                         <div class="p-field">
-                            <p:outputLabel >Contraseña</p:outputLabel>
-                            <p:inputText id="password2"/>
+                            <p:outputLabel for="password2">Contraseña</p:outputLabel>
+                            <p:password id="password2" value="#{userController.selectedUser.password}" toggleMask="true"/>
                         </div>
 
                         <div class="p-field">                                               
-                            <p:outputLabel for="rolec">Rol</p:outputLabel>
-                            <p:selectOneMenu id="rolec">
+                            <p:outputLabel for="role1">Role</p:outputLabel>
+                            <p:selectOneMenu id="role1" value="#{userController.selectedUser.role}">
                                 <f:selectItem itemLabel="Seleccione el rol" itemValue="" noSelectionOption="true"/>
-                                <f:selectItems/>
+                                <f:selectItems value="#{userController.mapRoles}"/>
                             </p:selectOneMenu>
                         </div>
 
@@ -96,8 +96,8 @@
 
 
                 <f:facet name="footer">
-                    <p:commandButton value="Crear" icon="pi pi-check"  
-                                     update="form edit-user-content" style="margin: .25rem" process="edit-user-content @this">
+                    <p:commandButton value="Crear" icon="pi pi-check"  actionListener="#{userController.insertUser}"
+                                     update="form edit-user-content" style="margin: .25rem" process="manage-user-content @this">
                         <p:confirm header="Confirmacion" message="Esta seguro de seguir?" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>
 
@@ -105,62 +105,61 @@
                     <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('editAdminContent').hide()" 
                                      style="margin: .25rem" class="ui-button-secondary"/>
                 </f:facet>
-
             </p:dialog>
+            
+            <p:dataTable id="enableUsers" var="obj" value="#{userController.userList}" rendered="#{!userController.viewDisabledUser}">
 
 
 
-            <p:dataTable var="obj" value="#{logInController.crearDemo()}" rendered="#{!logInController.viewDisabledUser}">
-
-
-                
                 <p:column headerText="Nombre">
                     <h:outputText value="#{obj.name}" />
                 </p:column>
                 <p:column headerText="Apellido">
-                    <h:outputText value="#{obj.lastName}" />
+                    <h:outputText value="#{obj.lastname}" />
                 </p:column>
                 <p:column headerText="Correo">
                     <h:outputText value="#{obj.email}" />
                 </p:column>
                 <p:column headerText="Rol">
-                    <h:outputText value="#{obj.role}" />
+                    <h:outputText value="#{userController.getRoleNameByRoleId(obj.role)}" />
                 </p:column>
 
                 <p:column headerText="Opciones">
                     <p:menuButton>
                         <p:menuitem value="Editar"  update=":form:edit-user-content" icon="pi pi-pencil" oncomplete="PF('editUserContent').show()">
+                            <f:setPropertyActionListener value="#{obj}" target="#{userController.selectedUser}"/>
                             <p:resetInput target=":form:edit-user-content"/>
                         </p:menuitem>
-                        <p:menuitem value="Borrar"  update="form" icon="pi pi-trash">
-                            <p:confirm header="Confirmacion" message="Esta seguro de seguir?" icon="pi pi-exclamation-triangle"/>
+
+                        <p:menuitem value="Borrar"  update="form enableUsers" icon="pi pi-trash" oncomplete="PF('disableUserDialog').show()" process="@this">
+                            <f:setPropertyActionListener value="#{obj}" target="#{userController.selectedUser}"/>
+                            <p:resetInput target=":form"/>
                         </p:menuitem>
+
                     </p:menuButton>
                 </p:column>
             </p:dataTable>
 
-            <p:dataTable var="obj" value="#{logInController.crearDemo2()}" rendered="#{logInController.viewDisabledUser}">
+            <p:dataTable id="disableUsers"  var="obj" value="#{userController.disableUserList}" rendered="#{userController.viewDisabledUser}">
 
-
-                
                 <p:column headerText="Nombre">
                     <h:outputText value="#{obj.name}" />
                 </p:column>
                 <p:column headerText="Apellido">
-                    <h:outputText value="#{obj.lastName}" />
+                    <h:outputText value="#{obj.lastname}" />
                 </p:column>
                 <p:column headerText="Correo">
                     <h:outputText value="#{obj.email}" />
                 </p:column>
                 <p:column headerText="Rol">
-                    <h:outputText value="#{obj.role}" />
+                    <h:outputText value="#{userController.getRoleNameByRoleId(obj.role)}" />
                 </p:column>
 
 
                 <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh"  
-                                     update="form" style="margin: .25rem" process="@this">
-                        <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir" icon="pi pi-exclamation-triangle"/>
+                    <p:commandButton icon="pi pi-refresh"  oncomplete="PF('enableUserDialog').show()"
+                                     update="form disableUsers" style="margin: .25rem" process="@this">
+                        <f:setPropertyActionListener value="#{obj}" target="#{userController.selectedUser}"/>
                     </p:commandButton>
 
                 </p:column>
@@ -172,39 +171,32 @@
                       widgetVar="editUserContent" responsive="true">
                 <p:outputPanel id="edit-user-content" class="ui-fluid">
 
-                    <p:outputPanel>
-
-                        
-
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
-                            <p:inputText id="name"/>
+                            <p:inputText id="name" value="#{userController.selectedUser.name}"/>
                         </div>
                         <div class="p-field">
                             <p:outputLabel>Apellido</p:outputLabel>
-                            <p:inputText id="lastname"/>
+                            <p:inputText id="lastname" value="#{userController.selectedUser.lastname}"/>
                         </div>
                         <div class="p-field">
                             <p:outputLabel >Correo</p:outputLabel>
-                            <p:inputText id="emali"/>
+                            <p:inputText id="emali" value="#{userController.selectedUser.email}"/>
                         </div>
                         <div class="p-field">
-                            <p:outputLabel >Contraseña</p:outputLabel>
-                            <p:inputText id="password"/>
+                            <p:outputLabel for="password" >Contraseña</p:outputLabel>
+                            <p:password id="password" value="#{userController.password}"/>
                         </div>
                         <div class="p-field">                                               
-                            <p:outputLabel for="rolee">Role</p:outputLabel>
-                            <p:selectOneMenu id="rolee">
+                            <p:outputLabel for="role2">Role</p:outputLabel>
+                            <p:selectOneMenu id="role2" value="#{userController.selectedUser.role}">
                                 <f:selectItem itemLabel="Seleccione el rol" itemValue="" noSelectionOption="true"/>
-                                <f:selectItems/>
+                                <f:selectItems value="#{userController.mapRoles}"/>
                             </p:selectOneMenu>
                         </div>
-
-                    </p:outputPanel>
-
                 </p:outputPanel>
                 <f:facet name="footer">
-                    <p:commandButton value="Guardar" icon="pi pi-save"  
+                    <p:commandButton value="Guardar" icon="pi pi-save" actionListener="#{userController.updateUser}"
                                      update="form edit-user-content" style="margin: .25rem" process="edit-user-content @this">
                         <p:confirm header="Confirmacion" message="Esta seguro de seguir?" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>
@@ -216,6 +208,53 @@
 
             </p:dialog>  
 
+            <p:confirmDialog
+                widgetVar="disableUserDialog" 
+                showEffect="fade" 
+                width="300"
+                message="Deshabilitar este usuario?" 
+                header="Confirmar" 
+                severity="warn">
+
+                <p:commandButton 
+                    value="Cancelar" 
+                    icon="pi pi-times" 
+                    onclick="PF('disableUserDialog').hide()"
+                    style="float: left"
+                    class="ui-button-secondary"/>
+
+                <p:commandButton 
+                    value="Desabilitar" 
+                    icon="pi pi-check" 
+                    actionListener="#{userController.disableUser}"
+                    update="form" 
+                    process="@this" />
+
+            </p:confirmDialog>
+
+            <p:confirmDialog
+                widgetVar="enableUserDialog" 
+                showEffect="fade" 
+                width="300"
+                message="Habilitar este usuario?" 
+                header="Confirm" 
+                severity="warn">
+
+                <p:commandButton 
+                    value="Cancelar" 
+                    icon="pi pi-times" 
+                    onclick="PF('enableUserDialog').hide()"
+                    style="float: left"
+                    class="ui-button-secondary"/>
+
+                <p:commandButton 
+                    value="Habilitar" 
+                    icon="pi pi-check" 
+                    actionListener="#{userController.enableUser}"
+                    update="form" 
+                    process="@this" />
+
+            </p:confirmDialog>
 
         </h:form>
     </h:body>

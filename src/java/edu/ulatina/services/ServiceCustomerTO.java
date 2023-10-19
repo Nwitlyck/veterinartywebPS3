@@ -21,7 +21,6 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
         ps.setString(2, objectTO.getEmail());
         ps.setString(3, objectTO.getName());
         ps.setString(4, objectTO.getLastname());
-        ps.setInt(5, objectTO.getState());
         ps.executeUpdate();
 
         close(ps);
@@ -63,7 +62,7 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
         ResultSet rs = null;
         List<CustomersTO> objectTOList = new ArrayList<CustomersTO>();
 
-        ps = getConnection().prepareStatement("SELECT Cedula, Email, Name, Lastname, State FROM Customers Where State = ?");
+        ps = getConnection().prepareStatement("SELECT Cedula, Email, Name, Lastname, State FROM Customers WHERE State = ?");
         ps.setInt(1, enable);
         rs = ps.executeQuery();
 
@@ -82,6 +81,18 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
         close(conn);
 
         return objectTOList;
+    }
+
+    @Override
+    public void enable(CustomersTO objectTO) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Customers SET State = 1 WHERE Cedula = ?");
+        ps.setInt(1, objectTO.getCedula());
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
     }
     
 }

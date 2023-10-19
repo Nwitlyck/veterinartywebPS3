@@ -1,27 +1,29 @@
 
 package edu.ulatina.objects;
 
+import java.io.Serializable;
 
-public class UnitTO {
+
+public class UnitTO  implements Serializable{
     
-    private int plate;
+    private String plate;
     private String name;
     private int state;
 
     public UnitTO() {
     }
 
-    public UnitTO(int plate, String name, int state) {
+    public UnitTO(String plate, String name, int state) {
         this.plate = plate;
         this.name = name;
         this.state = state;
     }
 
-    public int getPlate() {
+    public String getPlate() {
         return plate;
     }
 
-    public void setPlate(int plate) {
+    public void setPlate(String plate) {
         this.plate = plate;
     }
 
