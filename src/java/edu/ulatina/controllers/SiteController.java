@@ -1,17 +1,13 @@
 package edu.ulatina.controllers;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import edu.ulatina.objects.SiteTO;
 import edu.ulatina.services.ServiceSite;
 import edu.ulatina.services.ServiceDetails;
 import java.io.Serializable;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -191,7 +187,7 @@ public class SiteController implements Serializable {
     @PostConstruct
     public void initialize(){
         fillMapProvince();
-       this.mapCanton = new HashMap<>();
+        fillMapCanton();
     }
     
     private void fillMapProvince(){
