@@ -122,7 +122,8 @@
 
                 <p:column headerText="Opciones">
                     <p:menuButton>
-                        <p:menuitem value="Editar"  update=":form:edit-site-content" icon="pi pi-pencil" oncomplete="#{siteController.fillMapCanton()}" process="@this" actionListener="PF('editSiteContent').show()">
+                        <p:menuitem value="Editar"  update=":form:edit-site-content" icon="pi pi-pencil" oncomplete="PF('editSiteContent').show()" 
+                                    process="@this">
                             <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
                             <p:resetInput target=":form:edit-site-content" />
                         </p:menuitem>
