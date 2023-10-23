@@ -4,8 +4,6 @@ import javax.faces.bean.*;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import edu.ulatina.services.ServiceUserTO;
-import edu.ulatina.objects.UserTO;
-import edu.ulatina.security.AESEncryptionDecryption;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
 
@@ -58,7 +56,7 @@ public class LogInController {
         }
 
         if (pasword.isEmpty() || pasword == null) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El correo esta vacio"));
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "La contraseña esta vacia"));
             return;
         }
 
