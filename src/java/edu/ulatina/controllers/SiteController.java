@@ -45,7 +45,6 @@ public class SiteController implements Serializable {
 
     public void setSelectedSite(SiteTO selectedSite) {
         this.selectedSite = selectedSite;
-        fillMapCanton();
     }
 
     public Map<String, Integer> getMapProvince() {

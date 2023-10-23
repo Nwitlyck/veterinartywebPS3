@@ -16,6 +16,7 @@ import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.PrimeFaces;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -83,7 +84,13 @@ public class UnitController implements Serializable {
     }
     
     public void createNewUnit() {
+
+        if (!plateMetrics()) {
+            return;
+        }
+        
         boolean flag = true;
+        System.out.println("Estoy creando la unidad");
         if (selectedUnit.getPlate()== null || selectedUnit.getPlate().equals("")) {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de placa esta vacio"));
             flag = false;
@@ -131,6 +138,10 @@ public class UnitController implements Serializable {
     }
     
     public void updateUnit(){
+        if (!plateMetrics()) {
+            return;
+        }
+        
         boolean flag = true;
         if (selectedUnit.getPlate()== null || selectedUnit.getPlate().equals("")) {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de placa esta vacio"));
@@ -157,6 +168,16 @@ public class UnitController implements Serializable {
     
      public void resetSelectedUnit(){
         this.selectedUnit = new UnitTO();
+    }
+     
+     private boolean plateMetrics() {
+        
+        if (!(selectedUnit.getPlate().length() == 6)) {
+            
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La placa ocupa tener 6 caracteres"));
+            return false;
+        }
+        return true;
     }
     
     
