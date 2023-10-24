@@ -1,30 +1,18 @@
-
 package edu.ulatina.controllers;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
+import javax.faces.bean.*;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.servlet.http.HttpServletRequest;
+import edu.ulatina.services.ServiceUserTO;
+import java.util.regex.Pattern;
+import javax.faces.application.FacesMessage;
 
 @ManagedBean(name = "logInController")
 @ViewScoped
-public class LogInController implements Serializable{
+public class LogInController {
+
     private String user;
     private String pasword;
-    
-    private boolean viewDisabledClient = false;
-    private boolean viewDisabledVeterinary = false;
-    private boolean viewDisabledUnit = false;
-    private boolean viewDisabledUser = false;
-    private boolean viewDisabledSite = false;
 
     public LogInController() {
     }
@@ -37,7 +25,7 @@ public class LogInController implements Serializable{
     public String getUser() {
         return user;
     }
-    
+
     public void setUser(String user) {
         this.user = user;
     }
@@ -49,8 +37,8 @@ public class LogInController implements Serializable{
     public void setPasword(String pasword) {
         this.pasword = pasword;
     }
-    
-     public void redirect(String rute) {
+
+    public void redirect(String rute) {
         HttpServletRequest request;
         try {
             request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -59,12 +47,43 @@ public class LogInController implements Serializable{
 
         }
     }
-     
-     public void logIn() {
-         this.redirect("/faces/landingPage.xhtml");
-     }
-     
-     public void logOut() {
+
+    public void logIn() {
+
+        if (user.isEmpty() || user == null) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El correo esta vacio"));
+            return;
+        }
+
+        if (pasword.isEmpty() || pasword == null) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "La contraseña esta vacia"));
+            return;
+        }
+
+        String regexPatternEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+
+        if (!Pattern.compile(regexPatternEmail).matcher(user).matches()) {
+
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "El correo ingresado no es valido"));
+            return;
+        }
+
+        try {
+            if (!new ServiceUserTO().selectByEmailAndPassword(user, pasword)) {
+                FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Usuario o Contraseña incorrecta"));
+            }
+            else{
+                this.redirect("/faces/landingPage.xhtml");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "Problemas al conectar a la base de datos"));
+        }
+
+    }
+
+    public void logOut() {
         try {
             FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 
@@ -72,76 +91,6 @@ public class LogInController implements Serializable{
             FacesContext.getCurrentInstance().getExternalContext().redirect(request.getContextPath() + "/faces/index.xhtml?faces-redirect=true");
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-     
-     public List<demo> crearDemo(){
-         List<demo> listaDemo = new ArrayList<>();
-         
-         for(int i = 0; i < 6; i++){
-             demo newDemo = new demo("test " + i, "test " + i, "test " + i, "test " + i, "test " + i, "test " + i, "test " + i, "test " + i, i, i, i);
-             listaDemo.add(newDemo);
-         }
-         return listaDemo;
-     }
-     
-      public List<demo> crearDemo2(){
-         List<demo> listaDemo = new ArrayList<>();
-         
-         for(int i = 6; i < 12; i++){
-             demo newDemo = new demo("test " + i, "test " + i, "test " + i, "test " + i, "test " + i, "test " + i, "test " + i, "test " + i, i, i, i);
-             listaDemo.add(newDemo);
-         }
-         return listaDemo;
-     }
-
-    public boolean isViewDisabledClient() {
-        return viewDisabledClient;
-    }
-
-    public void setViewDisabledClient(boolean viewDisabledClient) {
-        this.viewDisabledClient = viewDisabledClient;
-    }
-
-    public boolean isViewDisabledVeterinary() {
-        return viewDisabledVeterinary;
-    }
-
-    public void setViewDisabledVeterinary(boolean viewDisabledVeterinary) {
-        this.viewDisabledVeterinary = viewDisabledVeterinary;
-    }
-
-    public boolean isViewDisabledUnit() {
-        return viewDisabledUnit;
-    }
-
-    public void setViewDisabledUnit(boolean viewDisabledUnit) {
-        this.viewDisabledUnit = viewDisabledUnit;
-    }
-
-    public boolean isViewDisabledUser() {
-        return viewDisabledUser;
-    }
-
-    public void setViewDisabledUser(boolean viewDisabledUser) {
-        this.viewDisabledUser = viewDisabledUser;
-    }
-
-    public boolean isViewDisabledSite() {
-        return viewDisabledSite;
-    }
-
-    public void setViewDisabledSite(boolean viewDisabledSite) {
-        this.viewDisabledSite = viewDisabledSite;
-    }
-     
-     public void viewDisabledMessage(AjaxBehaviorEvent event) {
-        UIComponent component = event.getComponent();
-        if (component instanceof UIInput) {
-            UIInput inputComponent = (UIInput) component;
-            Boolean value = (Boolean) inputComponent.getValue();
-            String summary = value ? "Visualizando los deshabilitados" : "Visualizando los habilitados";
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(summary));
         }
     }
 }

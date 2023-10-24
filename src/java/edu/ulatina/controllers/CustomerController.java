@@ -6,14 +6,14 @@
 package edu.ulatina.controllers;
 
 import edu.ulatina.objects.CustomersTO;
-import edu.ulatina.security.AESEncryptionDecryption;
 import edu.ulatina.services.ServiceCustomerTO;
 import java.io.Serializable;
 import java.util.*;
 import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.*;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
@@ -25,8 +25,8 @@ import javax.faces.event.AjaxBehaviorEvent;
  */
 @ManagedBean(name = "customerController")
 @ViewScoped
-public class CustomerController implements Serializable{
-    
+public class CustomerController implements Serializable {
+
     private ServiceCustomerTO serviceCustomerTO;
     private CustomersTO selectedCustomerTO;
     private boolean viewDisabledClient;
@@ -46,8 +46,8 @@ public class CustomerController implements Serializable{
     public void setViewDisabledClient(boolean viewDisabledClient) {
         this.viewDisabledClient = viewDisabledClient;
     }
-    
-     public void viewDisabledMessage(AjaxBehaviorEvent event) {
+
+    public void viewDisabledMessage(AjaxBehaviorEvent event) {
         UIComponent component = event.getComponent();
         if (component instanceof UIInput) {
             UIInput inputComponent = (UIInput) component;
@@ -56,13 +56,14 @@ public class CustomerController implements Serializable{
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(summary));
         }
     }
-    
-     @PostConstruct
-     public void inicializate(){
-         serviceCustomerTO = new ServiceCustomerTO();
-         
-     }
-     
+
+    @PostConstruct
+    public void inicializate() {
+        serviceCustomerTO = new ServiceCustomerTO();
+        selectedCustomerTO = new CustomersTO();
+
+    }
+
     public List<CustomersTO> getCustomerList() {
         List<CustomersTO> returnList;
         try {
@@ -84,28 +85,47 @@ public class CustomerController implements Serializable{
         }
         return returnList;
     }
-      private boolean notNull() {
 
-          if (selectedCustomerTO.getCedula() == 0) {
+    private boolean notNull() {
+
+        if (selectedCustomerTO.getCedula() == 0) {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "La cédula está vacía"));
             return false;
         }
-          if (selectedCustomerTO.getName().isEmpty() || selectedCustomerTO.getName() == null) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El nombre esta vacio"));
-            return false;
-        }
-        if (selectedCustomerTO.getLastname().isEmpty() || selectedCustomerTO.getLastname() == null) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El apellido esta vacio"));
-            return false;
-        }
+
         if (selectedCustomerTO.getEmail().isEmpty() || selectedCustomerTO.getEmail() == null) {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El correo esta vacio"));
+            return false;
+        }
+        
+        if (selectedCustomerTO.getName().isEmpty() || selectedCustomerTO.getName() == null) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El nombre esta vacio"));
             return false;
         }
 
         return true;
     }
-      private boolean followMetrics() {
+
+    private boolean followMetrics() {
+        
+        if (!(selectedCustomerTO.getCedula() >= 100000000 && selectedCustomerTO.getCedula() <= 999999999)) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La cédula no esta en el rango debido"));
+            return false;
+        }
+
+        for (CustomersTO customer : getCustomerList()) {
+            if (selectedCustomerTO.getCedula() == customer.getCedula()) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La cedula ya existe"));
+                return false;
+            }
+        }
+
+        for (CustomersTO customer : getDisableCustomerList()) {
+            if (selectedCustomerTO.getCedula() == customer.getCedula()) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La cedula ya existe"));
+                return false;
+            }
+        }
 
         String regexPatternEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
@@ -121,7 +141,7 @@ public class CustomerController implements Serializable{
                 return false;
             }
         }
-        
+
         for (CustomersTO customer : getDisableCustomerList()) {
             if (selectedCustomerTO.getEmail() == customer.getEmail()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "El correo ya existe"));
@@ -130,7 +150,7 @@ public class CustomerController implements Serializable{
         }
         return true;
     }
-    
+
     public void insertCustomer() {
 
         if (!notNull()) {
@@ -141,8 +161,6 @@ public class CustomerController implements Serializable{
             return;
         }
 
-        selectedCustomerTO.setCedula(selectedCustomerTO.getCedula());
-
         try {
             this.serviceCustomerTO.insert(selectedCustomerTO);
         } catch (Exception ex) {
@@ -152,25 +170,18 @@ public class CustomerController implements Serializable{
             selectedCustomerTO = new CustomersTO();
         }
     }
-    
+
     public void updateCustomer() {
-        
-            for(CustomersTO customer : getCustomerList()){
-                if(customer.getCedula()== selectedCustomerTO.getCedula()){
-                    // selectedCustomerTO.setPassword(new AESEncryptionDecryption().decrypt(customer.getPassword()));
-                }
-            }
-  
-        
+
         if (!notNull()) {
+            selectedCustomerTO = new CustomersTO();
             return;
         }
 
         if (!followMetrics()) {
+            selectedCustomerTO = new CustomersTO();
             return;
         }
-
-        selectedCustomerTO.setCedula(selectedCustomerTO.getCedula());
 
         try {
             this.serviceCustomerTO.update(selectedCustomerTO);
@@ -181,8 +192,8 @@ public class CustomerController implements Serializable{
             selectedCustomerTO = new CustomersTO();
         }
     }
-    
-     public void disableCustomer() {
+
+    public void disableCustomer() {
         try {
             serviceCustomerTO.delete(selectedCustomerTO);
         } catch (Exception ex) {

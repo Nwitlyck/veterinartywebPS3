@@ -21,7 +21,6 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
         ps.setString(2, objectTO.getEmail());
         ps.setString(3, objectTO.getName());
         ps.setString(4, objectTO.getLastname());
-        ps.setInt(5, objectTO.getState());
         ps.executeUpdate();
 
         close(ps);

@@ -171,10 +171,6 @@
                       widgetVar="editUserContent" responsive="true">
                 <p:outputPanel id="edit-user-content" class="ui-fluid">
 
-                    <p:outputPanel>
-
-
-
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
                             <p:inputText id="name" value="#{userController.selectedUser.name}"/>
@@ -198,9 +194,6 @@
                                 <f:selectItems value="#{userController.mapRoles}"/>
                             </p:selectOneMenu>
                         </div>
-
-                    </p:outputPanel>
-
                 </p:outputPanel>
                 <f:facet name="footer">
                     <p:commandButton value="Guardar" icon="pi pi-save" actionListener="#{userController.updateUser}"
