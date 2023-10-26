@@ -5,40 +5,47 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Editar Clientes</title>
+        <title>Editar Cliente</title>
+        <style>
+            body {
+                background-color: cornflowerblue;
+                margin: 0;
+                font-family: Arial, sans-serif;
+            }
+            
+            .custom-toggle-switch {
+                font-family: inherit;
+                font-size: inherit;
+                margin: 0 auto;
+            }
+            
+        </style>
     </h:head>
 
     <h:body>
+        <p:growl id="message" showDetail="true"/>
         <h:form id="menu">
-
-            <p:menubar>
-
-                <p:menuitem value="Bienvenida" outcome="landingPage" icon="pi pi-fw pi-home"/>
-
-                 <p:submenu label="Cliente" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-eye"/>
+            <p:menubar styleClass="custom-menu">
+                <p:menuitem value="Inicio" outcome="landingPage" icon="pi pi-fw pi-home"/>
+                <p:submenu label="Cliente" icon="pi pi-fw pi-user">
+                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-                
-                <p:submenu label="Sede" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-eye"/>
+                <p:submenu label="Sede" icon="pi pi-fw pi-map">
+                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:submenu label="Unidades" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
+                <p:submenu label="Unidades" icon="pi pi-fw pi-table">
+                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-                
                 <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-eye"/>
+                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:submenu label="Veterinarios" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-eye"/>
+                <p:submenu label="Veterinarios" icon="pi pi-fw pi-id-card">
+                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
-                
+                <f:facet name="options">
+                    <p:commandButton value="Cerrar Sesión" actionListener="#{logInController.logOut()}" icon="pi pi-fw pi-sign-out" styleClass="ui-button-danger"/>
+                </f:facet>
             </p:menubar>
-
         </h:form>
 
         <h:form id="form">
@@ -49,32 +56,36 @@
                 <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
             </p:confirmDialog>
 
-            <p:commandButton value="Crear Cliente" icon="pi pi-plus" actionListener="#{customerController.inicializate}"
-                             update=":form:manage-user-content" oncomplete="PF('manageUserDialog').show()"
-                             styleClass="ui-button-success" style="margin: .50rem">
-                <p:resetInput target=":form:manage-user-content"/>
-            </p:commandButton>
-
-
-
-            <p:toggleSwitch value="#{customerController.viewDisabledClient}">Ver deshabilitado
-                <p:ajax listener="#{customerController.viewDisabledMessage}" update="form message"/>
-            </p:toggleSwitch>
-
-
+            <div class="header" style="display: flex; justify-content: flex-start;">
+                <p:commandButton value="Crear Cliente" icon="pi pi-plus" actionListener="#{customerController.inicializate}"
+                                 update=":form:manage-user-content" oncomplete="PF('manageUserDialog').show()"
+                                 styleClass="ui-button-success" style="margin: .50rem">
+                    <p:resetInput target=":form:manage-user-content"/>
+                </p:commandButton>
+                <div style="display: flex; align-items: center;">
+                    <p:toggleSwitch id="toggleSwitch" value="#{customerController.viewDisabledClient}" styleClass="custom-toggle-switch">
+                        <p:ajax listener="#{customerController.viewDisabledMessage}" update="form message"/>
+                    </p:toggleSwitch>
+                    <p:tooltip for="toggleSwitch" value="Ver Deshabilitados" showEvent="mouseover" hideEvent="mouseout" position="top"/>
+                </div>
+            </div>
+            
             <p:dialog header="Información del Cliente" showEffect="fade" modal="true"
                       widgetVar="manageUserDialog" responsive="true">
-                <p:outputPanel id="manage-user-content" class="ui-fluid">
-
-                    <p:outputPanel>
+               <p:outputPanel id="manage-user-content" class="ui-fluid">
+                   <p:outputPanel>
+                       <div class="p-field">
+                           <p:outputLabel>Cedula</p:outputLabel>
+                           <p:inputText id="cedula2" value="#{customerController.selectedCustomerTO.cedula}" 
+                                        placeholder="#{customerController.selectedCustomerTO.cedula == '0' ? '' : 'Introduce la cédula'}" 
+                                        onfocus="if (this.value == '0') this.value = ''" 
+                                        onblur="if (this.value == '') this.value = '0'">
+                               <!-- el placeholder de cedula no funciona por ser un int y ya tener un cero puesto en el textbox-->
+                           </p:inputText>
+                       </div>
                         <div class="p-field">
-                            <p:outputLabel>Cedula</p:outputLabel>
-                            <p:inputText id="cedula2" value="#{customerController.selectedCustomerTO.cedula}"/>
-                        </div>
-
-                        <div class="p-field">
-                            <p:outputLabel >Correo</p:outputLabel>
-                            <p:inputText id="emali2" value="#{customerController.selectedCustomerTO.email}" />
+                            <p:outputLabel>Correo</p:outputLabel>
+                            <p:inputText id="email2" value="#{customerController.selectedCustomerTO.email}" placeholder="correo123+@correo.com"/>
                         </div>
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
@@ -84,10 +95,9 @@
                             <p:outputLabel>Apellido</p:outputLabel>
                             <p:inputText id="lastname2" value="#{customerController.selectedCustomerTO.lastname}" />
                         </div>
-
                     </p:outputPanel>
-
                 </p:outputPanel>
+
                 <f:facet name="footer">
                     <p:commandButton value="Crear" icon="pi pi-check"  actionListener="#{customerController.insertCustomer}"
                                      update="form manage-user-content" style="margin: .25rem" process="manage-user-content @this">
@@ -100,9 +110,9 @@
                 </f:facet>
 
             </p:dialog>
-
-            <p:dataTable id="enablecustomers" var="customer" value="#{customerController.customerList}" rendered="#{!customerController.viewDisabledClient}">
-
+            
+            <p:dataTable id="enablecustomers" var="customer" value="#{customerController.customerList}" 
+                         rendered="#{!customerController.viewDisabledClient}" rows="10" paginator="true" paginatorPosition="bottom">
                 <p:column headerText="Cedula">
                     <h:outputText value="#{customer.cedula}"/>
                 </p:column>
@@ -110,38 +120,37 @@
                     <h:outputText value="#{customer.name} #{customer.lastname}" />
                 </p:column>
                 <p:column headerText="Opciones">
-                    <p:menuButton>
-                        <p:menuitem value="Editar"  update=":form:edit-client-content" icon="pi pi-pencil" oncomplete="PF('editClientContent').show()">
-                            <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
-                            <p:resetInput target=":form:edit-client-content"/>
-                        </p:menuitem>
-                        <p:menuitem value="Borrar"  update=":form enablecustomers" icon="pi pi-trash" oncomplete="PF('disableCustomerDialog').show()">
-                            <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
-                            <p:resetInput target=":form"/>
-                        </p:menuitem>
-                    </p:menuButton>
+                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" 
+                                     title="Editar" oncomplete="PF('editClientContent').show()">
+                        <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
+                        <p:resetInput target=":form:edit-client-content"/>
+                    </p:commandButton>
+                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" 
+                                     title="Borrar" oncomplete="PF('disableCustomerDialog').show()">
+                        <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
+                        <p:resetInput target=":form"/>
+                    </p:commandButton>
                 </p:column>
-            </p:dataTable>
+            </p:dataTable> 
 
-            <p:dataTable id="disablecustomers" var="customer" value="#{customerController.disableCustomerList}" rendered="#{customerController.viewDisabledClient}">
-
+            <p:dataTable id="disablecustomers" var="customer" value="#{customerController.disableCustomerList}" rendered="#{customerController.viewDisabledClient}" rows="10" paginator="true" paginatorPosition="bottom">
                 <p:column headerText="Cedula">
                     <h:outputText value="#{customer.cedula}" />
                 </p:column>
                 <p:column headerText="Nombre">
                     <h:outputText value="#{customer.name} #{customer.lastname}" />
                 </p:column>
-                <p:column headerText="Recuperar">                    
-                    <p:commandButton icon="pi pi-refresh"  oncomplete="PF('enableCustomerDialog').show()"
-                                     update="form disablecustomers" process="@this">
+                <p:column headerText="Recuperar">
+                    <p:commandButton icon="pi pi-refresh" styleClass="ui-button-rounded" title="Recuperar" 
+                                     oncomplete="PF('enableCustomerDialog').show()" process="@this">
                         <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
                     </p:commandButton>
-                    
                 </p:column>
             </p:dataTable>
 
 
-            <p:dialog header="Informacion del Cliente" showEffect="fade" modal="true"
+
+            <p:dialog header="Editar Cliente" showEffect="fade" modal="true"
                       widgetVar="editClientContent" responsive="true">
                 <p:outputPanel id="edit-client-content" class="ui-fluid">
                         <div class="p-field">
@@ -151,7 +160,7 @@
 
                         <div class="p-field">
                             <p:outputLabel >Correo</p:outputLabel>
-                            <p:inputText id="emali1" value="#{customerController.selectedCustomerTO.email}" />
+                            <p:inputText id="emali1" value="#{customerController.selectedCustomerTO.email}" placeholder="correo123+@correo.com" />
                         </div>
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
