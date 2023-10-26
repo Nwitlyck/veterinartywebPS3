@@ -6,44 +6,49 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Editar Veterinarios</title>
+         <style>
+            body {
+                background-color: cornflowerblue;
+                margin: 0;
+                font-family: Arial, sans-serif;
+            }
+            
+            .custom-toggle-switch {
+                font-family: inherit;
+                font-size: inherit;
+                margin: 0 auto;
+            }
+            
+        </style>
     </h:head>
 
     <h:body>
         <p:growl id="message" showDetail="true"/>
         <h:form id="menu">
 
-            <p:menubar>
-
-                <p:menuitem value="Bienvenida" outcome="landingPage" icon="pi pi-fw pi-home"/>
-
-                <p:submenu label="Cliente" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-eye"/>
+           <p:menubar styleClass="custom-menu">
+                <p:menuitem value="Inicio" outcome="landingPage" icon="pi pi-fw pi-home"/>
+                <p:submenu label="Cliente" icon="pi pi-fw pi-user">
+                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:submenu label="Sede" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-eye"/>
+                <p:submenu label="Sede" icon="pi pi-fw pi-map">
+                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:submenu label="Unidades" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
+                <p:submenu label="Unidades" icon="pi pi-fw pi-table">
+                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
                 <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-eye"/>
+                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:submenu label="Veterinarios" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-eye"/>
+                <p:submenu label="Veterinarios" icon="pi pi-fw pi-id-card">
+                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
-
+                <f:facet name="options">
+                    <p:commandButton value="Cerrar Sesión" actionListener="#{logInController.logOut()}" icon="pi pi-fw pi-sign-out" styleClass="ui-button-danger"/>
+                </f:facet>
             </p:menubar>
-
         </h:form>
-
-
-
+        
         <h:form id="form">
             <p:growl id="message" showDetail="true"/>
 
@@ -51,18 +56,21 @@
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" />
             </p:confirmDialog>
-
-            <p:commandButton value="Crear Sede" icon="pi pi-plus" actionListener="#{siteController.resetSelectedSite()}"
+            
+            <div class="header" style="display: flex; justify-content: flex-start;">
+                <p:commandButton value="Crear Sede" icon="pi pi-plus" actionListener="#{siteController.resetSelectedSite()}"
                              update=":form:manage-site-content" oncomplete="PF('manageSiteDialog').show()"
                              styleClass="ui-button-success" style="margin: .50rem">
                 <p:resetInput target=":form:manage-site-content"/>
             </p:commandButton>
-
-            <p:toggleSwitch value="#{siteController.viewDisabledSite}"> Ver deshabilitado
-                <p:ajax listener="#{siteController.viewDisabledMessage}" update="form message"/>
-            </p:toggleSwitch>
-
-            <p:dialog header="Detalles de Sede" showEffect="fade" modal="true"
+                <div style="display: flex; align-items: center;">
+                    <p:toggleSwitch id="toggleSwitch" value="#{siteController.viewDisabledSite}" styleClass="custom-toggle-switch">
+                        <p:ajax listener="#{siteController.viewDisabledMessage}" update="form message"/>
+                    </p:toggleSwitch>
+                    <p:tooltip for="toggleSwitch" value="Ver Deshabilitados" showEvent="mouseover" hideEvent="mouseout" position="top"/>
+                </div>
+            </div>
+            <p:dialog header="Información de la Sede" showEffect="fade" modal="true"
                       widgetVar="manageSiteDialog" responsive="true">
                 <p:outputPanel id="manage-site-content" class="ui-fluid">
 
@@ -113,26 +121,19 @@
             </p:dialog>
 
 
-            <p:dataTable id="enableSites" var="site" value="#{siteController.siteList}" rendered="#{!siteController.viewDisabledSite}">
-
+            <p:dataTable id="enableSites" var="site" value="#{siteController.siteList}" rendered="#{!siteController.viewDisabledSite}" rows="10" paginator="true" paginatorPosition="bottom">
                 <p:column headerText="Nombre">
                     <h:outputText value="#{site.name}" />
                 </p:column>
-
-
                 <p:column headerText="Opciones">
-                    <p:menuButton>
-                        <p:menuitem value="Editar"  update=":form:edit-site-content" icon="pi pi-pencil" oncomplete="PF('editSiteContent').show()" 
-                                    process="@this">
-                            <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
-                            <p:resetInput target=":form:edit-site-content" />
-                        </p:menuitem>
-
-                        <p:menuitem value="Borrar"  update=":form enableSites" icon="pi pi-trash" oncomplete="PF('disableSiteDialog').show()" process="@this">
-                            <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
-                            <p:resetInput target=":form"/>
-                        </p:menuitem>
-                    </p:menuButton>
+                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editSiteContent').show()">
+                        <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
+                        <p:resetInput target=":form:edit-site-content" />
+                    </p:commandButton>
+                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableSiteDialog').show()">
+                        <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
+                        <p:resetInput target=":form"/>
+                    </p:commandButton>
                 </p:column>
             </p:dataTable>
 
@@ -186,23 +187,20 @@
 
 
 
-            <p:dataTable id="disableSites" var="site" value="#{siteController.disableSiteList}" rendered="#{siteController.viewDisabledSite}">
-
+            <p:dataTable id="disableSites" var="site" value="#{siteController.disableSiteList}" rendered="#{siteController.viewDisabledSite}" rows="10" paginator="true" paginatorPosition="bottom">
                 <p:column headerText="Nombre">
                     <h:outputText value="#{site.name}" />
                 </p:column>
-
-
                 <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh"  oncomplete="PF('enableSiteDialog').show()"
-                                     update="form disableSites" style="margin: .25rem" process="@this">
+                    <p:commandButton icon="pi pi-refresh" styleClass="ui-button-rounded ui-button" title="Recuperar" oncomplete="PF('enableSiteDialog').show()" style="margin: .25rem" process="@this">
                         <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
                     </p:commandButton>
-
                 </p:column>
             </p:dataTable>
 
-            <p:dialog header="Info Sede" showEffect="fade" modal="true"
+
+
+            <p:dialog header="Editar Sede" showEffect="fade" modal="true"
                       widgetVar="editSiteContent" responsive="true">
                 <p:outputPanel id="edit-site-content" class="ui-fluid">
 

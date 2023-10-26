@@ -5,41 +5,179 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Home</title>
+        <title>Inicio</title>
+        <style>
+            body {
+                background-color: cornflowerblue;
+                margin: 0;
+                font-family: Arial, sans-serif;
+            }
+
+            .header {
+                background-color: cornflowerblue;
+                color: #fff;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .content {
+                margin: 20px;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            .info-box {
+                background-color: #f0f0f0;
+                border: 1px solid #ccc;
+                padding: 10px;
+                margin: 10px 0;
+                border-radius: 5px;
+            }
+            
+            .customer-badge.role-admin {
+                background-color: #FF5733;
+                color: #FFF;
+                padding: 5px 10px;
+                border-radius: 3px;
+            }
+
+            .customer-badge.role-asistente {
+                background-color: #9999ff;
+                color: #FFF;
+                padding: 5px 10px;
+                border-radius: 3px;
+            }
+            
+            .customer-badge.role-veterinario {
+                background-color: #3498db;
+                color: #FFF;
+                padding: 5px 10px;
+                border-radius: 3px;
+            }
+        </style>
     </h:head>
 
     <h:body>
-        <p:growl id="message" showDetail="true"/>
         <h:form id="menu">
-
-            <p:menubar>
-
-                <p:menuitem value="Bienvenida" outcome="landingPage" icon="pi pi-fw pi-home"/>
-
-                <p:submenu label="Cliente" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-eye"/>
+            <p:menubar styleClass="custom-menu">
+                <p:menuitem value="Inicio" outcome="landingPage" icon="pi pi-fw pi-home"/>
+                <p:submenu label="Cliente" icon="pi pi-fw pi-user">
+                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-                
-                <p:submenu label="Sede" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-eye"/>
+                <p:submenu label="Sede" icon="pi pi-fw pi-map">
+                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:submenu label="Unidades" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
+                <p:submenu label="Unidades" icon="pi pi-fw pi-table">
+                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-                
                 <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-eye"/>
+                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:submenu label="Veterinarios" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-eye"/>
+                <p:submenu label="Veterinarios" icon="pi pi-fw pi-id-card">
+                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
-                
+                <f:facet name="options">
+                    <p:commandButton value="Cerrar Sesión" actionListener="#{logInController.logOut()}" icon="pi pi-fw pi-sign-out" styleClass="ui-button-danger"/>
+                </f:facet>
             </p:menubar>
-
         </h:form>
+
+        <div class="header">
+            <h1>Página de Administración de la Clínica Veterinaria</h1>
+        </div>
+
+        <div class="content">
+            <h2 class="section-title">Gestión de Clientes</h2>
+            <div class="section-content">
+                <p:button value="Editar Cliente" outcome="editCustomer" styleClass="button" />
+                <p:dataTable id="enablecustomers" var="customer" value="#{customerController.customerList}" rendered="#{!customerController.viewDisabledClient}" paginator="true" paginatorPosition="bottom">
+                    <p:column headerText="Cedula">
+                        <h:outputText value="#{customer.cedula}"/>
+                    </p:column>
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{customer.name} #{customer.lastname}" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </div>
+
+
+        <div class="content">
+            <h2 class="section-title">Gestión de Sedes</h2>
+            <div class="section-content">
+                <p:button value="Editar Sede" outcome="editSite" styleClass="button" />
+
+                <p:dataTable id="enableSites" var="site" value="#{siteController.siteList}" rendered="#{!siteController.viewDisabledSite}" paginator="true" paginatorPosition="bottom">
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{site.name}" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2 class="section-title">Gestión de Unidades</h2>
+            <div class="section-content">
+                <p:button value="Editar Unidades" outcome="editUnit" styleClass="button" />
+                <p:dataTable id="enableUnit" var="obj" value="#{unitController.unitList}"  rendered="#{!unitController.viewDisableUnit}" paginator="true" paginatorPosition="bottom">
+
+                    <p:column headerText="Placa">
+                        <h:outputText value="#{obj.plate}" />
+                    </p:column>
+                    <p:column headerText="Número de Unidad">
+                        <h:outputText value="#{obj.name}" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2 class="section-title">Gestión de Usuarios</h2>
+            <div class="section-content">
+                <p:button value="Editar Usuarios" outcome="editUsers" styleClass="button" />
+                <p:dataTable id="enableUsers" var="obj" value="#{userController.userList}" rendered="#{!userController.viewDisabledUser}" paginator="true" paginatorPosition="bottom">
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{obj.name}" />
+                    </p:column>
+                    <p:column headerText="Apellido">
+                        <h:outputText value="#{obj.lastname}" />
+                    </p:column>
+                    <p:column headerText="Correo">
+                        <h:outputText value="#{obj.email}" />
+                    </p:column>
+                    <p:column headerText="Rol">
+                         <span class="customer-badge role-#{userController.getRoleNameByRoleId(obj.role).toLowerCase()}">#{userController.getRoleNameByRoleId(obj.role)}</span>
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2 class="section-title">Gestión de Veterinarios</h2>
+            <div class="section-content">
+                <p:button value="Editar Veterinarios" outcome="editVeterinary" styleClass="button" />
+                <p:dataTable id="enableUsersVet" var="obj" value="#{userVetController.userVetList}" rendered="#{!userVetController.viewDisabledVet}" paginator="true" paginatorPosition="bottom">
+
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{obj.name}" />
+                    </p:column>
+                    <p:column headerText="Apellido">
+                        <h:outputText value="#{obj.lastname}" />
+                    </p:column>
+                    <p:column headerText="Correo">
+                        <h:outputText value="#{obj.email}" />
+                    </p:column>
+                </p:dataTable>
+
+            </div>
+        </div>
+
+
+
+
+
+
     </h:body>
 </html>
