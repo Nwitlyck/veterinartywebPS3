@@ -63,7 +63,6 @@ public class CustomerController implements Serializable {
         selectedCustomerTO = new CustomersTO();
 
     }
-    
 
     public List<CustomersTO> getCustomerList() {
         List<CustomersTO> returnList;
@@ -98,7 +97,7 @@ public class CustomerController implements Serializable {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El correo esta vacio"));
             return false;
         }
-        
+
         if (selectedCustomerTO.getName().isEmpty() || selectedCustomerTO.getName() == null) {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El nombre esta vacio"));
             return false;
@@ -107,24 +106,26 @@ public class CustomerController implements Serializable {
         return true;
     }
 
-    private boolean followMetrics() {
-        
-        if (!(selectedCustomerTO.getCedula() >= 100000000 && selectedCustomerTO.getCedula() <= 999999999)) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La cédula no esta en el rango debido"));
-            return false;
-        }
+    private boolean followMetrics(boolean isUpdate) {
 
-        for (CustomersTO customer : getCustomerList()) {
-            if (selectedCustomerTO.getCedula() == customer.getCedula()) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La cedula ya existe"));
+        if (!isUpdate) {
+            if (!(selectedCustomerTO.getCedula() >= 100000000 && selectedCustomerTO.getCedula() <= 999999999)) {
+                FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La cédula no esta en el rango debido"));
                 return false;
             }
-        }
 
-        for (CustomersTO customer : getDisableCustomerList()) {
-            if (selectedCustomerTO.getCedula() == customer.getCedula()) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La cedula ya existe"));
-                return false;
+            for (CustomersTO customer : getCustomerList()) {
+                if (selectedCustomerTO.getCedula() == customer.getCedula()) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La cedula ya existe"));
+                    return false;
+                }
+            }
+
+            for (CustomersTO customer : getDisableCustomerList()) {
+                if (selectedCustomerTO.getCedula() == customer.getCedula()) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La cedula ya existe"));
+                    return false;
+                }
             }
         }
 
@@ -158,7 +159,7 @@ public class CustomerController implements Serializable {
             return;
         }
 
-        if (!followMetrics()) {
+        if (!followMetrics(false)) {
             return;
         }
 
@@ -179,7 +180,7 @@ public class CustomerController implements Serializable {
             return;
         }
 
-        if (!followMetrics()) {
+        if (!followMetrics(true)) {
             selectedCustomerTO = new CustomersTO();
             return;
         }
