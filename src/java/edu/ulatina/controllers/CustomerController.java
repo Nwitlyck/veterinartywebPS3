@@ -63,6 +63,7 @@ public class CustomerController implements Serializable {
         selectedCustomerTO = new CustomersTO();
 
     }
+    
 
     public List<CustomersTO> getCustomerList() {
         List<CustomersTO> returnList;

@@ -6,37 +6,65 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Editar Usuario</title>
+        
+        <style>
+            body {
+                background-color: cornflowerblue;
+                margin: 0;
+                font-family: Arial, sans-serif;
+            }
+            
+            .custom-toggle-switch {
+                font-family: inherit;
+                font-size: inherit;
+                margin: 0 auto;
+            }
+            .customer-badge.role-admin {
+                background-color: #FF5733;
+                color: #FFF;
+                padding: 5px 10px;
+                border-radius: 3px;
+            }
+
+            .customer-badge.role-asistente {
+                background-color: #9999ff;
+                color: #FFF;
+                padding: 5px 10px;
+                border-radius: 3px;
+            }
+            
+            .customer-badge.role-veterinario {
+                background-color: #3498db;
+                color: #FFF;
+                padding: 5px 10px;
+                border-radius: 3px;
+            }
+        </style>
     </h:head>
 
     <h:body>
+       <p:growl id="message" showDetail="true"/>
         <h:form id="menu">
-
-            <p:menubar>
-
-                <p:menuitem value="Bienvenida" outcome="landingPage" icon="pi pi-fw pi-home"/>
-
-                <p:submenu label="Cliente" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-eye"/>
+            <p:menubar styleClass="custom-menu">
+                <p:menuitem value="Inicio" outcome="landingPage" icon="pi pi-fw pi-home"/>
+                <p:submenu label="Cliente" icon="pi pi-fw pi-user">
+                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:submenu label="Sede" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-eye"/>
+                <p:submenu label="Sede" icon="pi pi-fw pi-map">
+                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:submenu label="Unidades" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-eye"/>
+                <p:submenu label="Unidades" icon="pi pi-fw pi-table">
+                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
                 <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-eye"/>
+                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:submenu label="Veterinarios" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-eye"/>
+                <p:submenu label="Veterinarios" icon="pi pi-fw pi-id-card">
+                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
-
-                <p:menuitem value="Cerrar Sesión" icon="pi pi-sign-out"  actionListener="#{logInController.logOut()}"/>
-
+                <f:facet name="options">
+                    <p:commandButton value="Cerrar Sesión" actionListener="#{logInController.logOut()}" icon="pi pi-fw pi-sign-out" styleClass="ui-button-danger"/>
+                </f:facet>
             </p:menubar>
 
         </h:form>
@@ -48,18 +76,22 @@
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
                 <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" />
             </p:confirmDialog>
-
-            <p:commandButton value="Crear Usuario" icon="pi pi-plus" actionListener="#{userController.resetSelectUser}"
+            
+             <div class="header" style="display: flex; justify-content: flex-start;">
+                <p:commandButton value="Crear Usuario" icon="pi pi-plus" actionListener="#{userController.resetSelectUser}"
                              update=":form:manage-user-content" oncomplete="PF('manageUserDialog').show()"
                              styleClass="ui-button-success" style="margin: .50rem">
                 <p:resetInput target=":form:manage-user-content"/>
             </p:commandButton>
+                <div style="display: flex; align-items: center;">
+                    <p:toggleSwitch id="toggleSwitch" value="#{userController.viewDisabledUser}" styleClass="custom-toggle-switch">
+                        <p:ajax listener="#{userController.viewDisabledMessage}" update="form message"/>
+                    </p:toggleSwitch>
+                    <p:tooltip for="toggleSwitch" value="Ver Deshabilitados" showEvent="mouseover" hideEvent="mouseout" position="top"/>
+                </div>
+            </div>
 
-            <p:toggleSwitch value="#{userController.viewDisabledUser}"> Ver deshabilitado
-                <p:ajax listener="#{userController.viewDisabledMessage}" update="form message"/>
-            </p:toggleSwitch>
-
-            <p:dialog header="Detalles de Usuario" showEffect="fade" modal="true"
+            <p:dialog header="Información del Usuario" showEffect="fade" modal="true"
                       widgetVar="manageUserDialog" responsive="true">
                 <p:outputPanel id="manage-user-content" class="ui-fluid">
 
@@ -83,7 +115,7 @@
                         </div>
 
                         <div class="p-field">                                               
-                            <p:outputLabel for="role1">Role</p:outputLabel>
+                            <p:outputLabel for="role1">Rol</p:outputLabel>
                             <p:selectOneMenu id="role1" value="#{userController.selectedUser.role}">
                                 <f:selectItem itemLabel="Seleccione el rol" itemValue="" noSelectionOption="true"/>
                                 <f:selectItems value="#{userController.mapRoles}"/>
@@ -107,10 +139,7 @@
                 </f:facet>
             </p:dialog>
             
-            <p:dataTable id="enableUsers" var="obj" value="#{userController.userList}" rendered="#{!userController.viewDisabledUser}">
-
-
-
+            <p:dataTable id="enableUsers" var="obj" value="#{userController.userList}" rendered="#{!userController.viewDisabledUser}" rows="10" paginator="true" paginatorPosition="bottom">
                 <p:column headerText="Nombre">
                     <h:outputText value="#{obj.name}" />
                 </p:column>
@@ -121,27 +150,22 @@
                     <h:outputText value="#{obj.email}" />
                 </p:column>
                 <p:column headerText="Rol">
-                    <h:outputText value="#{userController.getRoleNameByRoleId(obj.role)}" />
+                    <span class="customer-badge role-#{userController.getRoleNameByRoleId(obj.role).toLowerCase()}">#{userController.getRoleNameByRoleId(obj.role)}</span>
                 </p:column>
-
                 <p:column headerText="Opciones">
-                    <p:menuButton>
-                        <p:menuitem value="Editar"  update=":form:edit-user-content" icon="pi pi-pencil" oncomplete="PF('editUserContent').show()">
-                            <f:setPropertyActionListener value="#{obj}" target="#{userController.selectedUser}"/>
-                            <p:resetInput target=":form:edit-user-content"/>
-                        </p:menuitem>
-
-                        <p:menuitem value="Borrar"  update="form enableUsers" icon="pi pi-trash" oncomplete="PF('disableUserDialog').show()" process="@this">
-                            <f:setPropertyActionListener value="#{obj}" target="#{userController.selectedUser}"/>
-                            <p:resetInput target=":form"/>
-                        </p:menuitem>
-
-                    </p:menuButton>
+                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editUserContent').show()">
+                        <f:setPropertyActionListener value="#{obj}" target="#{userController.selectedUser}"/>
+                        <p:resetInput target=":form:edit-user-content"/>
+                    </p:commandButton>
+                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableUserDialog').show()">
+                        <f:setPropertyActionListener value="#{obj}" target="#{userController.selectedUser}"/>
+                        <p:resetInput target=":form"/>
+                    </p:commandButton>
                 </p:column>
             </p:dataTable>
 
-            <p:dataTable id="disableUsers"  var="obj" value="#{userController.disableUserList}" rendered="#{userController.viewDisabledUser}">
 
+            <p:dataTable id="disableUsers" var="obj" value="#{userController.disableUserList}" rendered="#{userController.viewDisabledUser}" rows="10" paginator="true" paginatorPosition="bottom">
                 <p:column headerText="Nombre">
                     <h:outputText value="#{obj.name}" />
                 </p:column>
@@ -152,22 +176,19 @@
                     <h:outputText value="#{obj.email}" />
                 </p:column>
                 <p:column headerText="Rol">
-                    <h:outputText value="#{userController.getRoleNameByRoleId(obj.role)}" />
+                    <span class="customer-badge role-#{userController.getRoleNameByRoleId(obj.role).toLowerCase()}">#{userController.getRoleNameByRoleId(obj.role)}</span>
                 </p:column>
-
-
                 <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh"  oncomplete="PF('enableUserDialog').show()"
-                                     update="form disableUsers" style="margin: .25rem" process="@this">
+                    <p:commandButton icon="pi pi-refresh" styleClass="ui-button-rounded" title="Recuperar" oncomplete="PF('enableUserDialog').show()" update="form disableUsers" style="margin: .25rem" process="@this">
                         <f:setPropertyActionListener value="#{obj}" target="#{userController.selectedUser}"/>
                     </p:commandButton>
-
                 </p:column>
             </p:dataTable>
 
 
 
-            <p:dialog header="Informacion del Usuario" showEffect="fade" modal="true"
+
+            <p:dialog header="Editar Usuario" showEffect="fade" modal="true"
                       widgetVar="editUserContent" responsive="true">
                 <p:outputPanel id="edit-user-content" class="ui-fluid">
 
@@ -185,10 +206,10 @@
                         </div>
                         <div class="p-field">
                             <p:outputLabel for="password" >Contraseña</p:outputLabel>
-                            <p:password id="password" value="#{userController.password}"/>
+                            <p:password id="password" value="#{userController.password}" toggleMask="true"/>
                         </div>
                         <div class="p-field">                                               
-                            <p:outputLabel for="role2">Role</p:outputLabel>
+                            <p:outputLabel for="role2">Rol</p:outputLabel>
                             <p:selectOneMenu id="role2" value="#{userController.selectedUser.role}">
                                 <f:selectItem itemLabel="Seleccione el rol" itemValue="" noSelectionOption="true"/>
                                 <f:selectItems value="#{userController.mapRoles}"/>
