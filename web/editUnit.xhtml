@@ -114,11 +114,11 @@
                     <h:outputText value="#{obj.name}" />
                 </p:column>
                 <p:column headerText="Opciones">
-                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editUnitContent').show()">
+                    <p:commandButton icon="pi pi-pencil" update=":form:edit-unit-content" styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editUnitContent').show()">
                         <f:setPropertyActionListener value="#{obj}" target="#{unitController.selectedUnit}"/>
                         <p:resetInput target=":form:edit-unit-content"/>
                     </p:commandButton>
-                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableUnitDialog').show()">
+                    <p:commandButton icon="pi pi-trash" update="form enableUnit"  styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableUnitDialog').show()">
                         <f:setPropertyActionListener value="#{obj}" target="#{unitController.selectedUnit}"/>
                         <p:resetInput target=":form"/>
                     </p:commandButton>
@@ -182,7 +182,7 @@
                     <h:outputText value="#{obj.name}" />
                 </p:column>
                 <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh" styleClass="ui-button-rounded" title="Recuperar" oncomplete="PF('enableUnitDialog').show()" update="form disableUnit" style="margin: .25rem" process="@this">
+                    <p:commandButton icon="pi pi-refresh" update="form disableUnit" styleClass="ui-button-rounded" title="Recuperar" oncomplete="PF('enableUnitDialog').show()" style="margin: .25rem" process="@this">
                         <f:setPropertyActionListener value="#{obj}" target="#{unitController.selectedUnit}"/>
                     </p:commandButton>
                 </p:column>

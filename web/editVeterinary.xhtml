@@ -120,11 +120,11 @@
                     <h:outputText value="#{obj.email}" />
                 </p:column>
                 <p:column headerText="Opciones">
-                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editVeterinaryContent').show()">
+                    <p:commandButton icon="pi pi-pencil" update=":form:edit-veterinary-content"  styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editVeterinaryContent').show()">
                         <f:setPropertyActionListener value="#{obj}" target="#{userVetController.selectedUserVet}"/>
                         <p:resetInput target=":form:edit-veterinary-content"/>
                     </p:commandButton>
-                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableUserVetDialog').show()" process="@this">
+                    <p:commandButton icon="pi pi-trash" update="form enableUsersVet"  styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableUserVetDialog').show()" process="@this">
                         <f:setPropertyActionListener value="#{obj}" target="#{userVetController.selectedUserVet}"/>
                         <p:resetInput target=":form"/>
                     </p:commandButton>
@@ -143,7 +143,7 @@
                     <h:outputText value="#{obj.email}" />
                 </p:column>
                 <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh" title="Recuperar" oncomplete="PF('enableUserVetDialog').show()" style="margin: .25rem" process="@this">
+                    <p:commandButton icon="pi pi-refresh" update="form disableUsersVet"  title="Recuperar" oncomplete="PF('enableUserVetDialog').show()" style="margin: .25rem" process="@this">
                         <f:setPropertyActionListener value="#{obj}" target="#{userVetController.selectedUserVet}"/>
                     </p:commandButton>
                 </p:column>
