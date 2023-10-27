@@ -126,11 +126,11 @@
                     <h:outputText value="#{site.name}" />
                 </p:column>
                 <p:column headerText="Opciones">
-                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editSiteContent').show()">
+                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" update=":form:edit-site-content" title="Editar" oncomplete="PF('editSiteContent').show()">
                         <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
                         <p:resetInput target=":form:edit-site-content" />
                     </p:commandButton>
-                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableSiteDialog').show()">
+                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" update=":form enableSites"  title="Borrar" oncomplete="PF('disableSiteDialog').show()">
                         <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
                         <p:resetInput target=":form"/>
                     </p:commandButton>
@@ -192,7 +192,7 @@
                     <h:outputText value="#{site.name}" />
                 </p:column>
                 <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh" styleClass="ui-button-rounded ui-button" title="Recuperar" oncomplete="PF('enableSiteDialog').show()" style="margin: .25rem" process="@this">
+                    <p:commandButton icon="pi pi-refresh" styleClass="ui-button-rounded ui-button" update="form disableSites" title="Recuperar" oncomplete="PF('enableSiteDialog').show()" style="margin: .25rem" process="@this">
                         <f:setPropertyActionListener value="#{site}" target="#{siteController.selectedSite}"/>
                     </p:commandButton>
                 </p:column>

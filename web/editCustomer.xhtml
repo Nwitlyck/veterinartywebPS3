@@ -85,7 +85,7 @@
                        </div>
                         <div class="p-field">
                             <p:outputLabel>Correo</p:outputLabel>
-                            <p:inputText id="email2" value="#{customerController.selectedCustomerTO.email}" placeholder="correo123+@correo.com"/>
+                            <p:inputText id="email2" value="#{customerController.selectedCustomerTO.email}" placeholder="felipe1@felipe.com"/>
                         </div>
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
@@ -120,12 +120,12 @@
                     <h:outputText value="#{customer.name} #{customer.lastname}" />
                 </p:column>
                 <p:column headerText="Opciones">
-                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" 
+                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" update=":form:edit-client-content" 
                                      title="Editar" oncomplete="PF('editClientContent').show()">
                         <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
                         <p:resetInput target=":form:edit-client-content"/>
                     </p:commandButton>
-                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" 
+                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" update=":form enablecustomers" 
                                      title="Borrar" oncomplete="PF('disableCustomerDialog').show()">
                         <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
                         <p:resetInput target=":form"/>
@@ -141,9 +141,10 @@
                     <h:outputText value="#{customer.name} #{customer.lastname}" />
                 </p:column>
                 <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh" styleClass="ui-button-rounded" title="Recuperar" 
+                    <p:commandButton icon="pi pi-refresh" styleClass="ui-button-rounded" title="Recuperar" update="form disablecustomers" 
                                      oncomplete="PF('enableCustomerDialog').show()" process="@this">
                         <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
+                        <p:resetInput target=":form"/>
                     </p:commandButton>
                 </p:column>
             </p:dataTable>
@@ -160,7 +161,7 @@
 
                         <div class="p-field">
                             <p:outputLabel >Correo</p:outputLabel>
-                            <p:inputText id="emali1" value="#{customerController.selectedCustomerTO.email}" placeholder="correo123+@correo.com" />
+                            <p:inputText id="emali1" value="#{customerController.selectedCustomerTO.email}" placeholder="felipe1@felipe.com" />
                         </div>
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>

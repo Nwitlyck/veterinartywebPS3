@@ -153,11 +153,11 @@
                     <span class="customer-badge role-#{userController.getRoleNameByRoleId(obj.role).toLowerCase()}">#{userController.getRoleNameByRoleId(obj.role)}</span>
                 </p:column>
                 <p:column headerText="Opciones">
-                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editUserContent').show()">
+                    <p:commandButton icon="pi pi-pencil" update=":form:edit-user-content"  styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editUserContent').show()">
                         <f:setPropertyActionListener value="#{obj}" target="#{userController.selectedUser}"/>
                         <p:resetInput target=":form:edit-user-content"/>
                     </p:commandButton>
-                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableUserDialog').show()">
+                    <p:commandButton icon="pi pi-trash" update="form enableUsers"  styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableUserDialog').show()">
                         <f:setPropertyActionListener value="#{obj}" target="#{userController.selectedUser}"/>
                         <p:resetInput target=":form"/>
                     </p:commandButton>
