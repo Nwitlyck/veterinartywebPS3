@@ -5,6 +5,7 @@ package edu.ulatina.controllers;
 import edu.ulatina.security.AESEncryptionDecryption;
 import edu.ulatina.objects.UserTO;
 import edu.ulatina.services.ServiceUserTO;
+import java.io.Serializable;
 import javax.faces.bean.*;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -20,7 +21,7 @@ import javax.faces.event.AjaxBehaviorEvent;
  */
 @ManagedBean(name = "userVetController")
 @ViewScoped
-public class VeterinaryController {
+public class VeterinaryController  implements Serializable {
     
     private UserTO selectedUserVet;
     private boolean viewDisabledVet = false;
