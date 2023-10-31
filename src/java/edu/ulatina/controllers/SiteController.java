@@ -110,7 +110,7 @@ public class SiteController implements Serializable {
             flag = false;
         }
         if (selectedSite.getAdress() == null || selectedSite.getAdress().equals("")) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de adress esta vacio"));
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de direccion esta vacio"));
             flag = false;
         }
         if (selectedSite.getAdress().length() >= 9 && selectedSite.getAdress().length() <= 0) {
@@ -163,7 +163,7 @@ public class SiteController implements Serializable {
             flag = false;
         }
         if (selectedSite.getAdress() == null || selectedSite.getAdress().equals("")) {
-            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de adress esta vacio"));
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de direccion esta vacio"));
             flag = false;
         }
 

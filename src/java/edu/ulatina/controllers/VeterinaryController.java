@@ -1,5 +1,3 @@
-
-
 package edu.ulatina.controllers;
 
 import edu.ulatina.security.AESEncryptionDecryption;
@@ -21,8 +19,8 @@ import javax.faces.event.AjaxBehaviorEvent;
  */
 @ManagedBean(name = "userVetController")
 @ViewScoped
-public class VeterinaryController  implements Serializable {
-    
+public class VeterinaryController implements Serializable {
+
     private UserTO selectedUserVet;
     private boolean viewDisabledVet = false;
     private ServiceUserTO serUserTO;
@@ -50,12 +48,12 @@ public class VeterinaryController  implements Serializable {
     public void setSerUserTO(ServiceUserTO serUserTO) {
         this.serUserTO = serUserTO;
     }
-    
+
     //Special Gets/sets
     public List<UserTO> getUserVetList() {
         List<UserTO> returnList;
         try {
-            returnList = serUserTO.selectByRole(1,2);
+            returnList = serUserTO.selectByRole(1, 2);
         } catch (Exception ex) {
             returnList = new ArrayList<>();
             ex.printStackTrace();
@@ -66,36 +64,33 @@ public class VeterinaryController  implements Serializable {
     public List<UserTO> getDisableUserVetList() {
         List<UserTO> returnList;
         try {
-            returnList = serUserTO.selectByRole(0,2);
+            returnList = serUserTO.selectByRole(0, 2);
         } catch (Exception ex) {
             returnList = new ArrayList<>();
             ex.printStackTrace();
         }
         return returnList;
     }
-    
-    public String getPassword(){
+
+    public String getPassword() {
         return "Password";
     }
-    
-    public void setPassword(String password){
-        if(password != "Password" || !password.isEmpty()){
-           selectedUserVet.setPassword(password);
-        }
-        else{
+
+    public void setPassword(String password) {
+        if (password != "Password" || !password.isEmpty()) {
+            selectedUserVet.setPassword(password);
+        } else {
             String p = new AESEncryptionDecryption().decrypt(selectedUserVet.getPassword());
             selectedUserVet.setPassword(p);
         }
     }
-    
+
     //metods
     @PostConstruct
     public void initialize() {
         serUserTO = new ServiceUserTO();
         selectedUserVet = new UserTO();
     }
-    
-    
 
     public void insertUser() {
 
@@ -121,15 +116,15 @@ public class VeterinaryController  implements Serializable {
     }
 
     public void updateUser() {
-        
-        if(selectedUserVet.getPassword().isEmpty()){
-            for(UserTO u : getUserVetList()){
-                if(u.getId() == selectedUserVet.getId()){
+
+        if (selectedUserVet.getPassword().isEmpty()) {
+            for (UserTO u : getUserVetList()) {
+                if (u.getId() == selectedUserVet.getId()) {
                     selectedUserVet.setPassword(new AESEncryptionDecryption().decrypt(u.getPassword()));
                 }
             }
         }
-        
+
         if (!notNull()) {
             return;
         }
@@ -149,7 +144,7 @@ public class VeterinaryController  implements Serializable {
             selectedUserVet = new UserTO();
         }
     }
-    
+
     public void disableUserVet() {
         try {
             serUserTO.delete(selectedUserVet);
@@ -170,8 +165,6 @@ public class VeterinaryController  implements Serializable {
         }
         this.selectedUserVet = new UserTO();
     }
-    
-    
 
     private boolean notNull() {
 
@@ -207,22 +200,23 @@ public class VeterinaryController  implements Serializable {
                 return false;
             }
         }
-        
+
         for (UserTO user : getDisableUserVetList()) {
             if (selectedUserVet.getEmail() == user.getEmail()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "El correo ya existe"));
                 return false;
             }
         }
-        
-        if (!(selectedUserVet.getPassword().length() >= 8 && selectedUserVet.getPassword().length() <= 16 )) {
-            
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La contraseña ocupa ser de entre 8 y 16 caracteres"));
+
+        String regexPatternPassword = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,16}$";
+        if (!Pattern.compile(regexPatternPassword).matcher(this.selectedUserVet.getPassword()).matches()) {
+
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "Formato de contraseña incorrecto la contraseña debe tener una mayúscula, una minúscula, un número y un caracter especial \"! @ # & ( )\". Mínimo un largo de 8 caracteres y un maximo de 16."));
             return false;
         }
         return true;
     }
-    
+
     public void viewDisabledMessage(AjaxBehaviorEvent event) {
         UIComponent component = event.getComponent();
         if (component instanceof UIInput) {

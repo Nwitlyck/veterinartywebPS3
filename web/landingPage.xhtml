@@ -75,8 +75,8 @@
             <h2 class="section-title">Gestión de Clientes</h2>
             <div class="section-content">
                 <p:button value="Editar Cliente" outcome="editCustomer" styleClass="button" />
-                <p:dataTable id="enablecustomers" var="customer" value="#{customerController.customerList}" rendered="#{!customerController.viewDisabledClient}" paginator="true" paginatorPosition="bottom">
-                    <p:column headerText="Cedula">
+                <p:dataTable id="enablecustomers" var="customer" value="#{customerController.customerList}" rendered="#{!customerController.viewDisabledClient}" paginator="true" rows="5" paginatorPosition="bottom">
+                    <p:column headerText="Cédula">
                         <h:outputText value="#{customer.cedula}"/>
                     </p:column>
                     <p:column headerText="Nombre">
@@ -92,7 +92,7 @@
             <div class="section-content">
                 <p:button value="Editar Sede" outcome="editSite" styleClass="button" />
 
-                <p:dataTable id="enableSites" var="site" value="#{siteController.siteList}" rendered="#{!siteController.viewDisabledSite}" paginator="true" paginatorPosition="bottom">
+                <p:dataTable id="enableSites" var="site" value="#{siteController.siteList}" rendered="#{!siteController.viewDisabledSite}" paginator="true" rows="5" paginatorPosition="bottom">
                     <p:column headerText="Nombre">
                         <h:outputText value="#{site.name}" />
                     </p:column>
@@ -104,7 +104,7 @@
             <h2 class="section-title">Gestión de Unidades</h2>
             <div class="section-content">
                 <p:button value="Editar Unidades" outcome="editUnit" styleClass="button" />
-                <p:dataTable id="enableUnit" var="obj" value="#{unitController.unitList}"  rendered="#{!unitController.viewDisableUnit}" paginator="true" paginatorPosition="bottom">
+                <p:dataTable id="enableUnit" var="obj" value="#{unitController.unitList}"  rendered="#{!unitController.viewDisableUnit}" paginator="true" rows="5" paginatorPosition="bottom">
 
                     <p:column headerText="Placa">
                         <h:outputText value="#{obj.plate}" />
@@ -120,7 +120,7 @@
             <h2 class="section-title">Gestión de Usuarios</h2>
             <div class="section-content">
                 <p:button value="Editar Usuarios" outcome="editUsers" styleClass="button" />
-                <p:dataTable id="enableUsers" var="obj" value="#{userController.userList}" rendered="#{!userController.viewDisabledUser}" paginator="true" paginatorPosition="bottom">
+                <p:dataTable id="enableUsers" var="obj" value="#{userController.userList}" rendered="#{!userController.viewDisabledUser}" paginator="true" rows="5" paginatorPosition="bottom">
                     <p:column headerText="Nombre">
                         <h:outputText value="#{obj.name}" />
                     </p:column>
@@ -141,7 +141,7 @@
             <h2 class="section-title">Gestión de Veterinarios</h2>
             <div class="section-content">
                 <p:button value="Editar Veterinarios" outcome="editVeterinary" styleClass="button" />
-                <p:dataTable id="enableUsersVet" var="obj" value="#{userVetController.userVetList}" rendered="#{!userVetController.viewDisabledVet}" paginator="true" paginatorPosition="bottom">
+                <p:dataTable id="enableUsersVet" var="obj" value="#{userVetController.userVetList}" rendered="#{!userVetController.viewDisabledVet}" paginator="true" rows="5" paginatorPosition="bottom">
 
                     <p:column headerText="Nombre">
                         <h:outputText value="#{obj.name}" />
