@@ -57,7 +57,7 @@
                <p:outputPanel id="manage-user-content" class="ui-fluid">
                    <p:outputPanel>
                        <div class="p-field">
-                           <p:outputLabel>Cedula</p:outputLabel>
+                           <p:outputLabel>Cédula</p:outputLabel>
                            <p:inputText id="cedula2" value="#{customerController.selectedCustomerTO.cedula}" 
                                         placeholder="#{customerController.selectedCustomerTO.cedula == '0' ? '' : 'Introduce la cédula'}" 
                                         onfocus="if (this.value == '0') this.value = ''" 
@@ -95,7 +95,7 @@
             
             <p:dataTable id="enablecustomers" var="customer" value="#{customerController.customerList}" 
                          rendered="#{!customerController.viewDisabledClient}" rows="10" paginator="true" paginatorPosition="bottom">
-                <p:column headerText="Cedula">
+                <p:column headerText="Cédula">
                     <h:outputText value="#{customer.cedula}"/>
                 </p:column>
                 <p:column headerText="Nombre">
@@ -116,7 +116,7 @@
             </p:dataTable> 
 
             <p:dataTable id="disablecustomers" var="customer" value="#{customerController.disableCustomerList}" rendered="#{customerController.viewDisabledClient}" rows="10" paginator="true" paginatorPosition="bottom">
-                <p:column headerText="Cedula">
+                <p:column headerText="Cédula">
                     <h:outputText value="#{customer.cedula}" />
                 </p:column>
                 <p:column headerText="Nombre">
@@ -137,7 +137,7 @@
                       widgetVar="editClientContent" responsive="true">
                 <p:outputPanel id="edit-client-content" class="ui-fluid">
                         <div class="p-field">
-                            <p:outputLabel>Cedula</p:outputLabel>
+                            <p:outputLabel>Cédula</p:outputLabel>
                             <p:inputMask id="cedula1" value="#{customerController.selectedCustomerTO.cedula}" mask="9-9999-9999" validateMask="true" disabled="true" />
                         </div>
 
