@@ -82,33 +82,6 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
 
         return objectTOList;
     }
-    
-    
-    public List<CustomersTO> selectByCedula(int enable, int byCedula) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<CustomersTO> objectTOList = new ArrayList<CustomersTO>();
-
-        ps = getConnection().prepareStatement("SELECT Cedula, Email, Name, Lastname, State FROM Customers WHERE State = ? AND Cedula = ?");
-        ps.setInt(1, enable);
-        rs = ps.executeQuery();
-
-        while (rs.next()) {
-            int cedula = rs.getInt("Cedula");
-            String email = rs.getString("Email");
-            String name = rs.getString("Name");
-            String lastname = rs.getString("Lastname");
-            int state = rs.getInt("State");
-
-            objectTOList.add(new CustomersTO(cedula,email ,name, lastname, state));
-        }
-
-        close(rs);
-        close(ps);
-        close(conn);
-
-        return objectTOList;
-    }
 
     @Override
     public void enable(CustomersTO objectTO) throws Exception {
