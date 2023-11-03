@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Editar Unidades</title>
         <style>
@@ -20,34 +21,13 @@
             }
             
         </style>
+        <f:event type="preRenderView" listener="#{logOutController.verifySession()}"/>
     </h:head>
 
     <h:body>
-
-        <p:growl id="message" showDetail="true"/>
+        
         <h:form id="menu">
-            <p:menubar styleClass="custom-menu">
-                <p:menuitem value="Inicio" outcome="landingPage" icon="pi pi-fw pi-home"/>
-                <p:submenu label="Cliente" icon="pi pi-fw pi-user">
-                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <p:submenu label="Sede" icon="pi pi-fw pi-map">
-                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <p:submenu label="Unidades" icon="pi pi-fw pi-table">
-                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <p:submenu label="Veterinarios" icon="pi pi-fw pi-id-card">
-                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <f:facet name="options">
-                    <p:commandButton value="Cerrar Sesión" actionListener="#{logInController.logOut()}" icon="pi pi-fw pi-sign-out" styleClass="ui-button-danger"/>
-                </f:facet>
-            </p:menubar>
-
+            <ui:include src="menu.xhtml"/>
         </h:form>
 
         <h:form id="form">
@@ -80,7 +60,7 @@
 
                         <div class="p-field">
                             <p:outputLabel>Placa</p:outputLabel>
-                             <p:inputMask id="plate" value="#{unitController.selectedUnit.plate}" placeholder="abc-000"/>
+                             <p:inputMask id="plate" value="#{unitController.selectedUnit.plate}" placeholder="abc000"/>
                         </div>
                         
                         <div class="p-field">
@@ -114,11 +94,11 @@
                     <h:outputText value="#{obj.name}" />
                 </p:column>
                 <p:column headerText="Opciones">
-                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editUnitContent').show()">
+                    <p:commandButton icon="pi pi-pencil" update=":form:edit-unit-content" styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editUnitContent').show()">
                         <f:setPropertyActionListener value="#{obj}" target="#{unitController.selectedUnit}"/>
                         <p:resetInput target=":form:edit-unit-content"/>
                     </p:commandButton>
-                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableUnitDialog').show()">
+                    <p:commandButton icon="pi pi-trash" update="form enableUnit"  styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableUnitDialog').show()">
                         <f:setPropertyActionListener value="#{obj}" target="#{unitController.selectedUnit}"/>
                         <p:resetInput target=":form"/>
                     </p:commandButton>
@@ -182,7 +162,7 @@
                     <h:outputText value="#{obj.name}" />
                 </p:column>
                 <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh" styleClass="ui-button-rounded" title="Recuperar" oncomplete="PF('enableUnitDialog').show()" update="form disableUnit" style="margin: .25rem" process="@this">
+                    <p:commandButton icon="pi pi-refresh" update="form disableUnit" styleClass="ui-button-rounded" title="Recuperar" oncomplete="PF('enableUnitDialog').show()" style="margin: .25rem" process="@this">
                         <f:setPropertyActionListener value="#{obj}" target="#{unitController.selectedUnit}"/>
                     </p:commandButton>
                 </p:column>
@@ -197,7 +177,7 @@
 
                         <div class="p-field">
                             <p:outputLabel>Placa</p:outputLabel>
-                             <p:inputMask id="plate2" placeholder="abc-000" value="#{unitController.selectedUnit.plate}"/>
+                            <p:inputMask id="plate2" placeholder="abc000" value="#{unitController.selectedUnit.plate}" disabled="true"/>
                         </div>
                         
                         <div class="p-field">

@@ -13,7 +13,8 @@ public abstract class Service {
 
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
-        conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databasename=VetShop;user=progra;password=1234;encrypt=false");
+        //conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databasename=VetShop;user=progra;password=1234;encrypt=false");
+        conn = DriverManager.getConnection("jdbc:sqlserver://database-1.cbzlcqyqfkne.us-east-2.rds.amazonaws.com:1433;databasename=vetShop;user=admin;password=admin1234;encrypt=false");
 
         return conn;
     }

@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Editar Veterinarios</title>
         <style>
@@ -20,32 +21,13 @@
             }
             
         </style>
+        <f:event type="preRenderView" listener="#{logOutController.verifySession()}"/>
     </h:head>
 
     <h:body>
-        <p:growl id="message" showDetail="true"/>
+        
         <h:form id="menu">
-            <p:menubar styleClass="custom-menu">
-                <p:menuitem value="Inicio" outcome="landingPage" icon="pi pi-fw pi-home"/>
-                <p:submenu label="Cliente" icon="pi pi-fw pi-user">
-                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <p:submenu label="Sede" icon="pi pi-fw pi-map">
-                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <p:submenu label="Unidades" icon="pi pi-fw pi-table">
-                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <p:submenu label="Veterinarios" icon="pi pi-fw pi-id-card">
-                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <f:facet name="options">
-                    <p:commandButton value="Cerrar Sesión" actionListener="#{logInController.logOut()}" icon="pi pi-fw pi-sign-out" styleClass="ui-button-danger"/>
-                </f:facet>
-            </p:menubar>
+            <ui:include src="menu.xhtml"/>
         </h:form>
 
         <h:form id="form">
@@ -120,11 +102,11 @@
                     <h:outputText value="#{obj.email}" />
                 </p:column>
                 <p:column headerText="Opciones">
-                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editVeterinaryContent').show()">
+                    <p:commandButton icon="pi pi-pencil" update=":form:edit-veterinary-content"  styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editVeterinaryContent').show()">
                         <f:setPropertyActionListener value="#{obj}" target="#{userVetController.selectedUserVet}"/>
                         <p:resetInput target=":form:edit-veterinary-content"/>
                     </p:commandButton>
-                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableUserVetDialog').show()" process="@this">
+                    <p:commandButton icon="pi pi-trash" update="form enableUsersVet"  styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableUserVetDialog').show()" process="@this">
                         <f:setPropertyActionListener value="#{obj}" target="#{userVetController.selectedUserVet}"/>
                         <p:resetInput target=":form"/>
                     </p:commandButton>
@@ -143,7 +125,7 @@
                     <h:outputText value="#{obj.email}" />
                 </p:column>
                 <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh" title="Recuperar" oncomplete="PF('enableUserVetDialog').show()" style="margin: .25rem" process="@this">
+                    <p:commandButton icon="pi pi-refresh" update="form disableUsersVet"  title="Recuperar" oncomplete="PF('enableUserVetDialog').show()" style="margin: .25rem" process="@this">
                         <f:setPropertyActionListener value="#{obj}" target="#{userVetController.selectedUserVet}"/>
                     </p:commandButton>
                 </p:column>

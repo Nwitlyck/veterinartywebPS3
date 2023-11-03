@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Editar Cliente</title>
         <style>
@@ -12,40 +13,21 @@
                 margin: 0;
                 font-family: Arial, sans-serif;
             }
-            
+
             .custom-toggle-switch {
                 font-family: inherit;
                 font-size: inherit;
                 margin: 0 auto;
             }
-            
+
         </style>
+        <f:event type="preRenderView" listener="#{logOutController.verifySession()}"/>
     </h:head>
 
     <h:body>
-        <p:growl id="message" showDetail="true"/>
+
         <h:form id="menu">
-            <p:menubar styleClass="custom-menu">
-                <p:menuitem value="Inicio" outcome="landingPage" icon="pi pi-fw pi-home"/>
-                <p:submenu label="Cliente" icon="pi pi-fw pi-user">
-                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <p:submenu label="Sede" icon="pi pi-fw pi-map">
-                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <p:submenu label="Unidades" icon="pi pi-fw pi-table">
-                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
-                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <p:submenu label="Veterinarios" icon="pi pi-fw pi-id-card">
-                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-pencil"/>
-                </p:submenu>
-                <f:facet name="options">
-                    <p:commandButton value="Cerrar Sesión" actionListener="#{logInController.logOut()}" icon="pi pi-fw pi-sign-out" styleClass="ui-button-danger"/>
-                </f:facet>
-            </p:menubar>
+            <ui:include src="menu.xhtml"/>
         </h:form>
 
         <h:form id="form">
@@ -69,23 +51,25 @@
                     <p:tooltip for="toggleSwitch" value="Ver Deshabilitados" showEvent="mouseover" hideEvent="mouseout" position="top"/>
                 </div>
             </div>
-            
+
             <p:dialog header="Información del Cliente" showEffect="fade" modal="true"
                       widgetVar="manageUserDialog" responsive="true">
-               <p:outputPanel id="manage-user-content" class="ui-fluid">
-                   <p:outputPanel>
-                       <div class="p-field">
-                           <p:outputLabel>Cedula</p:outputLabel>
-                           <p:inputText id="cedula2" value="#{customerController.selectedCustomerTO.cedula}" 
-                                        placeholder="#{customerController.selectedCustomerTO.cedula == '0' ? '' : 'Introduce la cédula'}" 
-                                        onfocus="if (this.value == '0') this.value = ''" 
-                                        onblur="if (this.value == '') this.value = '0'">
-                               <!-- el placeholder de cedula no funciona por ser un int y ya tener un cero puesto en el textbox-->
-                           </p:inputText>
-                       </div>
+                <p:outputPanel id="manage-user-content" class="ui-fluid">
+                    <p:outputPanel>
+                        <div class="p-field">
+                            <p:outputLabel>Cédula</p:outputLabel>
+                            <p:inputText id="cedula2" value="#{customerController.selectedCustomerTO.cedula}" 
+                                         placeholder="#{customerController.selectedCustomerTO.cedula == '0' ? '' : 'Introduce la cédula'}" 
+                                         onfocus="if (this.value == '0')
+                                                     this.value = ''" 
+                                         onblur="if (this.value == '')
+                                                     this.value = '0'">
+                                <!-- el placeholder de cedula no funciona por ser un int y ya tener un cero puesto en el textbox-->
+                            </p:inputText>
+                        </div>
                         <div class="p-field">
                             <p:outputLabel>Correo</p:outputLabel>
-                            <p:inputText id="email2" value="#{customerController.selectedCustomerTO.email}" placeholder="correo123+@correo.com"/>
+                            <p:inputText id="email2" value="#{customerController.selectedCustomerTO.email}" placeholder="felipe1@felipe.com"/>
                         </div>
                         <div class="p-field">
                             <p:outputLabel>Nombre</p:outputLabel>
@@ -110,22 +94,22 @@
                 </f:facet>
 
             </p:dialog>
-            
-            <p:dataTable id="enablecustomers" var="customer" value="#{customerController.customerList}" 
+
+            <p:dataTable id="enablecustomers" var="customer" value="#{customerController.listCustomersTOsEnable}" 
                          rendered="#{!customerController.viewDisabledClient}" rows="10" paginator="true" paginatorPosition="bottom">
-                <p:column headerText="Cedula">
+                <p:column headerText="Cédula" filterBy="#{customer.cedula}" filterMatchMode="contains">
                     <h:outputText value="#{customer.cedula}"/>
                 </p:column>
                 <p:column headerText="Nombre">
                     <h:outputText value="#{customer.name} #{customer.lastname}" />
                 </p:column>
                 <p:column headerText="Opciones">
-                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" 
+                    <p:commandButton icon="pi pi-pencil" styleClass="ui-button-rounded ui-button-success" update=":form:edit-client-content" 
                                      title="Editar" oncomplete="PF('editClientContent').show()">
                         <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
                         <p:resetInput target=":form:edit-client-content"/>
                     </p:commandButton>
-                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" 
+                    <p:commandButton icon="pi pi-trash" styleClass="ui-button-rounded ui-button-danger" update=":form enablecustomers" 
                                      title="Borrar" oncomplete="PF('disableCustomerDialog').show()">
                         <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
                         <p:resetInput target=":form"/>
@@ -133,17 +117,18 @@
                 </p:column>
             </p:dataTable> 
 
-            <p:dataTable id="disablecustomers" var="customer" value="#{customerController.disableCustomerList}" rendered="#{customerController.viewDisabledClient}" rows="10" paginator="true" paginatorPosition="bottom">
-                <p:column headerText="Cedula">
+            <p:dataTable id="disablecustomers" var="customer" value="#{customerController.listCustomersTOsDisble}" rendered="#{customerController.viewDisabledClient}" rows="10" paginator="true" paginatorPosition="bottom">
+                <p:column headerText="Cédula" filterBy="#{customer.cedula}" filterMatchMode="contains">
                     <h:outputText value="#{customer.cedula}" />
                 </p:column>
                 <p:column headerText="Nombre">
                     <h:outputText value="#{customer.name} #{customer.lastname}" />
                 </p:column>
                 <p:column headerText="Recuperar">
-                    <p:commandButton icon="pi pi-refresh" styleClass="ui-button-rounded" title="Recuperar" 
+                    <p:commandButton icon="pi pi-refresh" styleClass="ui-button-rounded" title="Recuperar" update="form disablecustomers" 
                                      oncomplete="PF('enableCustomerDialog').show()" process="@this">
                         <f:setPropertyActionListener value="#{customer}" target="#{customerController.selectedCustomerTO}"/>
+                        <p:resetInput target=":form"/>
                     </p:commandButton>
                 </p:column>
             </p:dataTable>
@@ -153,23 +138,23 @@
             <p:dialog header="Editar Cliente" showEffect="fade" modal="true"
                       widgetVar="editClientContent" responsive="true">
                 <p:outputPanel id="edit-client-content" class="ui-fluid">
-                        <div class="p-field">
-                            <p:outputLabel>Cedula</p:outputLabel>
-                            <p:inputMask id="cedula1" value="#{customerController.selectedCustomerTO.cedula}" mask="9-9999-9999" validateMask="true" disabled="true" />
-                        </div>
+                    <div class="p-field">
+                        <p:outputLabel>Cédula</p:outputLabel>
+                        <p:inputMask id="cedula1" value="#{customerController.selectedCustomerTO.cedula}" mask="9-9999-9999" validateMask="true" disabled="true" />
+                    </div>
 
-                        <div class="p-field">
-                            <p:outputLabel >Correo</p:outputLabel>
-                            <p:inputText id="emali1" value="#{customerController.selectedCustomerTO.email}" placeholder="correo123+@correo.com" />
-                        </div>
-                        <div class="p-field">
-                            <p:outputLabel>Nombre</p:outputLabel>
-                            <p:inputText id="name1" value="#{customerController.selectedCustomerTO.name}" />
-                        </div>
-                        <div class="p-field">
-                            <p:outputLabel>Apellido</p:outputLabel>
-                            <p:inputText id="lastname1" value="#{customerController.selectedCustomerTO.lastname}" />
-                        </div>
+                    <div class="p-field">
+                        <p:outputLabel >Correo</p:outputLabel>
+                        <p:inputText id="emali1" value="#{customerController.selectedCustomerTO.email}" placeholder="felipe1@felipe.com" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel>Nombre</p:outputLabel>
+                        <p:inputText id="name1" value="#{customerController.selectedCustomerTO.name}" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel>Apellido</p:outputLabel>
+                        <p:inputText id="lastname1" value="#{customerController.selectedCustomerTO.lastname}" />
+                    </div>
 
                 </p:outputPanel>
                 <f:facet name="footer">
@@ -182,7 +167,7 @@
                                      style="margin: .25rem" class="ui-button-secondary"/>
                 </f:facet>
             </p:dialog>
-            
+
             <p:confirmDialog
                 widgetVar="disableCustomerDialog" 
                 showEffect="fade" 
@@ -230,7 +215,7 @@
                     process="@this" />
 
             </p:confirmDialog>
-            
+
         </h:form>
     </h:body>
 </html>

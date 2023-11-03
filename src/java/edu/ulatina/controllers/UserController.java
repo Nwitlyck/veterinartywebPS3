@@ -13,6 +13,7 @@ import edu.ulatina.security.AESEncryptionDecryption;
 import edu.ulatina.objects.UserTO;
 import edu.ulatina.services.ServiceUserTO;
 import edu.ulatina.services.ServiceDetails;
+import java.io.Serializable;
 import javax.faces.bean.*;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -24,7 +25,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 
 @ManagedBean(name = "userController")
 @ViewScoped
-public class UserController {
+public class UserController  implements Serializable {
 
     //objects
     private UserTO selectedUser;
@@ -106,16 +107,15 @@ public class UserController {
         }
         return roleName;
     }
-    
-    public String getPassword(){
+
+    public String getPassword() {
         return "Password";
     }
-    
-    public void setPassword(String password){
-        if(password != "Password" || !password.isEmpty()){
-           selectedUser.setPassword(password);
-        }
-        else{
+
+    public void setPassword(String password) {
+        if (password != "Password" || !password.isEmpty()) {
+            selectedUser.setPassword(password);
+        } else {
             String p = new AESEncryptionDecryption().decrypt(selectedUser.getPassword());
             selectedUser.setPassword(p);
         }
@@ -162,15 +162,15 @@ public class UserController {
     }
 
     public void updateUser() {
-        
-        if(selectedUser.getPassword().isEmpty()){
-            for(UserTO u : getUserList()){
-                if(u.getId() == selectedUser.getId()){
+
+        if (selectedUser.getPassword().isEmpty()) {
+            for (UserTO u : getUserList()) {
+                if (u.getId() == selectedUser.getId()) {
                     selectedUser.setPassword(new AESEncryptionDecryption().decrypt(u.getPassword()));
                 }
             }
         }
-        
+
         if (!notNull()) {
             return;
         }
@@ -250,19 +250,24 @@ public class UserController {
                 return false;
             }
         }
-        
+
         for (UserTO user : getDisableUserList()) {
             if (selectedUser.getEmail() == user.getEmail()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "El correo ya existe"));
                 return false;
             }
         }
-        
-        if (!(selectedUser.getPassword().length() >= 8 && selectedUser.getPassword().length() <= 16 )) {
-            
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La contraseña ocupa ser de entre 8 y 16 caracteres"));
-            return false;
+
+        if (selectedUser.getRole()!= 3) {
+            String regexPatternPassword =  "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,16}$";
+
+            if (!Pattern.compile(regexPatternPassword).matcher(this.selectedUser.getPassword()).matches()) {
+
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "Formato de contraseña incorrecto la contraseña debe tener una mayúscula, una minúscula, un número y un caracter especial \"! @ # & ( )\". Mínimo un largo de 8 caracteres y un maximo de 16."));
+                return false;
+            }
         }
+
         return true;
     }
 

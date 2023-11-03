@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:p="http://primefaces.org/ui"
+       xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <form id="menu">
+
+            <p:menubar styleClass="custom-menu" id="generalmenu">
+                <p:menuitem value="Inicio" outcome="landingPage" icon="pi pi-fw pi-home"/>
+                <p:submenu label="Cliente" icon="pi pi-fw pi-user">
+                    <p:menuitem value="Editar cliente" outcome="editCustomer" icon="pi pi-fw pi-pencil"/>
+                </p:submenu>
+                <p:submenu label="Sede" icon="pi pi-fw pi-map">
+                    <p:menuitem value="Editar sede" outcome="editSite" icon="pi pi-fw pi-pencil"/>
+                </p:submenu>
+                <p:submenu label="Unidades" icon="pi pi-fw pi-table">
+                    <p:menuitem value="Editar unidades" outcome="editUnit" icon="pi pi-fw pi-pencil"/>
+                </p:submenu>
+                <p:submenu label="Usuarios" icon="pi pi-fw pi-users">
+                    <p:menuitem value="Editar usuarios" outcome="editUsers" icon="pi pi-fw pi-pencil"/>
+                </p:submenu>
+                <p:submenu label="Veterinarios" icon="pi pi-fw pi-id-card">
+                    <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-pencil"/>
+                </p:submenu>
+                
+                <f:facet name="options">
+                    <p:commandButton value="Cerrar Sesión" actionListener="#{logOutController.logOut}" icon="pi pi-fw pi-sign-out" styleClass="ui-button-danger"/>
+                </f:facet>
+            </p:menubar>
+
+            <p:sticky target="generalmenu" />
+
+        </form>
+    </body>
+</html>
