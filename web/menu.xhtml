@@ -28,6 +28,9 @@ and open the template in the editor.
                 <p:submenu label="Veterinarios" icon="pi pi-fw pi-id-card">
                     <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
+                <p:submenu label="Citas" icon="pi-twitter">
+                    <p:menuitem value="Editar Citas" outcome="editAppointments" icon="pi pi-fw pi-pencil"/>
+                </p:submenu>
                 
                 <f:facet name="options">
                     <p:commandButton value="Cerrar Sesión" actionListener="#{logOutController.logOut}" icon="pi pi-fw pi-sign-out" styleClass="ui-button-danger"/>

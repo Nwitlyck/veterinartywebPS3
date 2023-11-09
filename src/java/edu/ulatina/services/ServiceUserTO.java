@@ -5,7 +5,9 @@ import edu.ulatina.security.AESEncryptionDecryption;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ServiceUserTO extends Service implements ICrud<UserTO> {
 
@@ -94,6 +96,47 @@ public class ServiceUserTO extends Service implements ICrud<UserTO> {
         close(conn);
 
         return objectTOList;
+    }
+    
+    public Map<String, Integer> selectMap(int role) throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Map<String, Integer> map = new HashMap<>();
+
+        ps = getConnection().prepareStatement("SELECT Id, Name FROM Users Where Role = ?");
+        ps.setInt(1, role);
+        rs = ps.executeQuery();
+
+        while (rs.next()) { 
+            
+            map.put(rs.getString("Name"), rs.getInt("Id"));
+        }
+
+        close(rs);
+        close(ps);
+        close(conn);
+
+        return map;
+    }
+    
+    public Map<String, Integer> selectMapAll() throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Map<String, Integer> map = new HashMap<>();
+
+        ps = getConnection().prepareStatement("SELECT Id, Name FROM Users");
+        rs = ps.executeQuery();
+
+        while (rs.next()) { 
+            
+            map.put(rs.getString("Name"), rs.getInt("Id"));
+        }
+
+        close(rs);
+        close(ps);
+        close(conn);
+
+        return map;
     }
 
     public List<UserTO> selectByRole(int enableI, int roleI) throws Exception {

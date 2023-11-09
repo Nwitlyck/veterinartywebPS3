@@ -26,4 +26,24 @@ public class ServiceDetails extends Service{
         return map;
     }
     
+    public Map<String, Integer> selectAll() throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Map<String, Integer> map = new HashMap<>();
+
+        ps = getConnection().prepareStatement("SELECT Id, Name FROM Details");
+        rs = ps.executeQuery();
+
+        while (rs.next()) { 
+            
+            map.put(rs.getString("Name"), rs.getInt("Id"));
+        }
+
+        close(rs);
+        close(ps);
+        close(conn);
+
+        return map;
+    }
+    
 }
