@@ -1,4 +1,3 @@
-
 package edu.ulatina.services;
 
 import edu.ulatina.objects.CustomersTO;
@@ -6,15 +5,16 @@ import edu.ulatina.objects.UnitTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //hola
-
-public class ServiceUnitTO extends Service implements ICrud<UnitTO>{
+public class ServiceUnitTO extends Service implements ICrud<UnitTO> {
 
     @Override
     public void insert(UnitTO objectTO) throws Exception {
-                PreparedStatement ps = null;
+        PreparedStatement ps = null;
 
         ps = getConnection().prepareStatement("INSERT INTO Units (Plate, Name, State) VALUES (?, ?, 1)");
         ps.setString(1, objectTO.getPlate());
@@ -30,7 +30,7 @@ public class ServiceUnitTO extends Service implements ICrud<UnitTO>{
         PreparedStatement ps = null;
 
         ps = getConnection().prepareStatement("UPDATE Units SET Name = ? WHERE Plate = ?");
-        
+
         ps.setString(1, objectTO.getName());
         ps.setString(2, objectTO.getPlate());
         ps.executeUpdate();
@@ -44,6 +44,18 @@ public class ServiceUnitTO extends Service implements ICrud<UnitTO>{
         PreparedStatement ps = null;
 
         ps = getConnection().prepareStatement("UPDATE Units SET State = 0 WHERE Plate = ?");
+        ps.setString(1, objectTO.getPlate());
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
+    }
+
+    @Override
+    public void enable(UnitTO objectTO) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Units SET State = 1 WHERE Plate = ?");
         ps.setString(1, objectTO.getPlate());
         ps.executeUpdate();
 
@@ -75,17 +87,25 @@ public class ServiceUnitTO extends Service implements ICrud<UnitTO>{
 
         return objectTOList;
     }
-
-    @Override
-    public void enable(UnitTO objectTO) throws Exception {
+    
+    public Map<String, String> selectMap() throws Exception {
         PreparedStatement ps = null;
+        ResultSet rs = null;
+        Map<String, String> map = new HashMap<>();
 
-        ps = getConnection().prepareStatement("UPDATE Units SET State = 1 WHERE Plate = ?");
-        ps.setString(1, objectTO.getPlate());
-        ps.executeUpdate();
+        ps = getConnection().prepareStatement("SELECT Plate, Name FROM Units");
+        rs = ps.executeQuery();
 
+        while (rs.next()) { 
+            
+            map.put(rs.getString("Name"), rs.getString("Plate"));
+        }
+
+        close(rs);
         close(ps);
         close(conn);
+
+        return map;
     }
-    
+
 }

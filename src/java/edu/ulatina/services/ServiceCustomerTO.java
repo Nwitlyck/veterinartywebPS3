@@ -4,7 +4,9 @@ import edu.ulatina.objects.CustomersTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -55,6 +57,18 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
         close(ps);
         close(conn);
     }
+    
+    @Override
+    public void enable(CustomersTO objectTO) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Customers SET State = 1 WHERE Cedula = ?");
+        ps.setInt(1, objectTO.getCedula());
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
+    }
 
     @Override
     public List<CustomersTO> select(int enable) throws Exception {
@@ -82,44 +96,25 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
 
         return objectTOList;
     }
-    
-    
-    public List<CustomersTO> selectByCedula(int enable, int byCedula) throws Exception {
+
+    public Map<String, Integer> selectMap() throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<CustomersTO> objectTOList = new ArrayList<CustomersTO>();
+        Map<String, Integer> map = new HashMap<>();
 
-        ps = getConnection().prepareStatement("SELECT Cedula, Email, Name, Lastname, State FROM Customers WHERE State = ? AND Cedula = ?");
-        ps.setInt(1, enable);
+        ps = getConnection().prepareStatement("SELECT Cedula, Name FROM Customers");
         rs = ps.executeQuery();
 
-        while (rs.next()) {
-            int cedula = rs.getInt("Cedula");
-            String email = rs.getString("Email");
-            String name = rs.getString("Name");
-            String lastname = rs.getString("Lastname");
-            int state = rs.getInt("State");
-
-            objectTOList.add(new CustomersTO(cedula,email ,name, lastname, state));
+        while (rs.next()) { 
+            
+            map.put(rs.getString("Name"), rs.getInt("Cedula"));
         }
 
         close(rs);
         close(ps);
         close(conn);
 
-        return objectTOList;
-    }
-
-    @Override
-    public void enable(CustomersTO objectTO) throws Exception {
-        PreparedStatement ps = null;
-
-        ps = getConnection().prepareStatement("UPDATE Customers SET State = 1 WHERE Cedula = ?");
-        ps.setInt(1, objectTO.getCedula());
-        ps.executeUpdate();
-
-        close(ps);
-        close(conn);
+        return map;
     }
     
 }

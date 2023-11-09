@@ -34,6 +34,7 @@ public class LogOutController implements Serializable{
 
     public void logOut() {
         try {
+            System.out.println("edu.ulatina.controllers.LogOutController.logOut()");
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().clear();
             redirect("/faces/index.xhtml?faces-redirect=true");
         } catch (Exception e) {
