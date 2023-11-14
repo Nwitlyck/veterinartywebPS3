@@ -93,7 +93,7 @@ public class ServiceUnitTO extends Service implements ICrud<UnitTO> {
         ResultSet rs = null;
         Map<String, String> map = new HashMap<>();
 
-        ps = getConnection().prepareStatement("SELECT Plate, Name FROM Units");
+        ps = getConnection().prepareStatement("SELECT Plate, Name FROM Units Where State = 1");
         rs = ps.executeQuery();
 
         while (rs.next()) { 

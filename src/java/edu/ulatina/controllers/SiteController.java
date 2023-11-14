@@ -1,6 +1,7 @@
 package edu.ulatina.controllers;
 
 import edu.ulatina.objects.SiteTO;
+import edu.ulatina.services.ServiceAppointmentTO;
 import edu.ulatina.services.ServiceSite;
 import edu.ulatina.services.ServiceDetails;
 import java.io.Serializable;
@@ -131,32 +132,32 @@ public class SiteController implements Serializable {
         }
 
     }
-    
-    public void disableSite(){
+
+    public void disableSite() {
         System.out.println("Estoy deshabilitando al sitio");
         try {
-           this.serv.delete(selectedSite);
+            this.serv.delete(selectedSite);
+            new ServiceAppointmentTO().disableSite(this.selectedSite.getId());
         } catch (Exception ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar el sitio en base de datos"));
-         }
-         this.selectedSite = new SiteTO();
-        
+        }
+        this.selectedSite = new SiteTO();
+
     }
-    
-    public void enableSite(){
+
+    public void enableSite() {
         System.out.println("Estoy habilitando al sitio");
         try {
             this.serv.enable(selectedSite);
         } catch (Exception ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar el sitio en base de datos"));
-         }
-         this.selectedSite = new SiteTO();
+        }
+        this.selectedSite = new SiteTO();
     }
-            
-            
-    public void updateSite(){
+
+    public void updateSite() {
         boolean flag = true;
         if (selectedSite.getName() == null || selectedSite.getName().equals("")) {
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "El campo de nombre esta vacio"));
@@ -180,31 +181,31 @@ public class SiteController implements Serializable {
             PrimeFaces.current().executeScript("PF('manageSiteContent').hide()");
         }
     }
-    
-    public void resetSelectedSite(){
+
+    public void resetSelectedSite() {
         this.selectedSite = new SiteTO();
         fillMapCanton();
     }
-    
+
     @PostConstruct
-    public void initialize(){
+    public void initialize() {
         fillMapProvince();
         fillMapCanton();
     }
-    
-    private void fillMapProvince(){
-        try{
+
+    private void fillMapProvince() {
+        try {
             mapProvince = new ServiceDetails().select(2);
-        }catch(Exception e){
+        } catch (Exception e) {
             mapProvince = new HashMap<>();
             e.printStackTrace();
         }
     }
-    
-    public void fillMapCanton(){
-        try{
+
+    public void fillMapCanton() {
+        try {
             mapCanton = new ServiceDetails().select(selectedSite.getProvince());
-        }catch(Exception e){
+        } catch (Exception e) {
             mapCanton = new HashMap<>();
             e.printStackTrace();
         }

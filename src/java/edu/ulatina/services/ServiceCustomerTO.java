@@ -102,7 +102,7 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
         ResultSet rs = null;
         Map<String, Integer> map = new HashMap<>();
 
-        ps = getConnection().prepareStatement("SELECT Cedula, Name FROM Customers");
+        ps = getConnection().prepareStatement("SELECT Cedula, Name FROM Customers Where State = 1");
         rs = ps.executeQuery();
 
         while (rs.next()) { 

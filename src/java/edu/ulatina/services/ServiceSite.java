@@ -103,7 +103,7 @@ public class ServiceSite extends Service implements ICrud<SiteTO>  {
         ResultSet rs = null;
         Map<String, Integer> map = new HashMap<>();
 
-        ps = getConnection().prepareStatement("SELECT Id, Name FROM Site");
+        ps = getConnection().prepareStatement("SELECT Id, Name FROM Site Where State = 1");
         rs = ps.executeQuery();
 
         while (rs.next()) { 

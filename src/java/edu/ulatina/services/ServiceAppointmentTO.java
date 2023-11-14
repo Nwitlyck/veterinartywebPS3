@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
  *
  * @author Nwitlyck
  */
-public class ServiceAppointmentTO extends Service{
+public class ServiceAppointmentTO extends Service {
 
     public void insert(AppointmentTO objectTO) throws Exception {
         PreparedStatement ps = null;
@@ -26,8 +27,16 @@ public class ServiceAppointmentTO extends Service{
         ps.setInt(1, objectTO.getIdUser());
         ps.setInt(2, objectTO.getIdCustomer());
         ps.setString(3, objectTO.getIdUnit());
-        ps.setInt(4, objectTO.getIdSite());
-        ps.setInt(5, objectTO.getIdAsistant());
+        if (objectTO.getIdAsistant() == 0) {
+            ps.setNull(4, Types.INTEGER);
+        } else {
+            ps.setInt(4, objectTO.getIdSite());
+        }
+        if (objectTO.getIdAsistant() == 0) {
+            ps.setNull(5, Types.INTEGER);
+        } else {
+            ps.setInt(5, objectTO.getIdAsistant());
+        }
         ps.setTimestamp(6, objectTO.getDate());
         ps.setString(7, objectTO.getAdress());
         ps.setInt(8, objectTO.getCanton());
@@ -54,6 +63,72 @@ public class ServiceAppointmentTO extends Service{
         close(ps);
         close(conn);
     }
+    
+    public void disableVet(int id) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Appointments SET State = 95 WHERE IdUser = ? AND State = 94 OR State = 93");
+        
+        ps.setInt(1, id);
+
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
+    }
+    
+    public void disableCustomer(int cedula) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Appointments SET State = 95 WHERE IdCustomer = ? AND State = 94 OR State = 93");
+
+        ps.setInt(1, cedula);
+
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
+    }
+    
+    public void disableUnit(String plate) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Appointments SET State = 95 WHERE IdUnit = ? AND State = 94 OR State = 93");
+
+        ps.setString(1, plate);
+
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
+    }
+    
+    public void disableSite(int id) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Appointments SET State = 95 WHERE IdSite = ? AND State = 94 OR State = 93");
+
+        ps.setInt(1, id);
+
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
+    }
+    
+    public void disableAsis(int id) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Appointments SET State = 95 WHERE IdAsistant = ? AND State = 94 OR State = 93");
+
+        ps.setInt(1, id);
+
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
+    }
+    
 
     public List<AppointmentTO> select(int enable, Date fistDate, Date secondDate) throws Exception {
         PreparedStatement ps = null;
@@ -79,7 +154,7 @@ public class ServiceAppointmentTO extends Service{
             String adress = rs.getString("Address");
             int canton = rs.getInt("Canton");
             int province = rs.getInt("Province");
-            String description  = rs.getString("Description");
+            String description = rs.getString("Description");
             int state = rs.getInt("State");
 
             objectTOList.add(new AppointmentTO(id, idUser, idCustomer, idUnit, idSite, idAsistant, date, adress, canton, province, description, state));

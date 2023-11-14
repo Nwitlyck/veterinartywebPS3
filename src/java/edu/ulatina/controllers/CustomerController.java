@@ -6,6 +6,7 @@
 package edu.ulatina.controllers;
 
 import edu.ulatina.objects.CustomersTO;
+import edu.ulatina.services.ServiceAppointmentTO;
 import edu.ulatina.services.ServiceCustomerTO;
 import java.io.Serializable;
 import java.util.*;
@@ -215,6 +216,7 @@ public class CustomerController implements Serializable {
     public void disableCustomer() {
         try {
             serviceCustomerTO.delete(selectedCustomerTO);
+            new ServiceAppointmentTO().disableCustomer(this.selectedCustomerTO.getCedula());
             getCustomerList();
             getDisableCustomerList();
         } catch (Exception ex) {

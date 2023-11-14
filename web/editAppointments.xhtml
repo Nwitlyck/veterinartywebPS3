@@ -12,9 +12,10 @@
                 background-color: cornflowerblue;
                 margin: 0;
                 font-family: Arial, sans-serif;
-            }
-            .item { 
-                float: right; 
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                min-height: 100vh;
             }
         </style>
         <f:event type="preRenderView" listener="#{logOutController.verifySession()}"/>
@@ -27,31 +28,37 @@
         <h:form id="form">
             <p:growl id="message" showDetail="true"/>
 
-            <div  class="header" >
+            <p:panel style="height: 75px">
 
-                <p:commandButton value="Agendar Cita" icon="pi pi-plus" actionListener="#{appointmentsController.newAppointment}"
-                                 update=":form:manage-appointment-content" oncomplete="PF('manageAppointmentDialog').show()"
-                                 styleClass="ui-button-success">
+                <p:commandButton value="Agendar Cita" 
+                                 icon="pi pi-plus" 
+                                 actionListener="#{appointmentsController.newAppointment}"
+                                 update=":form:manage-appointment-content" 
+                                 oncomplete="PF('manageAppointmentDialog').show()"
+                                 styleClass="ui-button-success" 
+                                 rendered="#{appointmentsController.flagInsert}"
+                                 style="float: right">
                     <p:resetInput target=":form:manage-appointment-content"/>
                 </p:commandButton>
 
-                <p:panel class="item">
-                    <p:commandButton 
-                        value="Buscar" icon="pi pi-search" 
-                        actionListener="#{appointmentsController.fillListAppointments}"
-                        update=":form:appointmentTable" 
-                        styleClass="ui-button-success"/>
-                    
-                    <p:selectOneMenu id="selectState" value="#{appointmentsController.selectedState}">
-                        <f:selectItem itemLabel="Seleccione un estado" itemValue="" noSelectionOption="false"/>
-                        <f:selectItems value="#{appointmentsController.mapState}"/>
-                    </p:selectOneMenu>
-                    <p:calendar id="lowerTS" value="#{appointmentsController.selectedLowerDate}"/>
-                    <p:calendar id="upperTS" value="#{appointmentsController.selectedUpperDate}"/>
-                </p:panel>
+                <p:commandButton 
+                    value="Buscar" 
+                    icon="pi pi-search" 
+                    actionListener="#{appointmentsController.search}"
+                    update="form" 
+                    styleClass="ui-button-success"/>
 
-            </div>
+                <p:selectOneMenu id="selectState" value="#{appointmentsController.selectedState}">
+                    <f:selectItem itemLabel="Seleccione un estado" itemValue="" noSelectionOption="false"/>
+                    <f:selectItems value="#{appointmentsController.mapState}"/>
+                </p:selectOneMenu>
+                <p:outputLabel for="upperTS" value="Desde" />
+                <p:calendar id="lowerTS" value="#{appointmentsController.selectedLowerDate}"/>
+                <p:outputLabel for="lowerTS" value="Hasta" />
+                <p:calendar id="upperTS" value="#{appointmentsController.selectedUpperDate}" />
 
+            </p:panel>
+            
             <div>
                 <p:dataTable 
                     id="appointmentTable" 
@@ -73,6 +80,36 @@
                     <p:column headerText="Estado">
                         <h:outputText value="#{appointmentsController.getDetailName(apoint.state)}"/>
                     </p:column>
+                    <p:column>
+                        <p:commandButton icon="pi pi-pencil"
+                                         styleClass="ui-button-rounded ui-button-success" 
+                                         title="Agendar" 
+                                         update=":form:change-appointment-content"
+                                         oncomplete="PF('changeAppointmentDialog').show()" 
+                                         process="@this"
+                                         rendered="#{appointmentsController.flagUpdate}">
+                            <f:setPropertyActionListener value="#{apoint}" target="#{appointmentsController.selectedAppointment}"/>
+                            <p:resetInput target=":form:change-appointment-content"/>
+                        </p:commandButton>
+                        <p:commandButton icon="pi pi-trash" 
+                                         styleClass="ui-button-rounded ui-button-danger" 
+                                         title="Cancelar" 
+                                         update=":form"
+                                         oncomplete="PF('cancelAppointmentDialog').show()" 
+                                         process="@this"
+                                         rendered="#{appointmentsController.flagUpdate or appointmentsController.flagInsert}">
+                            <f:setPropertyActionListener value="#{apoint}" target="#{appointmentsController.selectedAppointment}"/>
+                            <p:resetInput target=":form"/>
+                        </p:commandButton>
+                        <p:commandButton icon="pi pi-info" 
+                                         title="Informacion" 
+                                         update=":form:display-appointment-content"
+                                         oncomplete="PF('displayAppointmentDialog').show()" 
+                                         process="@this">
+                            <f:setPropertyActionListener value="#{apoint}" target="#{appointmentsController.selectedAppointment}"/>
+                            <p:resetInput target=":form:display-appointment-content"/>
+                        </p:commandButton>
+                    </p:column>
 
                 </p:dataTable>
             </div>
@@ -81,13 +118,75 @@
                       widgetVar="manageAppointmentDialog" responsive="true">
                 <p:outputPanel id="manage-appointment-content" class="ui-fluid">
                     <p:outputPanel>
+                        
+                        
+                        <div class="p-field">
+                            <p:outputLabel for="vet" value="Veterinario"/>
+                            <p:selectOneMenu id="vet" value="#{appointmentsController.selectedAppointment.idUser}">
+                                <f:selectItem itemLabel="Seleccione un veterinario" itemValue="" noSelectionOption="false"/>
+                                <f:selectItems value="#{appointmentsController.mapVet}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="customer" value="Cliente"/>
+                            <p:selectOneMenu id="customer" value="#{appointmentsController.selectedAppointment.idCustomer}">
+                                <f:selectItem itemLabel="Seleccione un cliente" itemValue="" noSelectionOption="false"/>
+                                <f:selectItems value="#{appointmentsController.mapCustomer}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="unit" value="Unidad"/>
+                            <p:selectOneMenu id="unit" value="#{appointmentsController.selectedAppointment.idUnit}">
+                                <f:selectItem itemLabel="Seleccione una unidad" itemValue="" noSelectionOption="false"/>
+                                <f:selectItems value="#{appointmentsController.mapUnit}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="site" value="Sitio"/>
+                            <p:selectOneMenu id="site" value="#{appointmentsController.selectedAppointment.idSite}">
+                                <f:selectItem itemLabel="Seleccione un sitio" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value="#{appointmentsController.mapSite}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="asis" value="Asistente"/>
+                            <p:selectOneMenu id="asis" value="#{appointmentsController.selectedAppointment.idAsistant}">
+                                <f:selectItem itemLabel="Seleccione un asistente" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value="#{appointmentsController.mapAssistan}"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="p-field">
+                            <p:outputLabel for="date" value="Fecha:Hora"/>
+                            <p:calendar id="date" value="#{appointmentsController.selectedAppointmentDate}" pattern="MM/dd/yyyy HH"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="adreess" value="Direccion"/>
+                            <p:inputText id="adreess" value="#{appointmentsController.selectedAppointment.adress}"/>
+                        </div>
+                        
+                        <div class="p-field">
+                            <p:outputLabel for="province" value="Provincia"/>
+                            <p:selectOneMenu id="province" value="#{appointmentsController.selectedAppointment.province}">
+                                <p:ajax listener="#{appointmentsController.fillMapCanton}" update="canton"/>
+                                <f:selectItem itemLabel="Seleccione una provincia" itemValue="" noSelectionOption="false"/>
+                                <f:selectItems value="#{appointmentsController.mapProvince}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="province" value="Canton"/>
+                            <p:selectOneMenu id="canton" value="#{appointmentsController.selectedAppointment.canton}">
+                                <f:selectItem itemLabel="Seleccione una provincia" itemValue="" noSelectionOption="false"/>
+                                <f:selectItems value="#{appointmentsController.mapCanton}"/>
+                            </p:selectOneMenu>
+                        </div>
+
                     </p:outputPanel>
                 </p:outputPanel>
 
                 <f:facet name="footer">
-                    <p:commandButton value="Crear" icon="pi pi-check"  actionListener="#{customerController.insertCustomer}"
+                    <p:commandButton value="Crear" icon="pi pi-check"  actionListener="#{appointmentsController.insertAppointment}"
                                      update="form manage-appointment-content" style="margin: .25rem" process="manage-appointment-content @this">
-                        <p:confirm header="Confirmacion" message="Esta seguro que quiere seguir" icon="pi pi-exclamation-triangle"/>
                     </p:commandButton>
 
 
@@ -96,6 +195,114 @@
                 </f:facet>
 
             </p:dialog>
+
+            <p:dialog header="Agendar Cita" showEffect="fade" modal="true"
+                      widgetVar="changeAppointmentDialog" responsive="true">
+                <p:outputPanel id="change-appointment-content" class="ui-fluid">
+                    <p:outputPanel>
+                        <p:calendar id="agendDate" value="#{appointmentsController.selectedAppointmentDate}" pattern="MM/dd/yyyy HH"/>
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Agendar" icon="pi pi-check"  actionListener="#{appointmentsController.reAgendAppointment}"
+                                     update="form change-appointment-content" style="margin: .25rem" process="change-appointment-content @this">
+                    </p:commandButton>
+
+
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('changeAppointmentDialog').hide()" 
+                                     style="margin: .25rem" class="ui-button-secondary"/>
+                </f:facet>
+
+            </p:dialog>
+
+            <p:dialog header="Información de la Cita" showEffect="fade" modal="true"
+                      widgetVar="displayAppointmentDialog" responsive="true">
+                <p:outputPanel id="display-appointment-content" class="ui-fluid">
+                    <p:outputPanel>
+
+                        <div class="p-field">
+                            <p:outputLabel>Veterinario: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.vetNameSelected}"/>
+                        </div>
+
+                        <div class="p-field">
+                            <p:outputLabel>Cliente: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.customerNameSelected}"/>
+                        </div>
+
+                        <div class="p-field">
+                            <p:outputLabel>Unidad: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.unitNameSelected}"/>
+                        </div>
+
+                        <div class="p-field">
+                            <p:outputLabel>Sede: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.siteNameSelected}"/>
+                        </div>
+
+                        <div class="p-field">
+                            <p:outputLabel>Asitente: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.asistantNameSelected}"/>
+                        </div>
+
+                        <div class="p-field">
+                            <p:outputLabel>Fecha/Hora: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.selectedAppointment.date}"/>
+                        </div>
+
+                        <div class="p-field">
+                            <p:outputLabel>Direccion: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.selectedAppointment.adress} "/>
+                            <h:outputText value="Provincia: #{appointmentsController.provinceNameSelected} "/>
+                            <h:outputText value="Canton: #{appointmentsController.cantonNameSelected} "/>
+                        </div>
+
+                        <div class="p-field">
+                            <p:outputLabel>Descripcion: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.selectedAppointment.description}"/>
+                        </div>
+
+                        <div class="p-field">
+                            <p:outputLabel>Estado: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.stateNameSelected}"/>
+                        </div>
+
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('displayAppointmentDialog').hide()" 
+                                     style="margin: .25rem" class="ui-button-secondary"/>
+                </f:facet>
+
+            </p:dialog>
+
+            <p:confirmDialog
+                widgetVar="cancelAppointmentDialog" 
+                showEffect="fade" 
+                width="300"
+                message="Cancelar Cita?" 
+                header="Confirm" 
+                severity="warn">
+
+                <p:commandButton 
+                    value="No" 
+                    icon="pi pi-times" 
+                    onclick="PF('cancelAppointmentDialog').hide()"
+                    style="float: left"
+                    class="ui-button-secondary"/>
+
+                <p:commandButton 
+                    value="Si" 
+                    icon="pi pi-check" 
+                    actionListener="#{appointmentsController.cancelAppointment}"
+                    update=":form" 
+                    process="@this" />
+
+            </p:confirmDialog>
+
 
         </h:form>
     </h:body>

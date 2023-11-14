@@ -102,8 +102,7 @@ public class ServiceUserTO extends Service implements ICrud<UserTO> {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Map<String, Integer> map = new HashMap<>();
-
-        ps = getConnection().prepareStatement("SELECT Id, Name FROM Users Where Role = ?");
+        ps = getConnection().prepareStatement("SELECT Id, Name FROM Users Where Role = ? And State = 1");
         ps.setInt(1, role);
         rs = ps.executeQuery();
 
@@ -119,26 +118,6 @@ public class ServiceUserTO extends Service implements ICrud<UserTO> {
         return map;
     }
     
-    public Map<String, Integer> selectMapAll() throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Map<String, Integer> map = new HashMap<>();
-
-        ps = getConnection().prepareStatement("SELECT Id, Name FROM Users");
-        rs = ps.executeQuery();
-
-        while (rs.next()) { 
-            
-            map.put(rs.getString("Name"), rs.getInt("Id"));
-        }
-
-        close(rs);
-        close(ps);
-        close(conn);
-
-        return map;
-    }
-
     public List<UserTO> selectByRole(int enableI, int roleI) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;

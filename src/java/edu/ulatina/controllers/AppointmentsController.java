@@ -4,6 +4,7 @@ import edu.ulatina.objects.*;
 import edu.ulatina.services.*;
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,6 @@ public class AppointmentsController implements Serializable {
     private ServiceDetails serviceDetails;
     private FacesContext context;
     private Map<String, Integer> mapDetail;
-    private Map<String, Integer> mapUsers;
 
     private AppointmentTO selectedAppointment;
     private List<AppointmentTO> listAppointments;
@@ -41,7 +41,8 @@ public class AppointmentsController implements Serializable {
     private Date selectedLowerDate;
     private Date selectedUpperDate;
     private int selectedState;
-    private boolean flag;
+    private boolean flagInsert;
+    private boolean flagUpdate;
 
     public AppointmentTO getSelectedAppointment() {
         return selectedAppointment;
@@ -49,6 +50,7 @@ public class AppointmentsController implements Serializable {
 
     public void setSelectedAppointment(AppointmentTO selectedAppointment) {
         this.selectedAppointment = selectedAppointment;
+        fillMapCanton();
     }
 
     public List<AppointmentTO> getListAppointments() {
@@ -129,14 +131,38 @@ public class AppointmentsController implements Serializable {
 
     public void setSelectedState(int selectedState) {
         this.selectedState = selectedState;
+        switch (this.selectedState) {
+            case 93:
+                this.flagInsert = true;
+                this.flagUpdate = false;
+                break;
+
+            case 94:
+                this.flagInsert = false;
+                this.flagUpdate = true;
+                break;
+
+            default:
+                this.flagInsert = false;
+                this.flagUpdate = false;
+                break;
+        }
     }
 
-    public boolean isFlag() {
-        return flag;
+    public boolean isFlagInsert() {
+        return flagInsert;
     }
 
-    public void setFlag(boolean flag) {
-        this.flag = flag;
+    public void setFlagInsert(boolean flagInsert) {
+        this.flagInsert = flagInsert;
+    }
+
+    public boolean isFlagUpdate() {
+        return flagUpdate;
+    }
+
+    public void setFlagUpdate(boolean flagUpdate) {
+        this.flagUpdate = flagUpdate;
     }
 
     //special gets / sets
@@ -156,9 +182,21 @@ public class AppointmentsController implements Serializable {
         this.selectedUpperDate = new Date(selectedUpperDate.getTime());
     }
 
+    public java.util.Date getSelectedAppointmentDate() {
+        if (selectedAppointment.getDate() != null) {
+            return new Date(selectedAppointment.getDate().getTime());
+        } else {
+            return new Date(System.currentTimeMillis());
+        }
+    }
+
+    public void setSelectedAppointmentDate(java.util.Date selectedUpperDate) {
+        this.selectedAppointment.setDate(new Timestamp(selectedUpperDate.getTime()));
+    }
+
     public String getUserName(int id) {
-        String name = "Id " + id +" no encontrada";
-        for (Map.Entry<String, Integer> entry : this.mapUsers.entrySet()) {
+        String name = "Id " + id + " no encontrada";
+        for (Map.Entry<String, Integer> entry : this.mapVet.entrySet()) {
             if (entry.getValue() == id) {
                 name = entry.getKey();
             }
@@ -167,7 +205,7 @@ public class AppointmentsController implements Serializable {
     }
 
     public String getSiteName(int id) {
-        String name = "Id " + id +" no encontrada";
+        String name = "Id " + id + " no encontrada";
         for (Map.Entry<String, Integer> entry : this.mapSite.entrySet()) {
             if (entry.getValue() == id) {
                 name = entry.getKey();
@@ -177,7 +215,7 @@ public class AppointmentsController implements Serializable {
     }
 
     public String getCustomerName(int cedula) {
-        String name = "Cedula " + cedula +" no encontrada";
+        String name = "Cedula " + cedula + " no encontrada";
         for (Map.Entry<String, Integer> entry : this.mapCustomer.entrySet()) {
             if (entry.getValue() == cedula) {
                 name = entry.getKey();
@@ -196,6 +234,94 @@ public class AppointmentsController implements Serializable {
         return name;
     }
 
+    public String getVetNameSelected() {
+        String name = "Not Found";
+        for (Map.Entry<String, Integer> entry : this.mapVet.entrySet()) {
+            if (entry.getValue() == this.selectedAppointment.getIdUser()) {
+                name = entry.getKey();
+            }
+        }
+        return name;
+    }
+
+    public String getCustomerNameSelected() {
+        String name = "Not Found";
+        for (Map.Entry<String, Integer> entry : this.mapCustomer.entrySet()) {
+            if (entry.getValue() == this.selectedAppointment.getIdCustomer()) {
+                name = entry.getKey();
+            }
+        }
+        return name;
+    }
+
+    public String getUnitNameSelected() {
+        String name = "Not Found";
+        for (Map.Entry<String, String> entry : this.mapUnit.entrySet()) {
+            if (entry.getValue().equals(this.selectedAppointment.getIdUnit())) {
+                name = entry.getKey();
+            }
+        }
+        return name;
+    }
+
+    public String getSiteNameSelected() {
+        String name = "Not Found";
+        try {
+            for (Map.Entry<String, Integer> entry : this.mapSite.entrySet()) {
+                if (entry.getValue() == this.selectedAppointment.getIdSite()) {
+                    name = entry.getKey();
+                }
+            }
+
+        } catch (Exception e) {
+        }
+        return name;
+    }
+
+    public String getAsistantNameSelected() {
+        String name = "Not Found";
+        try {
+            for (Map.Entry<String, Integer> entry : this.mapAssistan.entrySet()) {
+                if (entry.getValue() == this.selectedAppointment.getIdAsistant()) {
+                    name = entry.getKey();
+                }
+            }
+        } catch (Exception e) {
+        }
+        return name;
+
+    }
+
+    public String getProvinceNameSelected() {
+        String name = "Not Found";
+        for (Map.Entry<String, Integer> entry : this.mapProvince.entrySet()) {
+            if (entry.getValue() == this.selectedAppointment.getProvince()) {
+                name = entry.getKey();
+            }
+        }
+        return name;
+    }
+
+    public String getCantonNameSelected() {
+        String name = "Not Found";
+        for (Map.Entry<String, Integer> entry : this.mapCanton.entrySet()) {
+            if (entry.getValue() == this.selectedAppointment.getCanton()) {
+                name = entry.getKey();
+            }
+        }
+        return name;
+    }
+
+    public String getStateNameSelected() {
+        String name = "Not Found";
+        for (Map.Entry<String, Integer> entry : this.mapState.entrySet()) {
+            if (entry.getValue() == this.selectedAppointment.getState()) {
+                name = entry.getKey();
+            }
+        }
+        return name;
+    }
+
     //metods
     @PostConstruct
     public void initialize() {
@@ -205,10 +331,114 @@ public class AppointmentsController implements Serializable {
         this.context = FacesContext.getCurrentInstance();
         filStuff();
     }
+    
+    public void insertAppointment(){
+        
+        if(!nullVerification()){
+            return;
+        }
+        
+        if (this.selectedAppointment.getDate().compareTo(new Timestamp(System.currentTimeMillis())) <= 0) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Fecha Pasada", "La fecha ingresada esta en el pasado o es la del dia de hoy"));
+            return;
+        }
+        
+        this.selectedAppointment.setDescription("");
+        final int detailOfEspera = 93;
+        this.selectedAppointment.setState(detailOfEspera);
+        
+        try {
+            serviceAppointment.insert(this.selectedAppointment);
+            
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error Fatal", "No se puede connectar a la base de datos"));
+            e.printStackTrace();
+        }
+    }
+
+    public void reAgendAppointment() {
+
+        if (this.selectedAppointment.getDate().compareTo(new Timestamp(System.currentTimeMillis())) <= 0) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Fecha Pasada", "La fecha ingresada esta en el pasado o es la del dia de hoy"));
+            return;
+        }
+
+        final int detailOfCancel = 93;
+
+        this.selectedAppointment.setState(detailOfCancel);
+
+        try {
+            serviceAppointment.update(this.selectedAppointment);
+        } catch (Exception e) {
+            context.addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error Fatal", "No se puede connectar a la base de datos"));
+            e.printStackTrace();
+        }
+        fillListAppointments();
+    }
+
+    public void cancelAppointment() {
+        final int detailOfCancel = 92;
+
+        this.selectedAppointment.setState(detailOfCancel);
+
+        try {
+            serviceAppointment.update(this.selectedAppointment);
+        } catch (Exception e) {
+        }
+        fillListAppointments();
+    }
+    
+    public void search(){
+        if (this.selectedUpperDate.compareTo(this.selectedLowerDate) <= 0) {
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Problemas", "Por favor verifique las fechas"));
+            return;
+        }
+        
+        fillListAppointments();
+    }
+
+    public void newAppointment() {
+        this.selectedAppointment = new AppointmentTO();
+        this.flagInsert = true;
+    }
+
+    private boolean nullVerification() {
+        
+        if(this.selectedAppointment.getIdUser()== 0){
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Nullo", "Escoja un veterinario"));
+            return false;
+        }
+        
+        if(this.selectedAppointment.getIdCustomer()== 0){
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Nullo", "Escoja un cliente"));
+            return false;
+        }
+        
+        if(this.selectedAppointment.getIdUnit().isEmpty() || this.selectedAppointment.getIdUnit() == null){
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Nullo", "Escoja una unidad"));
+            return false;
+        }
+        
+        if(this.selectedAppointment.getDate() == null){
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Nullo", "Escoja una fecha"));
+            return false;
+        }
+        
+        if(this.selectedAppointment.getProvince()== 0){
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Nullo", "Escoja una provincia"));
+            return false;
+        }
+        
+        if(this.selectedAppointment.getCanton()== 0){
+            FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Nullo", "Escoja un canton"));
+            return false;
+        }
+        
+        return true;
+    }
 
     private void filStuff() {
         fillListAppointments();
-        fillMapUser();
         fillMapVet();
         fillMapCustomer();
         fillMapUnit();
@@ -219,17 +449,12 @@ public class AppointmentsController implements Serializable {
         fillMapState();
         fillMapDetail();
     }
-
-    public void newAppointment() {
-        this.selectedAppointment = new AppointmentTO();
-        this.flag = true;
-    }
-
-    public void fillListAppointments() {
+    
+    private void fillListAppointments() {
 
         if (this.selectedState == 0) {
-            final int detailOfEspera = 94;
-            this.selectedState = detailOfEspera;
+            final int detailOfAgended = 93;
+            this.setSelectedState(detailOfAgended);
         }
         if (this.selectedLowerDate == null) {
             this.selectedLowerDate = new Date(System.currentTimeMillis());
@@ -248,7 +473,7 @@ public class AppointmentsController implements Serializable {
     }
 
     private void fillMapProvince() {
-        final int masterOfProvince = 11;
+        final int masterOfProvince = 2;
 
         try {
             this.mapProvince = this.serviceDetails.select(masterOfProvince);
@@ -257,20 +482,10 @@ public class AppointmentsController implements Serializable {
             context.addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error Fatal", "No se puede connectar a la base de datos"));
         }
     }
-    
-    private void fillMapUser() {
-
-        try {
-            this.mapUsers = new ServiceUserTO().selectMapAll();
-        } catch (Exception e) {
-            this.mapUsers = new HashMap<>();
-            context.addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error Fatal", "No se puede connectar a la base de datos"));
-        }
-    }
 
     private void fillMapVet() {
         final int detailOfVet = 2;
-
+        
         try {
             this.mapVet = new ServiceUserTO().selectMap(detailOfVet);
         } catch (Exception e) {
@@ -309,16 +524,17 @@ public class AppointmentsController implements Serializable {
 
     private void fillMapAsistan() {
         final int masterOfAsistan = 3;
-
+        
         try {
-            this.mapVet = new ServiceUserTO().selectMap(masterOfAsistan);
+            this.mapAssistan = new ServiceUserTO().selectMap(masterOfAsistan);
         } catch (Exception e) {
-            this.mapProvince = new HashMap<>();
+            e.printStackTrace();
+            this.mapAssistan = new HashMap<>();
             context.addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error Fatal", "No se puede connectar a la base de datos"));
         }
     }
 
-    private void fillMapCanton() {
+    public void fillMapCanton() {
         try {
             this.mapCanton = this.serviceDetails.select(this.selectedAppointment.getProvince());
         } catch (Exception e) {
