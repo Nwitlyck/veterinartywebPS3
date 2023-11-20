@@ -2,6 +2,7 @@ package edu.ulatina.controllers;
 
 import edu.ulatina.security.AESEncryptionDecryption;
 import edu.ulatina.objects.UserTO;
+import edu.ulatina.services.ServiceAppointmentTO;
 import edu.ulatina.services.ServiceUserTO;
 import java.io.Serializable;
 import javax.faces.bean.*;
@@ -148,6 +149,7 @@ public class VeterinaryController implements Serializable {
     public void disableUserVet() {
         try {
             serUserTO.delete(selectedUserVet);
+            new ServiceAppointmentTO().disableVet(this.selectedUserVet.getId());
         } catch (Exception ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar el usuario en base de datos"));

@@ -4,7 +4,9 @@ import edu.ulatina.objects.CustomersTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -55,6 +57,18 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
         close(ps);
         close(conn);
     }
+    
+    @Override
+    public void enable(CustomersTO objectTO) throws Exception {
+        PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Customers SET State = 1 WHERE Cedula = ?");
+        ps.setInt(1, objectTO.getCedula());
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
+    }
 
     @Override
     public List<CustomersTO> select(int enable) throws Exception {
@@ -83,16 +97,24 @@ public class ServiceCustomerTO extends Service implements ICrud<CustomersTO> {
         return objectTOList;
     }
 
-    @Override
-    public void enable(CustomersTO objectTO) throws Exception {
+    public Map<String, Integer> selectMap() throws Exception {
         PreparedStatement ps = null;
+        ResultSet rs = null;
+        Map<String, Integer> map = new HashMap<>();
 
-        ps = getConnection().prepareStatement("UPDATE Customers SET State = 1 WHERE Cedula = ?");
-        ps.setInt(1, objectTO.getCedula());
-        ps.executeUpdate();
+        ps = getConnection().prepareStatement("SELECT Cedula, Name FROM Customers Where State = 1");
+        rs = ps.executeQuery();
 
+        while (rs.next()) { 
+            
+            map.put(rs.getString("Name"), rs.getInt("Cedula"));
+        }
+
+        close(rs);
         close(ps);
         close(conn);
+
+        return map;
     }
     
 }
