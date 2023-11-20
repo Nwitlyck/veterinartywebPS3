@@ -17,6 +17,39 @@
                 align-items: stretch;
                 min-height: 100vh;
             }
+            .appointment-dialog {
+                width: 400px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            }
+
+            .p-col {
+                margin-bottom: 15px;
+            }
+
+            .p-outputlabel {
+                font-weight: bold;
+            }
+
+            .ui-button-secondary {
+                margin: 0.25rem;
+                background-color: #e74c3c;
+                color: #fff; 
+                border-color: #c0392b;
+            }
+
+            .custom-label {
+                font-weight: bold;
+                color: #3498db; 
+            }
+            
+            .custom-info {
+    font-weight: bold;
+    color: cadetblue;
+    margin-right: 5px; 
+}
+
+
         </style>
         <f:event type="preRenderView" listener="#{logOutController.verifySession()}"/>
     </h:head>
@@ -58,7 +91,7 @@
                 <p:calendar id="upperTS" value="#{appointmentsController.selectedUpperDate}" />
 
             </p:panel>
-            
+
             <div>
                 <p:dataTable 
                     id="appointmentTable" 
@@ -118,8 +151,8 @@
                       widgetVar="manageAppointmentDialog" responsive="true">
                 <p:outputPanel id="manage-appointment-content" class="ui-fluid">
                     <p:outputPanel>
-                        
-                        
+
+
                         <div class="p-field">
                             <p:outputLabel for="vet" value="Veterinario"/>
                             <p:selectOneMenu id="vet" value="#{appointmentsController.selectedAppointment.idUser}">
@@ -164,7 +197,7 @@
                             <p:outputLabel for="adreess" value="Direccion"/>
                             <p:inputText id="adreess" value="#{appointmentsController.selectedAppointment.adress}"/>
                         </div>
-                        
+
                         <div class="p-field">
                             <p:outputLabel for="province" value="Provincia"/>
                             <p:selectOneMenu id="province" value="#{appointmentsController.selectedAppointment.province}">
@@ -217,67 +250,73 @@
             </p:dialog>
 
             <p:dialog header="Información de la Cita" showEffect="fade" modal="true"
-                      widgetVar="displayAppointmentDialog" responsive="true">
+                      widgetVar="displayAppointmentDialog" responsive="true" styleClass="appointment-dialog">
+
                 <p:outputPanel id="display-appointment-content" class="ui-fluid">
-                    <p:outputPanel>
+                    <div class="p-grid p-dir-col">
 
-                        <div class="p-field">
-                            <p:outputLabel>Veterinario: </p:outputLabel>
-                            <h:outputText value="#{appointmentsController.vetNameSelected}"/>
+                        <div class="p-col">
+                            <p:outputLabel class="custom-label">Veterinario: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.vetNameSelected}" />
                         </div>
 
-                        <div class="p-field">
-                            <p:outputLabel>Cliente: </p:outputLabel>
-                            <h:outputText value="#{appointmentsController.customerNameSelected}"/>
+                        <div class="p-col">
+                            <p:outputLabel class="custom-label">Cliente: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.customerNameSelected}" />
                         </div>
 
-                        <div class="p-field">
-                            <p:outputLabel>Unidad: </p:outputLabel>
-                            <h:outputText value="#{appointmentsController.unitNameSelected}"/>
+                        <div class="p-col">
+                            <p:outputLabel class="custom-label">Unidad: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.unitNameSelected}" />
                         </div>
 
-                        <div class="p-field">
-                            <p:outputLabel>Sede: </p:outputLabel>
-                            <h:outputText value="#{appointmentsController.siteNameSelected}"/>
+                        <div class="p-col">
+                            <p:outputLabel class="custom-label">Sede: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.siteNameSelected}" />
                         </div>
 
-                        <div class="p-field">
-                            <p:outputLabel>Asitente: </p:outputLabel>
-                            <h:outputText value="#{appointmentsController.asistantNameSelected}"/>
+                        <div class="p-col">
+                            <p:outputLabel class="custom-label">Asistente: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.asistantNameSelected}" />
                         </div>
 
-                        <div class="p-field">
-                            <p:outputLabel>Fecha/Hora: </p:outputLabel>
-                            <h:outputText value="#{appointmentsController.selectedAppointment.date}"/>
+                        <div class="p-col">
+                            <p:outputLabel class="custom-label">Fecha y Hora: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.selectedAppointment.date}" />
                         </div>
 
-                        <div class="p-field">
-                            <p:outputLabel>Direccion: </p:outputLabel>
-                            <h:outputText value="#{appointmentsController.selectedAppointment.adress} "/>
-                            <h:outputText value="Provincia: #{appointmentsController.provinceNameSelected} "/>
-                            <h:outputText value="Canton: #{appointmentsController.cantonNameSelected} "/>
+                        <div class="p-col">
+    <p:outputLabel class="custom-label"> Dirección: </p:outputLabel>
+    <h:outputText value="#{appointmentsController.selectedAppointment.adress}" escape="false" />
+    <br />
+    <span class="custom-info">Provincia:</span>
+    <h:outputText value=" #{appointmentsController.provinceNameSelected}" />
+    <br />
+    <span class="custom-info">Cantón:</span>
+    <h:outputText value=" #{appointmentsController.cantonNameSelected}" />
+</div>
+
+
+                        <div class="p-col">
+                            <p:outputLabel class="custom-label">Descripción: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.selectedAppointment.description}" />
                         </div>
 
-                        <div class="p-field">
-                            <p:outputLabel>Descripcion: </p:outputLabel>
-                            <h:outputText value="#{appointmentsController.selectedAppointment.description}"/>
+                        <div class="p-col">
+                            <p:outputLabel class="custom-label">Estado: </p:outputLabel>
+                            <h:outputText value="#{appointmentsController.stateNameSelected}" />
                         </div>
 
-                        <div class="p-field">
-                            <p:outputLabel>Estado: </p:outputLabel>
-                            <h:outputText value="#{appointmentsController.stateNameSelected}"/>
-                        </div>
-
-                    </p:outputPanel>
+                    </div>
                 </p:outputPanel>
 
                 <f:facet name="footer">
-
                     <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('displayAppointmentDialog').hide()" 
-                                     style="margin: .25rem" class="ui-button-secondary"/>
+                                     styleClass="ui-button-secondary" />
                 </f:facet>
 
             </p:dialog>
+
 
             <p:confirmDialog
                 widgetVar="cancelAppointmentDialog" 
