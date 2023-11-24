@@ -4,7 +4,9 @@ import edu.ulatina.objects.SiteTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ServiceSite extends Service implements ICrud<SiteTO>  {
 
@@ -54,6 +56,18 @@ public class ServiceSite extends Service implements ICrud<SiteTO>  {
         close(ps);
         close(conn);
     }
+    
+    @Override
+    public void enable(SiteTO objectTO) throws Exception {
+       PreparedStatement ps = null;
+
+        ps = getConnection().prepareStatement("UPDATE Site SET State = 1 WHERE Id = ?");
+        ps.setInt(1, objectTO.getId());
+        ps.executeUpdate();
+
+        close(ps);
+        close(conn);
+    }
 
     @Override
     public List<SiteTO> select(int enable) throws Exception {
@@ -84,16 +98,24 @@ public class ServiceSite extends Service implements ICrud<SiteTO>  {
         return objectTOList;
     }
 
-    @Override
-    public void enable(SiteTO objectTO) throws Exception {
-       PreparedStatement ps = null;
+    public Map<String, Integer> selectMap() throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Map<String, Integer> map = new HashMap<>();
 
-        ps = getConnection().prepareStatement("UPDATE Site SET State = 1 WHERE Id = ?");
-        ps.setInt(1, objectTO.getId());
-        ps.executeUpdate();
+        ps = getConnection().prepareStatement("SELECT Id, Name FROM Site Where State = 1");
+        rs = ps.executeQuery();
 
+        while (rs.next()) { 
+            
+            map.put(rs.getString("Name"), rs.getInt("Id"));
+        }
+
+        close(rs);
         close(ps);
         close(conn);
+
+        return map;
     }
    
 }
