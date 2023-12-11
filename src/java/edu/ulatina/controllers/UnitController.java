@@ -1,6 +1,7 @@
 package edu.ulatina.controllers;
 
 import edu.ulatina.objects.UnitTO;
+import edu.ulatina.services.ServiceAppointmentTO;
 import edu.ulatina.services.ServiceUnitTO;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -8,13 +9,12 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.PrimeFaces;
-import java.util.regex.Pattern;
+import javax.faces.bean.ViewScoped;
 
 /**
  *
@@ -100,6 +100,7 @@ public class UnitController implements Serializable {
         System.out.println("Estoy deshabilitando la unidad");
         try {
             serv.delete(selectedUnit);
+            new ServiceAppointmentTO().disableUnit(this.selectedUnit.getPlate());
         } catch (Exception ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar la unidad en base de datos"));

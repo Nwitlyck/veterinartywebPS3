@@ -6,14 +6,14 @@
 package edu.ulatina.controllers;
 
 import edu.ulatina.objects.CustomersTO;
+import edu.ulatina.services.ServiceAppointmentTO;
 import edu.ulatina.services.ServiceCustomerTO;
 import java.io.Serializable;
 import java.util.*;
 import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.*;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
@@ -30,6 +30,8 @@ public class CustomerController implements Serializable {
     private ServiceCustomerTO serviceCustomerTO;
     private CustomersTO selectedCustomerTO;
     private boolean viewDisabledClient;
+    private List<CustomersTO> listCustomersTOsEnable;
+    private List<CustomersTO> listCustomersTOsDisble;
 
     public CustomersTO getSelectedCustomerTO() {
         return selectedCustomerTO;
@@ -47,6 +49,22 @@ public class CustomerController implements Serializable {
         this.viewDisabledClient = viewDisabledClient;
     }
 
+    public List<CustomersTO> getListCustomersTOsEnable() {
+        return listCustomersTOsEnable;
+    }
+
+    public void setListCustomersTOsEnable(List<CustomersTO> listCustomersTOsEnable) {
+        this.listCustomersTOsEnable = listCustomersTOsEnable;
+    }
+
+    public List<CustomersTO> getListCustomersTOsDisble() {
+        return listCustomersTOsDisble;
+    }
+
+    public void setListCustomersTOsDisble(List<CustomersTO> listCustomersTOsDisble) {
+        this.listCustomersTOsDisble = listCustomersTOsDisble;
+    }
+
     public void viewDisabledMessage(AjaxBehaviorEvent event) {
         UIComponent component = event.getComponent();
         if (component instanceof UIInput) {
@@ -61,29 +79,27 @@ public class CustomerController implements Serializable {
     public void inicializate() {
         serviceCustomerTO = new ServiceCustomerTO();
         selectedCustomerTO = new CustomersTO();
+        getCustomerList();
+        getDisableCustomerList();
 
     }
 
-    public List<CustomersTO> getCustomerList() {
-        List<CustomersTO> returnList;
+    public void getCustomerList() {
         try {
-            return serviceCustomerTO.select(1);
+            listCustomersTOsEnable = serviceCustomerTO.select(1);
         } catch (Exception ex) {
-            returnList = new ArrayList<>();
+            listCustomersTOsEnable = new ArrayList<>();
             ex.printStackTrace();
         }
-        return returnList;
     }
 
-    public List<CustomersTO> getDisableCustomerList() {
-        List<CustomersTO> returnList;
+    public void getDisableCustomerList() {
         try {
-            returnList = serviceCustomerTO.select(0);
+            listCustomersTOsDisble = serviceCustomerTO.select(0);
         } catch (Exception ex) {
-            returnList = new ArrayList<>();
+            listCustomersTOsDisble = new ArrayList<>();
             ex.printStackTrace();
         }
-        return returnList;
     }
 
     private boolean notNull() {
@@ -114,14 +130,14 @@ public class CustomerController implements Serializable {
                 return false;
             }
 
-            for (CustomersTO customer : getCustomerList()) {
+            for (CustomersTO customer : listCustomersTOsEnable) {
                 if (selectedCustomerTO.getCedula() == customer.getCedula()) {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La cedula ya existe"));
                     return false;
                 }
             }
 
-            for (CustomersTO customer : getDisableCustomerList()) {
+            for (CustomersTO customer : listCustomersTOsDisble) {
                 if (selectedCustomerTO.getCedula() == customer.getCedula()) {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "La cedula ya existe"));
                     return false;
@@ -137,14 +153,14 @@ public class CustomerController implements Serializable {
             return false;
         }
 
-        for (CustomersTO customer : getCustomerList()) {
+        for (CustomersTO customer : listCustomersTOsEnable) {
             if (selectedCustomerTO.getEmail() == customer.getEmail()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "El correo ya existe"));
                 return false;
             }
         }
 
-        for (CustomersTO customer : getDisableCustomerList()) {
+        for (CustomersTO customer : listCustomersTOsDisble) {
             if (selectedCustomerTO.getEmail() == customer.getEmail()) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Invalido", "El correo ya existe"));
                 return false;
@@ -165,6 +181,7 @@ public class CustomerController implements Serializable {
 
         try {
             this.serviceCustomerTO.insert(selectedCustomerTO);
+            getCustomerList();
         } catch (Exception ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al hacer insert en base de datos"));
@@ -187,6 +204,7 @@ public class CustomerController implements Serializable {
 
         try {
             this.serviceCustomerTO.update(selectedCustomerTO);
+            getCustomerList();
         } catch (Exception ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al hacer update en base de datos"));
@@ -198,6 +216,9 @@ public class CustomerController implements Serializable {
     public void disableCustomer() {
         try {
             serviceCustomerTO.delete(selectedCustomerTO);
+            new ServiceAppointmentTO().disableCustomer(this.selectedCustomerTO.getCedula());
+            getCustomerList();
+            getDisableCustomerList();
         } catch (Exception ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar el usuario en base de datos"));
@@ -209,6 +230,8 @@ public class CustomerController implements Serializable {
     public void enableCustomer() {
         try {
             serviceCustomerTO.enable(selectedCustomerTO);
+            getCustomerList();
+            getDisableCustomerList();
         } catch (Exception ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Error al desabilitar el usuario en base de datos"));
