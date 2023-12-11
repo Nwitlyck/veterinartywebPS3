@@ -225,7 +225,7 @@ public class AppointmentsController implements Serializable {
     }
 
     public String getDetailName(int id) {
-        String name = "Not Found";
+        String name = "No encontrado";
         for (Map.Entry<String, Integer> entry : this.mapDetail.entrySet()) {
             if (entry.getValue() == id) {
                 name = entry.getKey();
@@ -235,7 +235,7 @@ public class AppointmentsController implements Serializable {
     }
 
     public String getVetNameSelected() {
-        String name = "Not Found";
+        String name = "No encontrado";
         for (Map.Entry<String, Integer> entry : this.mapVet.entrySet()) {
             if (entry.getValue() == this.selectedAppointment.getIdUser()) {
                 name = entry.getKey();
@@ -245,7 +245,7 @@ public class AppointmentsController implements Serializable {
     }
 
     public String getCustomerNameSelected() {
-        String name = "Not Found";
+        String name = "No encontrado";
         for (Map.Entry<String, Integer> entry : this.mapCustomer.entrySet()) {
             if (entry.getValue() == this.selectedAppointment.getIdCustomer()) {
                 name = entry.getKey();
@@ -255,7 +255,7 @@ public class AppointmentsController implements Serializable {
     }
 
     public String getUnitNameSelected() {
-        String name = "Not Found";
+        String name = "No encontrado";
         for (Map.Entry<String, String> entry : this.mapUnit.entrySet()) {
             if (entry.getValue().equals(this.selectedAppointment.getIdUnit())) {
                 name = entry.getKey();
@@ -265,7 +265,7 @@ public class AppointmentsController implements Serializable {
     }
 
     public String getSiteNameSelected() {
-        String name = "Not Found";
+        String name = "No encontrado";
         try {
             for (Map.Entry<String, Integer> entry : this.mapSite.entrySet()) {
                 if (entry.getValue() == this.selectedAppointment.getIdSite()) {
@@ -279,7 +279,7 @@ public class AppointmentsController implements Serializable {
     }
 
     public String getAsistantNameSelected() {
-        String name = "Not Found";
+        String name = "No encontrado";
         try {
             for (Map.Entry<String, Integer> entry : this.mapAssistan.entrySet()) {
                 if (entry.getValue() == this.selectedAppointment.getIdAsistant()) {
@@ -293,7 +293,7 @@ public class AppointmentsController implements Serializable {
     }
 
     public String getProvinceNameSelected() {
-        String name = "Not Found";
+        String name = "No encontrado";
         for (Map.Entry<String, Integer> entry : this.mapProvince.entrySet()) {
             if (entry.getValue() == this.selectedAppointment.getProvince()) {
                 name = entry.getKey();
@@ -303,7 +303,7 @@ public class AppointmentsController implements Serializable {
     }
 
     public String getCantonNameSelected() {
-        String name = "Not Found";
+        String name = "No encontrado";
         for (Map.Entry<String, Integer> entry : this.mapCanton.entrySet()) {
             if (entry.getValue() == this.selectedAppointment.getCanton()) {
                 name = entry.getKey();
@@ -313,7 +313,7 @@ public class AppointmentsController implements Serializable {
     }
 
     public String getStateNameSelected() {
-        String name = "Not Found";
+        String name = "No encontrado";
         for (Map.Entry<String, Integer> entry : this.mapState.entrySet()) {
             if (entry.getValue() == this.selectedAppointment.getState()) {
                 name = entry.getKey();

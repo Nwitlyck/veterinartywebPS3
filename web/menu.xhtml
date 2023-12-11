@@ -6,10 +6,12 @@ and open the template in the editor.
 -->
 <!DOCTYPE html>
 <html  xmlns="http://www.w3.org/1999/xhtml"
+
        xmlns:p="http://primefaces.org/ui"
        xmlns:f="http://xmlns.jcp.org/jsf/core">
     <body>
         <form id="menu">
+
 
             <p:menubar styleClass="custom-menu" id="generalmenu">
                 <p:menuitem value="Inicio" outcome="landingPage" icon="pi pi-fw pi-home"/>
@@ -28,6 +30,7 @@ and open the template in the editor.
                 <p:submenu label="Veterinarios" icon="pi pi-fw pi-id-card">
                     <p:menuitem value="Editar Veterinarios" outcome="editVeterinary" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
+
                 <p:submenu label="Citas" icon="pi-twitter">
                     <p:menuitem value="Editar Citas" outcome="editAppointments" icon="pi pi-fw pi-pencil"/>
                 </p:submenu>
