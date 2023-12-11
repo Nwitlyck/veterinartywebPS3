@@ -51,9 +51,9 @@ public class LogInController  implements Serializable {
     }
 
     public void logIn() {
-
         FacesContext context = FacesContext.getCurrentInstance();
 
+        
         if (email.isEmpty() || email == null) {
             context.addMessage("sticky-key", new FacesMessage(FacesMessage.SEVERITY_WARN, "Valor Nulo", "El correo esta vacio"));
             return;
