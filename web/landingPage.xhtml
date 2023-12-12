@@ -75,7 +75,9 @@
             <h2 class="section-title">Gestión de Clientes</h2>
             <div class="section-content">
                 <p:button value="Editar Cliente" outcome="editCustomer" styleClass="button" />
+
                 <p:dataTable id="enablecustomers" var="customer" value="#{customerController.listCustomersTOsEnable}" rendered="#{!customerController.viewDisabledClient}" paginator="true" rows="5" paginatorPosition="bottom">
+
                     <p:column headerText="Cédula">
                         <h:outputText value="#{customer.cedula}"/>
                     </p:column>
