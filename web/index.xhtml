@@ -7,7 +7,7 @@
     <h:head>
         <title>Inicio de Sesión </title>
         <style>
-             body {
+            body {
                 background: linear-gradient(to bottom, royalblue, #99ccff);
                 display: flex;
                 justify-content: center;
@@ -17,7 +17,7 @@
             }
             .login-container {
                 text-align: center;
-                width: 300px;
+                width: 345px;
                 padding: 20px;
                 border: 1px solid #3498db; 
                 border-radius: 5px;
@@ -51,9 +51,9 @@
                 font-size: 18px;
             }
         </style>
-        
+
     </h:head>
-    
+
     <h:body>
         <div class="login-container">
             <h:form>
@@ -62,12 +62,14 @@
 
                 <p:outputLabel for="user" value="Usuario:" />
                 <p:inputText id="user" value="#{logInController.email}" styleClass="login-input" />
-                
+
                 <p:outputLabel for="password" value="Contraseña:" />
                 <p:password id="password" value="#{logInController.pasword}" styleClass="login-input" />
-                
-                <p:commandButton value="Iniciar Sesión" actionListener="#{logInController.logIn}" update="message" styleClass="login-button" style="background-color: royalblue;"/>
+                <p:captcha label="Captcha" />
+
+                <p:commandButton value="Iniciar Sesión" actionListener="#{logInController.logIn}" ajax="false" update="message" styleClass="login-button" style="background-color: royalblue;"/>
             </h:form>
+
         </div>
     </h:body>
 </html>
