@@ -17,7 +17,7 @@
             }
             .login-container {
                 text-align: center;
-                width: 300px;
+                width: 345px;
                 padding: 20px;
                 border: 1px solid #3498db; 
                 border-radius: 5px;
@@ -65,7 +65,7 @@
 
                 <p:outputLabel for="password" value="Contraseña:" />
                 <p:password id="password" value="#{logInController.pasword}" styleClass="login-input" />
-                <p:captcha label="Captcha"/>
+                <p:captcha label="Captcha" />
 
                 <p:commandButton value="Iniciar Sesión" actionListener="#{logInController.logIn}" ajax="false" update="message" styleClass="login-button" style="background-color: royalblue;"/>
             </h:form>
