@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Editar Veterinarios</title>
+        <style>
+            body {
+                background-color: cornflowerblue;
+                margin: 0;
+                font-family: Arial, sans-serif;
+            }
+            
+            .custom-toggle-switch {
+                font-family: inherit;
+                font-size: inherit;
+                margin: 0 auto;
+            }
+            
+        </style>
+        <f:event type="preRenderView" listener="#{logOutController.verifySession()}"/>
+    </h:head>
+
+    <h:body>
+        
+        <h:form id="menu">
+            <ui:include src="menu.xhtml"/>
+        </h:form>
+
+        <h:form id="form">
+            <p:growl id="message" showDetail="true"/>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" />
+            </p:confirmDialog>
+            
+            <div class="header" style="display: flex; justify-content: flex-start;">
+                <p:commandButton value="Crear Veterinario" icon="pi pi-plus"
+                             update=":form:manage-user-content" oncomplete="PF('manageUserDialog').show()"
+                             styleClass="ui-button-success" style="margin: .50rem">
+                <p:resetInput target=":form:manage-user-content"/>
+            </p:commandButton>
+                <div style="display: flex; align-items: center;">
+                    <p:toggleSwitch id="toggleSwitch" value="#{userVetController.viewDisabledVet}" styleClass="custom-toggle-switch">
+                        <p:ajax listener="#{userVetController.viewDisabledMessage}" update="form message"/>
+                    </p:toggleSwitch>
+                    <p:tooltip for="toggleSwitch" value="Ver Deshabilitados" showEvent="mouseover" hideEvent="mouseout" position="top"/>
+                </div>
+            </div>
+
+            <p:dialog header="Información del Veterinario" showEffect="fade" modal="true"
+                      widgetVar="manageUserDialog" responsive="true">
+                <p:outputPanel id="manage-user-content" class="ui-fluid">
+
+                    <p:outputPanel>
+
+                        <div class="p-field">
+                            <p:outputLabel for="name2">Nombre</p:outputLabel>
+                            <p:inputText id="name2" value="#{userVetController.selectedUserVet.name}"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="lastName2">Apellido</p:outputLabel>
+                            <p:inputText id="lastName2" value="#{userVetController.selectedUserVet.lastname}"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="email2">Correo</p:outputLabel>
+                            <p:inputText id="email2" value="#{userVetController.selectedUserVet.email}" placeholder="correo123+@correo.com"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="password2">Contraseña</p:outputLabel>
+                            <p:password id="password2" value="#{userVetController.selectedUserVet.password}" toggleMask="true" placeholder="Contraseña123+"/>
+                        </div>
+
+                    </p:outputPanel>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Crear" icon="pi pi-check"  actionListener="#{userVetController.insertUser}"
+                                     update="form manage-user-content" style="margin: .25rem" process="manage-user-content @this">
+                        <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+
+
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('manageUserDialog').hide()" 
+                                     style="margin: .25rem" class="ui-button-secondary"/>
+                </f:facet>
+
+            </p:dialog>
+
+            <p:dataTable id="enableUsersVet" var="obj" value="#{userVetController.userVetList}" rendered="#{!userVetController.viewDisabledVet}" rows="10" paginator="true" paginatorPosition="bottom">
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{obj.name}" />
+                </p:column>
+                <p:column headerText="Apellido">
+                    <h:outputText value="#{obj.lastname}" />
+                </p:column>
+                <p:column headerText="Correo">
+                    <h:outputText value="#{obj.email}" />
+                </p:column>
+                <p:column headerText="Opciones">
+                    <p:commandButton icon="pi pi-pencil" update=":form:edit-veterinary-content"  styleClass="ui-button-rounded ui-button-success" title="Editar" oncomplete="PF('editVeterinaryContent').show()">
+                        <f:setPropertyActionListener value="#{obj}" target="#{userVetController.selectedUserVet}"/>
+                        <p:resetInput target=":form:edit-veterinary-content"/>
+                    </p:commandButton>
+                    <p:commandButton icon="pi pi-trash" update="form enableUsersVet"  styleClass="ui-button-rounded ui-button-danger" title="Borrar" oncomplete="PF('disableUserVetDialog').show()" process="@this">
+                        <f:setPropertyActionListener value="#{obj}" target="#{userVetController.selectedUserVet}"/>
+                        <p:resetInput target=":form"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            
+            <p:dataTable id="disableUsersVet" var="obj" value="#{userVetController.disableUserVetList}" rendered="#{userVetController.viewDisabledVet}" rows="10" paginator="true" paginatorPosition="bottom">
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{obj.name}" />
+                </p:column>
+                <p:column headerText="Apellido">
+                    <h:outputText value="#{obj.lastname}" />
+                </p:column>
+                <p:column headerText="Correo">
+                    <h:outputText value="#{obj.email}" />
+                </p:column>
+                <p:column headerText="Recuperar">
+                    <p:commandButton icon="pi pi-refresh" update="form disableUsersVet"  title="Recuperar" oncomplete="PF('enableUserVetDialog').show()" style="margin: .25rem" process="@this">
+                        <f:setPropertyActionListener value="#{obj}" target="#{userVetController.selectedUserVet}"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+
+            <p:dialog header="Editar Veterinario" showEffect="fade" modal="true"
+                      widgetVar="editVeterinaryContent" responsive="true">
+                <p:outputPanel id="edit-veterinary-content" class="ui-fluid">
+
+                    <div class="p-field">
+                            <p:outputLabel>Nombre</p:outputLabel>
+                            <p:inputText id="name" value="#{userVetController.selectedUserVet.name}"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel>Apellido</p:outputLabel>
+                            <p:inputText id="lastname" value="#{userVetController.selectedUserVet.lastname}"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel >Correo</p:outputLabel>
+                            <p:inputText id="emali" value="#{userVetController.selectedUserVet.email}" placeholder="correo123+@correo.com"/>
+                        </div>
+                        <div class="p-field">
+                            <p:outputLabel for="password" >Contraseña</p:outputLabel>
+                            <p:password id="password" value="#{userVetController.password}" toggleMask="true" placeholder="Contraseña123+"/>
+                        </div>
+
+                    </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Guardar" icon="pi pi-save"  actionListener="#{userVetController.updateUser}"
+                                     update="form edit-veterinary-content" style="margin: .25rem" process="edit-veterinary-content @this">
+                        <p:confirm header="Confirmacion" message="Seguro que quieres seguir?" icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+
+
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('editVeterinaryContent').hide()" 
+                                     style="margin: .25rem" class="ui-button-secondary"/>
+                </f:facet>
+
+            </p:dialog>
+            
+              
+
+            <p:confirmDialog
+                widgetVar="disableUserVetDialog" 
+                showEffect="fade" 
+                width="300"
+                message="Deshabilitar este veterinario?" 
+                header="Confirmar" 
+                severity="warn">
+
+                <p:commandButton 
+                    value="Cancelar" 
+                    icon="pi pi-times" 
+                    onclick="PF('disableUserVetDialog').hide()"
+                    style="float: left"
+                    class="ui-button-secondary"/>
+
+                <p:commandButton 
+                    value="Desabilitar" 
+                    icon="pi pi-check" 
+                    actionListener="#{userVetController.disableUserVet}"
+                    update="form" 
+                    process="@this" />
+
+            </p:confirmDialog>
+
+            <p:confirmDialog
+                widgetVar="enableUserVetDialog" 
+                showEffect="fade" 
+                width="300"
+                message="Habilitar este usuario?" 
+                header="Confirm" 
+                severity="warn">
+
+                <p:commandButton 
+                    value="Cancelar" 
+                    icon="pi pi-times" 
+                    onclick="PF('enableUserVetDialog').hide()"
+                    style="float: left"
+                    class="ui-button-secondary"/>
+
+                <p:commandButton 
+                    value="Habilitar" 
+                    icon="pi pi-check" 
+                    actionListener="#{userVetController.enableUserVet}"
+                    update="form" 
+                    process="@this" />
+
+            </p:confirmDialog>
+
+        </h:form>
+    </h:body>
+</html>
