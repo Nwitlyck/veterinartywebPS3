@@ -11,7 +11,13 @@ public abstract class Service {
 
     protected Connection getConnection() throws Exception {
 
-        conn = DriverManager.getConnection("jdbc:sqlserver://database-1.cbzlcqyqfkne.us-east-2.rds.amazonaws.com:1433;databasename=vetShop;user=admin;password=admin1234;encrypt=false");
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        String url = "jdbc:mysql://localhost:3306/VetShop?useSSL=false&serverTimezone=UTC";
+        String user = "root";
+        String password = "1234";
+
+        conn = DriverManager.getConnection(url, user, password);
 
         return conn;
     }

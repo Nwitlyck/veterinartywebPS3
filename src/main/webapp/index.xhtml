@@ -19,11 +19,11 @@
                 text-align: center;
                 width: 345px;
                 padding: 20px;
-                border: 1px solid #3498db; 
+                border: 1px solid #3498db;
                 border-radius: 5px;
                 background-color: #fff;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
-                font-family: 'Roboto', sans-serif; 
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                font-family: 'Roboto', sans-serif;
             }
             .login-header {
                 font-size: 24px;
@@ -39,11 +39,11 @@
                 font-size: 16px;
             }
             .login-input:focus {
-                border-color: #3498db; 
+                border-color: #3498db;
             }
             .login-button {
                 width: 100%;
-                background-color: royalblue; 
+                background-color: royalblue;
                 color: #fff;
                 border: none;
                 border-radius: 5px;
@@ -65,7 +65,7 @@
 
                 <p:outputLabel for="password" value="Contraseña:" />
                 <p:password id="password" value="#{logInController.pasword}" styleClass="login-input" />
-                <p:captcha label="Captcha" />
+                <!--p:captcha label="Captcha" /-->
 
                 <p:commandButton value="Iniciar Sesión" actionListener="#{logInController.logIn}" ajax="false" update="message" styleClass="login-button" style="background-color: royalblue;"/>
             </h:form>

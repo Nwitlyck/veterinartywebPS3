@@ -23,11 +23,11 @@ public class LogOutController implements Serializable{
     public void verifySession() {
 
         FacesContext context = FacesContext.getCurrentInstance();
-        
+
         try {
             UserTO user = (UserTO) context.getExternalContext().getSessionMap().get("user");
             if(user == null){
-                redirect("/faces/index.xhtml?faces-redirect=true");
+                redirect("/index.xhtml?faces-redirect=true");
             }
         } catch (Exception e) {
         }

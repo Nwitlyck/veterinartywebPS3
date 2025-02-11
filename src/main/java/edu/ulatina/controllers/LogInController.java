@@ -81,7 +81,7 @@ public class LogInController  implements Serializable {
                 user.setEmail(email);
                 
                 context.getExternalContext().getSessionMap().put("user", user);
-                this.redirect("/faces/landingPage.xhtml");
+                this.redirect("/landingPage.xhtml");
             }
 
         } catch (Exception e) {
