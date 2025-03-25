@@ -1,7 +1,7 @@
 package edu.ulatina.services;
 
 import edu.ulatina.objects.UserTO;
-import edu.ulatina.security.AESEncryptionDecryption;
+import edu.ulatina.security.EncryptionCalls;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -153,7 +153,7 @@ public class ServiceUserTO extends Service implements ICrud<UserTO> {
 
         ps = getConnection().prepareStatement("select count(*) from Users Where Email = ? AND Password = ? AND Role = 1");
         ps.setString(1, email);
-        ps.setString(2, new AESEncryptionDecryption().encrypt(password));
+        ps.setString(2, new EncryptionCalls().encrypt(password));
         rs = ps.executeQuery();
 
         if (rs.next()) {

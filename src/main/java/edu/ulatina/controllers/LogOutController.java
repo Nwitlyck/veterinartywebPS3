@@ -27,7 +27,7 @@ public class LogOutController implements Serializable{
         try {
             UserTO user = (UserTO) context.getExternalContext().getSessionMap().get("user");
             if(user == null){
-                redirect("/index.xhtml?faces-redirect=true");
+                redirect("/index.xhtml");
             }
         } catch (Exception e) {
         }
@@ -36,7 +36,7 @@ public class LogOutController implements Serializable{
     public void logOut() {
         try {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().clear();
-            redirect("/faces/index.xhtml?faces-redirect=true");
+            redirect("/index.xhtml");
         } catch (Exception e) {
             e.printStackTrace();
         }

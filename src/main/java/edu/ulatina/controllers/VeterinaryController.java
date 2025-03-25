@@ -1,6 +1,6 @@
 package edu.ulatina.controllers;
 
-import edu.ulatina.security.AESEncryptionDecryption;
+import edu.ulatina.security.EncryptionCalls;
 import edu.ulatina.objects.UserTO;
 import edu.ulatina.services.ServiceAppointmentTO;
 import edu.ulatina.services.ServiceUserTO;
@@ -82,7 +82,7 @@ public class VeterinaryController implements Serializable {
         if (password != "Password" || !password.isEmpty()) {
             selectedUserVet.setPassword(password);
         } else {
-            String p = new AESEncryptionDecryption().decrypt(selectedUserVet.getPassword());
+            String p = new EncryptionCalls().decrypt(selectedUserVet.getPassword());
             selectedUserVet.setPassword(p);
         }
     }
@@ -104,7 +104,7 @@ public class VeterinaryController implements Serializable {
             return;
         }
 
-        selectedUserVet.setPassword(new AESEncryptionDecryption().encrypt(selectedUserVet.getPassword()));
+        selectedUserVet.setPassword(new EncryptionCalls().encrypt(selectedUserVet.getPassword()));
         selectedUserVet.setRole(2);
 
         try {
@@ -122,7 +122,7 @@ public class VeterinaryController implements Serializable {
         if (selectedUserVet.getPassword().isEmpty()) {
             for (UserTO u : getUserVetList()) {
                 if (u.getId() == selectedUserVet.getId()) {
-                    selectedUserVet.setPassword(new AESEncryptionDecryption().decrypt(u.getPassword()));
+                    selectedUserVet.setPassword(new EncryptionCalls().decrypt(u.getPassword()));
                 }
             }
         }
@@ -135,7 +135,7 @@ public class VeterinaryController implements Serializable {
             return;
         }
 
-        selectedUserVet.setPassword(new AESEncryptionDecryption().encrypt(selectedUserVet.getPassword()));
+        selectedUserVet.setPassword(new EncryptionCalls().encrypt(selectedUserVet.getPassword()));
 
         try {
             this.serUserTO.update(selectedUserVet);

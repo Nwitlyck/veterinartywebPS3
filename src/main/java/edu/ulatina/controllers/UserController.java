@@ -9,7 +9,7 @@ package edu.ulatina.controllers;
  *
  * @author Nwitlyck
  */
-import edu.ulatina.security.AESEncryptionDecryption;
+import edu.ulatina.security.EncryptionCalls;
 import edu.ulatina.objects.UserTO;
 import edu.ulatina.services.ServiceAppointmentTO;
 import edu.ulatina.services.ServiceUserTO;
@@ -118,7 +118,7 @@ public class UserController  implements Serializable {
         if (password != "Password" || !password.isEmpty()) {
             selectedUser.setPassword(password);
         } else {
-            String p = new AESEncryptionDecryption().decrypt(selectedUser.getPassword());
+            String p = new EncryptionCalls().decrypt(selectedUser.getPassword());
             selectedUser.setPassword(p);
         }
     }
@@ -151,7 +151,7 @@ public class UserController  implements Serializable {
             return;
         }
 
-        selectedUser.setPassword(new AESEncryptionDecryption().encrypt(selectedUser.getPassword()));
+        selectedUser.setPassword(new EncryptionCalls().encrypt(selectedUser.getPassword()));
 
         try {
             this.serUserTO.insert(selectedUser);
@@ -168,7 +168,7 @@ public class UserController  implements Serializable {
         if (selectedUser.getPassword().isEmpty()) {
             for (UserTO u : getUserList()) {
                 if (u.getId() == selectedUser.getId()) {
-                    selectedUser.setPassword(new AESEncryptionDecryption().decrypt(u.getPassword()));
+                    selectedUser.setPassword(new EncryptionCalls().decrypt(u.getPassword()));
                 }
             }
         }
@@ -181,7 +181,7 @@ public class UserController  implements Serializable {
             return;
         }
 
-        selectedUser.setPassword(new AESEncryptionDecryption().encrypt(selectedUser.getPassword()));
+        selectedUser.setPassword(new EncryptionCalls().encrypt(selectedUser.getPassword()));
 
         try {
             this.serUserTO.update(selectedUser);
